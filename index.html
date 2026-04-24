@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hilliard Buffshire Task Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg:          #09090f;
+      --bg2:         #0e0e1c;
+      --bg3:         #13131f;
+      --surface:     rgba(255,255,255,0.04);
+      --surface2:    rgba(255,255,255,0.07);
+      --border:      rgba(255,255,255,0.07);
+      --border2:     rgba(255,255,255,0.12);
+      --accent:      #5a57f5;
+      --accent2:     #8b88ff;
+      --accent3:     #b8b6ff;
+      --accent-glow: rgba(90,87,245,0.25);
+      --gold:        #c9a84c;
+      --gold2:       #e8c97a;
+      --text:        #dde0f0;
+      --text2:       #7a7f9a;
+      --text3:       #4a4f6a;
+      --success:     #34d399;
+      --danger:      #f87171;
+      --warning:     #fbbf24;
+      --radius:      12px;
+      --radius-sm:   8px;
+      --trans:       0.18s ease;
+    }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family:'Noto Sans KR', system-ui, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    input,textarea,select,button { font-family:inherit; }
+    ::-webkit-scrollbar { width:3px; }
+    ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+    /* ════════════════════════
+       SETUP BANNER
+    ════════════════════════ */
+    #setup-banner {
+      display:none;
+      position:fixed; top:0; left:0; right:0;
+      background:rgba(201,168,76,0.1);
+      border-bottom:1px solid rgba(201,168,76,0.3);
+      color:var(--gold2);
+      font-size:0.78rem; text-align:center;
+      padding:8px 16px; z-index:1000;
+    }
+
+    /* ════════════════════════
+       AUTH SCREEN
+    ════════════════════════ */
+    #auth-screen {
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      background:var(--bg);
+      z-index:100;
+      transition:opacity 0.4s ease;
+    }
+    #auth-screen.hidden { opacity:0; pointer-events:none; }
+
+    /* Decorative bg */
+    .auth-bg {
+      position:absolute; inset:0; pointer-events:none;
+      overflow:hidden;
+    }
+    .auth-bg::before {
+      content:'';
+      position:absolute; top:-20%; left:50%; transform:translateX(-50%);
+      width:700px; height:500px;
+      background:radial-gradient(ellipse, rgba(90,87,245,0.18) 0%, transparent 65%);
+    }
+    .auth-bg::after {
+      content:'';
+      position:absolute; bottom:-10%; right:10%;
+      width:400px; height:300px;
+      background:radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 65%);
+    }
+
+    .auth-wrap {
+      position:relative;
+      display:flex; gap:0;
+      width:100%; max-width:900px;
+      min-height:560px;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 32px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+      animation:slideUp 0.5s cubic-bezier(.16,1,.3,1) both;
+    }
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(32px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* Left panel — Branding */
+    .auth-brand {
+      width:420px; flex-shrink:0;
+      background:linear-gradient(145deg, #0e0e22 0%, #141428 50%, #0e0e1e 100%);
+      border-right:1px solid var(--border);
+      display:flex; flex-direction:column;
+      justify-content:center;
+      padding:52px 48px;
+      position:relative;
+      overflow:hidden;
+    }
+    .auth-brand::before {
+      content:'';
+      position:absolute; top:-60px; right:-60px;
+      width:280px; height:280px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(90,87,245,0.2) 0%, transparent 65%);
+    }
+    .auth-brand::after {
+      content:'';
+      position:absolute; bottom:-40px; left:-40px;
+      width:200px; height:200px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 65%);
+    }
+    .brand-inner { position:relative; z-index:1; }
+
+    .brand-eyebrow {
+      font-family:'Montserrat', sans-serif;
+      font-size:0.68rem; font-weight:600;
+      letter-spacing:3px; text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:20px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .brand-eyebrow::before {
+      content:'';
+      width:24px; height:1px;
+      background:var(--gold);
+      flex-shrink:0;
+    }
+
+    .brand-main {
+      font-family:'Montserrat', sans-serif;
+      font-size:2.4rem; font-weight:800;
+      line-height:1.1; letter-spacing:-1.5px;
+      margin-bottom:6px;
+    }
+    .brand-main .w1 { color:#fff; display:block; }
+    .brand-main .w2 {
+      display:block;
+      background:linear-gradient(135deg, var(--accent2), var(--accent3));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+
+    .brand-task {
+      font-family:'Montserrat', sans-serif;
+      font-size:0.95rem; font-weight:400;
+      letter-spacing:1px; text-transform:uppercase;
+      color:var(--text2);
+      margin-bottom:28px;
+    }
+
+    .brand-divider {
+      width:40px; height:2px;
+      background:linear-gradient(90deg, var(--accent), transparent);
+      margin-bottom:20px;
+    }
+
+    .brand-ko {
+      font-size:0.88rem; font-weight:300;
+      color:var(--text2); letter-spacing:2px;
+      margin-bottom:4px;
+    }
+    .brand-ko-sub {
+      font-size:0.78rem; color:var(--text3);
+      letter-spacing:1px;
+    }
+
+    .brand-dots {
+      display:flex; gap:6px;
+      margin-top:36px;
+    }
+    .brand-dots span {
+      width:6px; height:6px; border-radius:50%;
+    }
+    .brand-dots span:nth-child(1) { background:var(--accent); }
+    .brand-dots span:nth-child(2) { background:var(--gold); opacity:0.7; }
+    .brand-dots span:nth-child(3) { background:var(--text3); }
+
+    /* Right panel — Form */
+    .auth-form-panel {
+      flex:1;
+      background:var(--bg3);
+      display:flex; flex-direction:column;
+      justify-content:center;
+      padding:52px 44px;
+    }
+    .auth-form-title {
+      font-size:1.3rem; font-weight:700;
+      letter-spacing:-0.4px; margin-bottom:4px;
+    }
+    .auth-form-sub {
+      font-size:0.83rem; color:var(--text2);
+      margin-bottom:30px;
+    }
+
+    .auth-tabs {
+      display:flex; gap:0;
+      border-bottom:1px solid var(--border);
+      margin-bottom:26px;
+    }
+    .auth-tab {
+      padding:10px 0; margin-right:24px;
+      border:none; background:transparent;
+      color:var(--text2); font-size:0.875rem; font-weight:500;
+      cursor:pointer; transition:var(--trans);
+      border-bottom:2px solid transparent; margin-bottom:-1px;
+    }
+    .auth-tab.active { color:var(--accent2); border-bottom-color:var(--accent); }
+
+    .form-group { margin-bottom:16px; }
+    .form-group label {
+      display:flex; align-items:center; gap:6px;
+      font-size:0.75rem; color:var(--text2); margin-bottom:6px; font-weight:500;
+      letter-spacing:0.3px;
+    }
+    .form-group input {
+      width:100%;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius-sm);
+      padding:11px 14px;
+      color:var(--text); font-size:0.9rem;
+      outline:none; transition:var(--trans);
+    }
+    .form-group input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+    .form-group input::placeholder { color:var(--text3); }
+    .id-hint {
+      font-size:0.72rem; color:var(--text3);
+      margin-top:5px; padding-left:2px;
+    }
+
+    .btn-primary {
+      width:100%; padding:12px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      border:none; border-radius:var(--radius-sm);
+      color:#fff; font-size:0.9rem; font-weight:600;
+      cursor:pointer; margin-top:6px;
+      transition:var(--trans);
+      box-shadow:0 4px 20px var(--accent-glow);
+      letter-spacing:0.3px;
+    }
+    .btn-primary:hover { filter:brightness(1.1); transform:translateY(-1px); }
+    .btn-primary:active { transform:translateY(0); }
+    .btn-primary:disabled { opacity:0.55; cursor:not-allowed; transform:none; }
+    .auth-error {
+      display:none;
+      background:rgba(248,113,113,0.08);
+      border:1px solid rgba(248,113,113,0.25);
+      border-radius:var(--radius-sm);
+      padding:9px 13px;
+      font-size:0.82rem; color:var(--danger);
+      margin-top:12px;
+    }
+    .auth-error.show { display:block; }
+
+    /* ════════════════════════
+       APP LAYOUT
+    ════════════════════════ */
+    #app { display:none; min-height:100vh; }
+    #app.show { display:flex; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width:248px; min-height:100vh;
+      background:var(--bg2);
+      border-right:1px solid var(--border);
+      display:flex; flex-direction:column;
+      padding:22px 13px;
+      position:fixed; top:0; left:0; bottom:0;
+      z-index:10; transition:transform 0.3s ease;
+    }
+
+    .sidebar-brand {
+      padding:4px 8px 24px;
+      border-bottom:1px solid var(--border);
+      margin-bottom:20px;
+    }
+    .sb-eyebrow {
+      font-family:'Montserrat', sans-serif;
+      font-size:0.6rem; font-weight:600;
+      letter-spacing:2.5px; text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:5px;
+      display:flex; align-items:center; gap:6px;
+    }
+    .sb-eyebrow::before { content:''; width:14px; height:1px; background:var(--gold); }
+    .sb-name {
+      font-family:'Montserrat', sans-serif;
+      font-size:0.95rem; font-weight:700;
+      letter-spacing:-0.3px; color:#fff;
+      line-height:1.2;
+    }
+    .sb-sub {
+      font-size:0.72rem; color:var(--text2);
+      margin-top:2px; letter-spacing:0.3px;
+    }
+
+    .sidebar-label {
+      font-size:0.63rem; font-weight:600;
+      text-transform:uppercase; letter-spacing:1.5px;
+      color:var(--text3); padding:0 8px; margin-bottom:5px;
+    }
+    .nav-item {
+      display:flex; align-items:center; gap:9px;
+      padding:9px 8px; border-radius:var(--radius-sm);
+      cursor:pointer; font-size:0.855rem; font-weight:500;
+      color:var(--text2); transition:var(--trans);
+      margin-bottom:1px;
+      border:none; background:transparent;
+      width:100%; text-align:left;
+    }
+    .nav-item:hover { background:var(--surface); color:var(--text); }
+    .nav-item.active {
+      background:rgba(90,87,245,0.12);
+      color:var(--accent2);
+    }
+    .nav-icon { font-size:0.88rem; width:18px; text-align:center; }
+    .nav-count {
+      margin-left:auto;
+      background:var(--surface2); color:var(--text2);
+      font-size:0.68rem; font-weight:700;
+      padding:2px 7px; border-radius:10px;
+      font-family:'Montserrat', sans-serif;
+    }
+    .nav-item.active .nav-count { background:rgba(90,87,245,0.25); color:var(--accent2); }
+
+    .sidebar-divider { height:1px; background:var(--border); margin:10px 0; }
+    .sidebar-bottom { margin-top:auto; }
+    .user-card {
+      display:flex; align-items:center; gap:9px;
+      padding:10px 8px;
+      background:var(--surface); border-radius:var(--radius-sm);
+      border:1px solid var(--border);
+    }
+    .user-avatar {
+      width:32px; height:32px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Montserrat', sans-serif;
+      font-weight:700; font-size:0.82rem; color:#fff;
+      flex-shrink:0;
+    }
+    .user-nm  { font-size:0.8rem; font-weight:600; }
+    .user-role { font-size:0.68rem; color:var(--text3); }
+    .logout-btn {
+      margin-left:auto; padding:4px 8px;
+      background:transparent; border:1px solid var(--border);
+      border-radius:5px; color:var(--text3);
+      font-size:0.68rem; cursor:pointer; transition:var(--trans);
+    }
+    .logout-btn:hover { border-color:var(--danger); color:var(--danger); }
+
+    /* ── Main ── */
+    .main-content { flex:1; margin-left:248px; min-height:100vh; display:flex; flex-direction:column; }
+
+    /* ── Topbar ── */
+    .topbar {
+      position:sticky; top:0;
+      background:rgba(9,9,15,0.88);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+      padding:0 28px; height:58px;
+      display:flex; align-items:center; gap:14px;
+      z-index:5;
+    }
+    .menu-btn { display:none; background:transparent; border:none; color:var(--text); font-size:1.1rem; cursor:pointer; padding:5px; }
+    .topbar-view { font-size:0.95rem; font-weight:600; color:var(--text); }
+
+    .search-wrap {
+      display:flex; align-items:center; gap:7px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius-sm); padding:7px 12px;
+      margin-left:auto; width:220px; transition:var(--trans);
+    }
+    .search-wrap:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+    .search-wrap input { background:transparent; border:none; outline:none; color:var(--text); font-size:0.83rem; width:100%; }
+    .search-wrap input::placeholder { color:var(--text3); }
+
+    .add-btn {
+      display:flex; align-items:center; gap:5px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      border:none; border-radius:var(--radius-sm);
+      color:#fff; font-size:0.83rem; font-weight:600;
+      padding:8px 15px; cursor:pointer;
+      transition:var(--trans);
+      box-shadow:0 4px 16px var(--accent-glow);
+      white-space:nowrap;
+    }
+    .add-btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
+
+    /* ── Content ── */
+    .content { padding:32px; flex:1; }
+
+    /* ── Page Header / Title Block ── */
+    .page-header {
+      margin-bottom:32px;
+      padding-bottom:24px;
+      border-bottom:1px solid var(--border);
+    }
+    .ph-label {
+      font-family:'Montserrat', sans-serif;
+      font-size:0.62rem; font-weight:600;
+      letter-spacing:3px; text-transform:uppercase;
+      color:var(--gold);
+      display:flex; align-items:center; gap:8px;
+      margin-bottom:10px;
+    }
+    .ph-label::before { content:''; width:20px; height:1px; background:var(--gold); }
+    .ph-title {
+      font-family:'Montserrat', sans-serif;
+      font-size:2rem; font-weight:800;
+      letter-spacing:-1px; line-height:1.1;
+      margin-bottom:4px;
+    }
+    .ph-title .t-todo {
+      background:linear-gradient(135deg, #fff 0%, var(--accent3) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .ph-title .t-list { color:var(--accent2); }
+    .ph-company {
+      font-family:'Montserrat', sans-serif;
+      font-size:0.78rem; font-weight:500;
+      letter-spacing:1.5px; text-transform:uppercase;
+      color:var(--text2); margin-bottom:2px;
+    }
+    .ph-ko {
+      font-size:0.82rem; font-weight:300;
+      color:var(--text3); letter-spacing:1.5px;
+    }
+    .ph-right {
+      display:flex; align-items:flex-end; flex-direction:column; gap:4px;
+    }
+    .ph-date {
+      font-family:'Montserrat', sans-serif;
+      font-size:0.72rem; color:var(--text3);
+      letter-spacing:1px;
+    }
+    .ph-inner { display:flex; align-items:flex-start; justify-content:space-between; }
+
+    /* ── Stats ── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+    .stat-card {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:var(--radius); padding:18px 16px;
+      position:relative; overflow:hidden; transition:var(--trans);
+    }
+    .stat-card:hover { border-color:var(--border2); }
+    .stat-card::after {
+      content:''; position:absolute; top:-8px; right:-8px;
+      width:60px; height:60px; border-radius:50%;
+      filter:blur(22px); opacity:0.4;
+    }
+    .stat-card.s-total::after  { background:var(--accent); }
+    .stat-card.s-done::after   { background:var(--success); }
+    .stat-card.s-pend::after   { background:var(--warning); }
+    .stat-card.s-high::after   { background:var(--danger); }
+    .stat-lbl {
+      font-size:0.68rem; color:var(--text2); font-weight:600;
+      letter-spacing:1px; text-transform:uppercase;
+      margin-bottom:8px;
+      font-family:'Montserrat', sans-serif;
+    }
+    .stat-val {
+      font-family:'Montserrat', sans-serif;
+      font-size:1.9rem; font-weight:800; letter-spacing:-1px;
+    }
+    .s-total .stat-val { color:var(--accent2); }
+    .s-done  .stat-val { color:var(--success); }
+    .s-pend  .stat-val { color:var(--warning); }
+    .s-high  .stat-val { color:var(--danger); }
+    .stat-sub { font-size:0.68rem; color:var(--text3); margin-top:3px; }
+
+    /* ── Progress ── */
+    .progress-section { margin-bottom:28px; }
+    .prog-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .prog-hd span { font-size:0.8rem; color:var(--text2); font-weight:500; }
+    .prog-pct { color:var(--accent2) !important; font-weight:700 !important; font-family:'Montserrat', sans-serif; }
+    .prog-bg { height:5px; background:var(--surface2); border-radius:3px; overflow:hidden; }
+    .prog-fill {
+      height:100%;
+      background:linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius:3px; transition:width 0.5s ease;
+      box-shadow:0 0 8px var(--accent-glow);
+    }
+
+    /* ── Section Header ── */
+    .sec-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .sec-title {
+      font-size:0.78rem; font-weight:600;
+      letter-spacing:1.5px; text-transform:uppercase;
+      color:var(--text2);
+      font-family:'Montserrat', sans-serif;
+    }
+    .chips { display:flex; gap:4px; }
+    .chip {
+      padding:4px 10px; border-radius:20px;
+      font-size:0.73rem; font-weight:500;
+      border:1px solid var(--border);
+      background:transparent; color:var(--text3);
+      cursor:pointer; transition:var(--trans);
+    }
+    .chip.active, .chip:hover {
+      background:rgba(90,87,245,0.12);
+      border-color:rgba(90,87,245,0.4); color:var(--accent2);
+    }
+
+    /* ── Todo List ── */
+    #todo-list { display:flex; flex-direction:column; gap:6px; }
+
+    .todo-item {
+      display:flex; align-items:flex-start; gap:12px;
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:var(--radius); padding:14px 15px;
+      transition:var(--trans); animation:fadeIn 0.2s ease both;
+      position:relative; overflow:hidden;
+    }
+    .todo-item::before {
+      content:''; position:absolute; left:0; top:0; bottom:0;
+      width:2.5px; border-radius:2px 0 0 2px;
+    }
+    .todo-item.p-high::before   { background:var(--danger); }
+    .todo-item.p-medium::before { background:var(--warning); }
+    .todo-item.p-low::before    { background:var(--success); }
+    .todo-item:hover { border-color:var(--border2); background:rgba(255,255,255,0.025); }
+    .todo-item.done { opacity:0.38; }
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(5px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .todo-check {
+      width:20px; height:20px; flex-shrink:0;
+      border:1.5px solid var(--border2); border-radius:5px;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      margin-top:1px; transition:var(--trans); font-size:11px; font-weight:700;
+      color:#fff;
+    }
+    .todo-check:hover { border-color:var(--accent); }
+    .todo-check.checked {
+      background:var(--accent); border-color:var(--accent);
+      box-shadow:0 2px 8px var(--accent-glow);
+    }
+
+    .todo-body { flex:1; min-width:0; }
+    .todo-title { font-size:0.9rem; font-weight:500; line-height:1.4; }
+    .todo-item.done .todo-title { text-decoration:line-through; color:var(--text3); }
+    .todo-desc-text { font-size:0.78rem; color:var(--text2); margin-top:3px; line-height:1.5; }
+    .todo-meta { display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin-top:8px; }
+
+    .badge {
+      display:inline-flex; align-items:center; gap:3px;
+      padding:2px 7px; border-radius:4px;
+      font-size:0.68rem; font-weight:600;
+      letter-spacing:0.3px;
+      font-family:'Montserrat', sans-serif;
+    }
+    .b-high   { background:rgba(248,113,113,0.12); color:var(--danger); }
+    .b-medium { background:rgba(251,191,36,0.12);  color:var(--warning); }
+    .b-low    { background:rgba(52,211,153,0.12);  color:var(--success); }
+    .b-date   { background:var(--surface); color:var(--text2); }
+    .b-overdue{ background:rgba(248,113,113,0.08); color:var(--danger); }
+    .b-cat    { background:rgba(90,87,245,0.12); color:var(--accent2); }
+
+    .todo-actions {
+      display:flex; gap:2px;
+      opacity:0; transition:var(--trans); flex-shrink:0;
+    }
+    .todo-item:hover .todo-actions { opacity:1; }
+    .icon-btn {
+      width:28px; height:28px; border-radius:6px;
+      border:none; background:transparent; color:var(--text3);
+      font-size:0.8rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:var(--trans);
+    }
+    .icon-btn:hover { background:var(--surface2); color:var(--text); }
+    .icon-btn.del:hover { background:rgba(248,113,113,0.1); color:var(--danger); }
+
+    /* ── Empty ── */
+    .empty-state { text-align:center; padding:52px 24px; color:var(--text2); }
+    .empty-icon  { font-size:2.5rem; margin-bottom:10px; }
+    .empty-title { font-size:0.9rem; font-weight:600; margin-bottom:5px; color:var(--text); }
+    .empty-desc  { font-size:0.8rem; color:var(--text3); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.65); backdrop-filter:blur(8px);
+      z-index:50; display:none;
+      align-items:center; justify-content:center; padding:24px;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal-card {
+      background:var(--bg3);
+      border:1px solid var(--border2); border-radius:18px;
+      padding:28px; width:100%; max-width:500px;
+      animation:modalIn 0.2s cubic-bezier(.16,1,.3,1) both;
+      box-shadow:0 24px 80px rgba(0,0,0,0.6);
+    }
+    @keyframes modalIn {
+      from { opacity:0; transform:scale(0.95) translateY(8px); }
+      to   { opacity:1; transform:scale(1) translateY(0); }
+    }
+    .modal-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
+    .modal-hd h2 { font-size:1rem; font-weight:700; }
+    .close-btn {
+      width:28px; height:28px; border-radius:6px;
+      border:none; background:var(--surface2); color:var(--text2);
+      font-size:0.85rem; cursor:pointer; transition:var(--trans);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .close-btn:hover { background:var(--surface); color:var(--text); }
+    .mf-group { margin-bottom:13px; }
+    .mf-group label { display:block; font-size:0.73rem; color:var(--text2); margin-bottom:5px; font-weight:500; letter-spacing:0.3px; }
+    .mf-group input,.mf-group textarea,.mf-group select {
+      width:100%;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius-sm); padding:10px 13px;
+      color:var(--text); font-size:0.875rem;
+      outline:none; transition:var(--trans);
+    }
+    .mf-group input:focus,.mf-group textarea:focus,.mf-group select:focus {
+      border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow);
+    }
+    .mf-group input::placeholder,.mf-group textarea::placeholder { color:var(--text3); }
+    .mf-group textarea { resize:vertical; min-height:72px; }
+    .mf-group select { appearance:none; cursor:pointer; }
+    .mf-group select option { background:#13131f; }
+    .mf-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .modal-footer { display:flex; gap:8px; justify-content:flex-end; margin-top:20px; }
+    .btn-cancel {
+      padding:9px 16px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius-sm); color:var(--text2);
+      font-size:0.83rem; font-weight:500; cursor:pointer; transition:var(--trans);
+    }
+    .btn-cancel:hover { background:var(--surface2); color:var(--text); }
+    .btn-save {
+      padding:9px 20px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      border:none; border-radius:var(--radius-sm);
+      color:#fff; font-size:0.83rem; font-weight:600;
+      cursor:pointer; transition:var(--trans);
+      box-shadow:0 4px 16px var(--accent-glow);
+    }
+    .btn-save:hover { filter:brightness(1.1); }
+    .btn-save:disabled { opacity:0.55; cursor:not-allowed; }
+
+    /* ── Toast ── */
+    #toast {
+      position:fixed; bottom:20px; left:50%;
+      transform:translateX(-50%) translateY(14px);
+      background:var(--bg3); border:1px solid var(--border2);
+      border-radius:10px; padding:10px 18px;
+      font-size:0.83rem; font-weight:500;
+      z-index:200; opacity:0; transition:all 0.25s ease;
+      pointer-events:none; white-space:nowrap;
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    #toast.ok   { border-color:rgba(52,211,153,0.35); color:var(--success); }
+    #toast.err  { border-color:rgba(248,113,113,0.35); color:var(--danger); }
+
+    /* ── Spinner ── */
+    .sp {
+      display:inline-block; width:14px; height:14px;
+      border:2px solid rgba(255,255,255,0.25);
+      border-top-color:#fff; border-radius:50%;
+      animation:spin 0.5s linear infinite; vertical-align:middle;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* ── Sidebar overlay ── */
+    .sb-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9; }
+
+    /* ── Responsive ── */
+    @media(max-width:860px) {
+      .auth-wrap { flex-direction:column; max-width:440px; min-height:auto; }
+      .auth-brand { width:100%; padding:36px 36px 28px; }
+      .brand-main { font-size:1.8rem; }
+      .auth-form-panel { padding:32px 36px 36px; }
+    }
+    @media(max-width:768px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); box-shadow:4px 0 40px rgba(0,0,0,0.5); }
+      .sb-overlay.open { display:block; }
+      .main-content { margin-left:0; }
+      .menu-btn { display:flex; }
+      .content { padding:18px 14px; }
+      .topbar { padding:0 14px; }
+      .search-wrap { width:160px; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .mf-row { grid-template-columns:1fr; }
+      .ph-inner { flex-direction:column; gap:8px; }
+      .ph-right { align-items:flex-start; }
+      .add-btn .add-label { display:none; }
+    }
+    @media(max-width:460px) {
+      .auth-brand { padding:28px 24px 20px; }
+      .auth-form-panel { padding:24px; }
+      .content { padding:14px; }
+      .search-wrap { display:none; }
+      .modal-card { padding:22px 16px; }
+      .stats-grid { gap:8px; }
+      .stat-val { font-size:1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Setup Banner -->
+<div id="setup-banner">
+  ⚠️ Firebase 설정 필요 — index.html의 <strong>firebaseConfig</strong>를 실제 값으로 교체하세요.
+</div>
+
+<!-- ═══════════════════════════════════════
+     AUTH SCREEN
+════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-bg"></div>
+  <div class="auth-wrap">
+
+    <!-- Left: Branding -->
+    <div class="auth-brand">
+      <div class="brand-inner">
+        <div class="brand-eyebrow">To Do List</div>
+        <div class="brand-main">
+          <span class="w1">Hilliard</span>
+          <span class="w2">Buffshire</span>
+        </div>
+        <div class="brand-task">Task Planner</div>
+        <div class="brand-divider"></div>
+        <div class="brand-ko">힐리아드 버프셔</div>
+        <div class="brand-ko-sub">태스크 플래너 &nbsp;·&nbsp; 오늘의 할 일 목록</div>
+        <div class="brand-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="auth-form-panel">
+      <div class="auth-form-title" id="auth-panel-title">로그인</div>
+      <div class="auth-form-sub" id="auth-panel-sub">아이디와 비밀번호를 입력하세요</div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login"  onclick="switchTab('login')">로그인</button>
+        <button class="auth-tab"        id="tab-signup" onclick="switchTab('signup')">회원가입</button>
+      </div>
+
+      <!-- Login -->
+      <div id="form-login">
+        <div class="form-group">
+          <label>아이디</label>
+          <input type="text" id="login-id" placeholder="아이디 입력"
+                 autocomplete="username" autocapitalize="none" spellcheck="false"
+                 onkeyup="if(event.key==='Enter') document.getElementById('login-pw').focus()" />
+        </div>
+        <div class="form-group">
+          <label>비밀번호</label>
+          <input type="password" id="login-pw" placeholder="비밀번호 입력"
+                 autocomplete="current-password"
+                 onkeyup="if(event.key==='Enter') doLogin()" />
+        </div>
+        <button class="btn-primary" id="btn-login" onclick="doLogin()">로그인</button>
+      </div>
+
+      <!-- Signup -->
+      <div id="form-signup" style="display:none">
+        <div class="form-group">
+          <label>아이디 <span style="color:var(--danger)">*</span></label>
+          <input type="text" id="signup-id" placeholder="사용할 아이디 입력"
+                 autocomplete="username" autocapitalize="none" spellcheck="false"
+                 oninput="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'')"
+                 onkeyup="if(event.key==='Enter') document.getElementById('signup-pw').focus()" />
+          <div class="id-hint">영문, 숫자, 밑줄(_)만 사용 가능 / 4자 이상</div>
+        </div>
+        <div class="form-group">
+          <label>비밀번호 <span style="color:var(--danger)">*</span> <span style="font-size:0.7rem;color:var(--text3)">(6자 이상)</span></label>
+          <input type="password" id="signup-pw" placeholder="비밀번호 설정"
+                 autocomplete="new-password"
+                 onkeyup="if(event.key==='Enter') doSignup()" />
+        </div>
+        <button class="btn-primary" id="btn-signup" onclick="doSignup()">회원가입</button>
+      </div>
+
+      <div class="auth-error" id="auth-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════ -->
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sb-eyebrow">Task Planner</div>
+      <div class="sb-name">Hilliard Buffshire</div>
+      <div class="sb-sub">힐리아드 버프셔 태스크 플래너</div>
+    </div>
+
+    <div class="sidebar-label" style="margin-bottom:8px;">메뉴</div>
+    <button class="nav-item active" id="nav-today"     onclick="setView('today')">
+      <span class="nav-icon">📅</span>오늘<span class="nav-count" id="c-today">0</span>
+    </button>
+    <button class="nav-item" id="nav-all"       onclick="setView('all')">
+      <span class="nav-icon">📋</span>전체<span class="nav-count" id="c-all">0</span>
+    </button>
+    <button class="nav-item" id="nav-upcoming"  onclick="setView('upcoming')">
+      <span class="nav-icon">⏰</span>예정<span class="nav-count" id="c-upcoming">0</span>
+    </button>
+    <button class="nav-item" id="nav-completed" onclick="setView('completed')">
+      <span class="nav-icon">✅</span>완료<span class="nav-count" id="c-completed">0</span>
+    </button>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label" style="margin-bottom:8px;">우선순위</div>
+    <button class="nav-item" id="nav-high"   onclick="setView('high')">
+      <span class="nav-icon">🔴</span>높음<span class="nav-count" id="c-high">0</span>
+    </button>
+    <button class="nav-item" id="nav-medium" onclick="setView('medium')">
+      <span class="nav-icon">🟡</span>보통<span class="nav-count" id="c-medium">0</span>
+    </button>
+    <button class="nav-item" id="nav-low"    onclick="setView('low')">
+      <span class="nav-icon">🟢</span>낮음<span class="nav-count" id="c-low">0</span>
+    </button>
+
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="user-avatar" id="user-av">?</div>
+        <div>
+          <div class="user-nm"  id="user-nm">—</div>
+          <div class="user-role">멤버</div>
+        </div>
+        <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
+  </aside>
+  <div class="sb-overlay" id="sb-ov" onclick="closeSidebar()"></div>
+
+  <div class="main-content">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-view" id="view-title">오늘의 할 일 목록</div>
+      <div class="search-wrap">
+        <span style="color:var(--text3);font-size:0.8rem;">🔍</span>
+        <input type="text" id="search-inp" placeholder="검색..." oninput="renderTodos()" />
+      </div>
+      <button class="add-btn" onclick="openModal()">
+        + <span class="add-label">할 일 추가</span>
+      </button>
+    </header>
+
+    <main class="content">
+
+      <!-- Page Header / Title Block -->
+      <div class="page-header">
+        <div class="ph-inner">
+          <div>
+            <div class="ph-label">To Do List</div>
+            <div class="ph-title">
+              <span class="t-todo">오늘의 </span><span class="t-list">할 일 목록</span>
+            </div>
+            <div class="ph-company">Hilliard Buffshire · Task Planner</div>
+            <div class="ph-ko">힐리아드 버프셔 태스크 플래너</div>
+          </div>
+          <div class="ph-right">
+            <div class="ph-date" id="ph-date">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card s-total">
+          <div class="stat-lbl">Total</div>
+          <div class="stat-val" id="s-total">0</div>
+          <div class="stat-sub">전체 할 일</div>
+        </div>
+        <div class="stat-card s-done">
+          <div class="stat-lbl">Done</div>
+          <div class="stat-val" id="s-done">0</div>
+          <div class="stat-sub">완료</div>
+        </div>
+        <div class="stat-card s-pend">
+          <div class="stat-lbl">In Progress</div>
+          <div class="stat-val" id="s-pend">0</div>
+          <div class="stat-sub">진행 중</div>
+        </div>
+        <div class="stat-card s-high">
+          <div class="stat-lbl">Urgent</div>
+          <div class="stat-val" id="s-high">0</div>
+          <div class="stat-sub">긴급 항목</div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-section">
+        <div class="prog-hd">
+          <span>전체 진행률</span>
+          <span class="prog-pct" id="prog-pct">0%</span>
+        </div>
+        <div class="prog-bg">
+          <div class="prog-fill" id="prog-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Section Header -->
+      <div class="sec-hd">
+        <div class="sec-title" id="sec-title">할 일 목록</div>
+        <div class="chips">
+          <button class="chip active" id="chip-all"    onclick="setChip('all')">전체</button>
+          <button class="chip"        id="chip-active" onclick="setChip('active')">미완료</button>
+          <button class="chip"        id="chip-done"   onclick="setChip('done')">완료</button>
+        </div>
+      </div>
+
+      <div id="todo-list">
+        <div class="empty-state">
+          <div class="empty-icon">⏳</div>
+          <div class="empty-title">불러오는 중...</div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-card">
+    <div class="modal-hd">
+      <h2 id="modal-ttl">할 일 추가</h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mf-group">
+      <label>할 일 <span style="color:var(--danger)">*</span></label>
+      <input type="text" id="f-title" placeholder="무엇을 해야 하나요?" maxlength="200" />
+    </div>
+    <div class="mf-group">
+      <label>메모</label>
+      <textarea id="f-desc" placeholder="상세 내용 (선택)" rows="3"></textarea>
+    </div>
+    <div class="mf-row">
+      <div class="mf-group">
+        <label>우선순위</label>
+        <select id="f-priority">
+          <option value="high">🔴 높음 (긴급)</option>
+          <option value="medium" selected>🟡 보통</option>
+          <option value="low">🟢 낮음</option>
+        </select>
+      </div>
+      <div class="mf-group">
+        <label>마감일</label>
+        <input type="date" id="f-date" />
+      </div>
+    </div>
+    <div class="mf-group">
+      <label>카테고리</label>
+      <input type="text" id="f-cat" placeholder="예: 업무, 개인, 회의..." maxlength="30" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-save" id="btn-save" onclick="saveTodo()">저장</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     FIREBASE + APP LOGIC
+════════════════════════════════════════════════════════ -->
+<script>
+/* ┌─────────────────────────────────────────────────────┐
+   │  🔧 Firebase 설정값 — 여기를 수정하세요              │
+   │  https://console.firebase.google.com                 │
+   └─────────────────────────────────────────────────────┘ */
+var firebaseConfig = {
+  apiKey:            "AIzaSyDEPq3SqOCiltpmesT3vP9Jp7a_ujFou1k",
+  authDomain:        "daily-task-planner-9187f.firebaseapp.com",
+  projectId:         "daily-task-planner-9187f",
+  storageBucket:     "daily-task-planner-9187f.firebasestorage.app",
+  messagingSenderId: "309757618979",
+  appId:             "1:309757618979:web:79fbdc11fbfbcdffa9ba96"
+};
+
+/* ──────────────────────────────────────────────────────
+   아이디 → 내부 이메일 변환
+   Firebase Auth는 이메일 방식이지만,
+   사용자에게는 아이디/비밀번호만 노출됨.
+   같은 아이디 + 같은 비밀번호 = 어떤 기기/브라우저에서도 동일 데이터
+────────────────────────────────────────────────────── */
+var ID_DOMAIN = "@hilliard.buffshire.internal";
+function toEmail(id) {
+  return id.toLowerCase().trim() + ID_DOMAIN;
+}
+
+/* ── 상태 ── */
+var todos       = [];
+var view        = 'today';
+var chipFilter  = 'all';
+var editingId   = null;
+var unsubscribe = null;
+var auth_ref    = null;
+var db_ref      = null;
+
+/* ── Init ── */
+var isConfigured = firebaseConfig.apiKey !== 'YOUR_API_KEY';
+
+if (!isConfigured) {
+  document.getElementById('setup-banner').style.display = 'block';
+} else {
+  firebase.initializeApp(firebaseConfig);
+  auth_ref = firebase.auth();
+  db_ref   = firebase.firestore();
+
+  auth_ref.onAuthStateChanged(function(user) {
+    if (user) {
+      showApp(user);
+      loadTodos(user.uid);
+    } else {
+      showAuth();
+    }
+  });
+}
+
+/* 날짜 표시 */
+(function() {
+  var days = ['일','월','화','수','목','금','토'];
+  var d = new Date();
+  var str = d.getFullYear() + '. '
+    + String(d.getMonth()+1).padStart(2,'0') + '. '
+    + String(d.getDate()).padStart(2,'0')
+    + ' (' + days[d.getDay()] + ')';
+  var el = document.getElementById('ph-date');
+  if (el) el.textContent = str;
+})();
+
+/* ── Auth Show/Hide ── */
+function showApp(user) {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('show');
+  // displayName에는 실제 아이디가 저장됨
+  var nm = user.displayName || user.email.replace(ID_DOMAIN, '') || '?';
+  var initials = nm[0].toUpperCase();
+  document.getElementById('user-av').textContent = initials;
+  document.getElementById('user-nm').textContent = nm;
+}
+function showAuth() {
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  todos = [];
+  document.getElementById('auth-screen').classList.remove('hidden');
+  document.getElementById('app').classList.remove('show');
+}
+
+/* ── Tab 전환 ── */
+function switchTab(tab) {
+  var isLogin = tab === 'login';
+  document.getElementById('form-login').style.display  = isLogin ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = isLogin ? 'none'  : 'block';
+  document.getElementById('tab-login').classList.toggle('active',  isLogin);
+  document.getElementById('tab-signup').classList.toggle('active', !isLogin);
+  document.getElementById('auth-panel-title').textContent = isLogin ? '로그인' : '회원가입';
+  document.getElementById('auth-panel-sub').textContent   = isLogin
+    ? '아이디와 비밀번호를 입력하세요'
+    : '사용할 아이디와 비밀번호를 설정하세요';
+  clearAuthErr();
+}
+
+/* ── 로그인 ── */
+function doLogin() {
+  if (!isConfigured) { alert('Firebase 설정 필요'); return; }
+  var id = document.getElementById('login-id').value.trim();
+  var pw = document.getElementById('login-pw').value;
+  if (!id) { showAuthErr('아이디를 입력하세요.'); return; }
+  if (!pw) { showAuthErr('비밀번호를 입력하세요.'); return; }
+  setBtnLoading('btn-login', true);
+  auth_ref.signInWithEmailAndPassword(toEmail(id), pw)
+    .catch(function(e) {
+      showAuthErr(fbErrMsg(e.code));
+      setBtnLoading('btn-login', false, '로그인');
+    });
+}
+
+/* ── 회원가입 ── */
+function doSignup() {
+  if (!isConfigured) { alert('Firebase 설정 필요'); return; }
+  var id = document.getElementById('signup-id').value.trim();
+  var pw = document.getElementById('signup-pw').value;
+
+  if (id.length < 4)  { showAuthErr('아이디는 4자 이상이어야 합니다.'); return; }
+  if (!/^[a-zA-Z0-9_]+$/.test(id)) { showAuthErr('아이디는 영문, 숫자, 밑줄(_)만 사용 가능합니다.'); return; }
+  if (pw.length < 6)  { showAuthErr('비밀번호는 6자 이상이어야 합니다.'); return; }
+
+  setBtnLoading('btn-signup', true);
+  auth_ref.createUserWithEmailAndPassword(toEmail(id), pw)
+    .then(function(cred) {
+      return cred.user.updateProfile({ displayName: id });
+    })
+    .catch(function(e) {
+      showAuthErr(fbErrMsg(e.code));
+      setBtnLoading('btn-signup', false, '회원가입');
+    });
+}
+
+/* ── 로그아웃 ── */
+function doLogout() {
+  if (confirm('로그아웃 하시겠습니까?')) auth_ref.signOut();
+}
+
+/* ── Firestore 실시간 로드 ── */
+function loadTodos(uid) {
+  unsubscribe = db_ref.collection('todos')
+    .where('uid', '==', uid)
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(function(snap) {
+      todos = snap.docs.map(function(d) {
+        return Object.assign({ id: d.id }, d.data());
+      });
+      renderTodos();
+      updateStats();
+      updateCounts();
+    });
+}
+
+/* ── 할 일 저장 ── */
+function saveTodo() {
+  var title = document.getElementById('f-title').value.trim();
+  if (!title) { document.getElementById('f-title').focus(); return; }
+
+  var payload = {
+    title:    title,
+    desc:     document.getElementById('f-desc').value.trim(),
+    priority: document.getElementById('f-priority').value,
+    dueDate:  document.getElementById('f-date').value,
+    category: document.getElementById('f-cat').value.trim(),
+    uid:      auth_ref.currentUser.uid
+  };
+
+  var btn = document.getElementById('btn-save');
+  btn.disabled = true; btn.textContent = '저장 중...';
+
+  var p;
+  if (editingId) {
+    p = db_ref.collection('todos').doc(editingId).update(payload);
+  } else {
+    payload.completed   = false;
+    payload.completedAt = null;
+    payload.createdAt   = firebase.firestore.FieldValue.serverTimestamp();
+    p = db_ref.collection('todos').add(payload);
+  }
+
+  p.then(function() {
+    showToast(editingId ? '✏️ 수정 완료' : '✅ 추가됨', 'ok');
+    closeModal();
+  }).catch(function(e) {
+    showToast('저장 실패: ' + e.message, 'err');
+  }).finally(function() {
+    btn.disabled = false; btn.textContent = '저장';
+  });
+}
+
+/* ── 완료 토글 ── */
+function toggleTodo(id) {
+  var t = todos.find(function(x){ return x.id === id; });
+  if (!t) return;
+  db_ref.collection('todos').doc(id).update({
+    completed:   !t.completed,
+    completedAt: !t.completed ? firebase.firestore.FieldValue.serverTimestamp() : null
+  });
+  showToast(t.completed ? '↩️ 완료 취소' : '✅ 완료!', t.completed ? '' : 'ok');
+}
+
+/* ── 삭제 ── */
+function deleteTodo(id) {
+  if (!confirm('이 항목을 삭제할까요?')) return;
+  db_ref.collection('todos').doc(id).delete()
+    .then(function(){ showToast('🗑️ 삭제됨', ''); });
+}
+
+/* ── 뷰 전환 ── */
+var viewLabels = {
+  today: '오늘의 할 일 목록', all: '전체 할 일',
+  upcoming: '예정된 할 일', completed: '완료한 할 일',
+  high: '긴급 우선순위', medium: '보통 우선순위', low: '낮은 우선순위'
+};
+function setView(v) {
+  view = v;
+  document.querySelectorAll('.nav-item').forEach(function(el){ el.classList.remove('active'); });
+  var nav = document.getElementById('nav-' + v);
+  if (nav) nav.classList.add('active');
+  var lbl = viewLabels[v] || v;
+  document.getElementById('view-title').textContent = lbl;
+  document.getElementById('sec-title').textContent  = lbl;
+  renderTodos();
+  closeSidebar();
+}
+
+function setChip(c) {
+  chipFilter = c;
+  document.querySelectorAll('.chip').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('chip-' + c).classList.add('active');
+  renderTodos();
+}
+
+/* ── 렌더링 ── */
+function renderTodos() {
+  var today  = new Date().toISOString().split('T')[0];
+  var search = (document.getElementById('search-inp') ?
+    document.getElementById('search-inp').value : '').toLowerCase();
+
+  var filtered = todos.filter(function(t) {
+    if (search && !t.title.toLowerCase().includes(search) &&
+        !(t.desc || '').toLowerCase().includes(search)) return false;
+    if (view === 'today')     return !t.completed && (!t.dueDate || t.dueDate <= today);
+    if (view === 'upcoming')  return !t.completed && t.dueDate && t.dueDate > today;
+    if (view === 'completed') return t.completed;
+    if (view === 'high' || view === 'medium' || view === 'low') return t.priority === view;
+    return true;
+  });
+
+  if (chipFilter === 'active') filtered = filtered.filter(function(t){ return !t.completed; });
+  if (chipFilter === 'done')   filtered = filtered.filter(function(t){ return  t.completed; });
+
+  var list = document.getElementById('todo-list');
+  if (!list) return;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state">'
+      + '<div class="empty-icon">' + (search ? '🔍' : '🎉') + '</div>'
+      + '<div class="empty-title">' + (search ? '검색 결과 없음' : '할 일이 없습니다!') + '</div>'
+      + '<div class="empty-desc">' + (search ? '다른 키워드로 검색해 보세요.' : '상단 버튼으로 새 할 일을 추가하세요.') + '</div>'
+      + '</div>';
+    return;
+  }
+
+  var priLabel = { high:'HIGH', medium:'MID', low:'LOW' };
+
+  list.innerHTML = filtered.map(function(t, i) {
+    var overdue = t.dueDate && t.dueDate < today && !t.completed;
+    var pri = t.priority || 'medium';
+    return '<div class="todo-item ' + (t.completed ? 'done ' : '') + 'p-' + pri
+      + '" style="animation-delay:' + (i * 0.035) + 's">'
+      + '<div class="todo-check ' + (t.completed ? 'checked' : '') + '" onclick="toggleTodo(\'' + t.id + '\')">'
+      + (t.completed ? '✓' : '') + '</div>'
+      + '<div class="todo-body">'
+      + '<div class="todo-title">' + esc(t.title) + '</div>'
+      + (t.desc ? '<div class="todo-desc-text">' + esc(t.desc) + '</div>' : '')
+      + '<div class="todo-meta">'
+      + '<span class="badge b-' + pri + '">' + (priLabel[pri] || pri) + '</span>'
+      + (t.dueDate ? '<span class="badge ' + (overdue ? 'b-overdue' : 'b-date') + '">'
+        + (overdue ? '⚠ ' : '') + t.dueDate + '</span>' : '')
+      + (t.category ? '<span class="badge b-cat">' + esc(t.category) + '</span>' : '')
+      + '</div></div>'
+      + '<div class="todo-actions">'
+      + '<button class="icon-btn" onclick="openEditModal(\'' + t.id + '\')">✏️</button>'
+      + '<button class="icon-btn del" onclick="deleteTodo(\'' + t.id + '\')">🗑️</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+/* ── 통계 ── */
+function updateStats() {
+  var total = todos.length;
+  var done  = todos.filter(function(t){ return t.completed; }).length;
+  var high  = todos.filter(function(t){ return t.priority==='high' && !t.completed; }).length;
+  var pct   = total ? Math.round(done/total*100) : 0;
+  document.getElementById('s-total').textContent  = total;
+  document.getElementById('s-done').textContent   = done;
+  document.getElementById('s-pend').textContent   = total - done;
+  document.getElementById('s-high').textContent   = high;
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-bar').style.width = pct + '%';
+}
+function updateCounts() {
+  var today  = new Date().toISOString().split('T')[0];
+  var active = todos.filter(function(t){ return !t.completed; });
+  var map = {
+    today:     todos.filter(function(t){ return !t.completed && (!t.dueDate || t.dueDate<=today); }).length,
+    all:       todos.length,
+    upcoming:  todos.filter(function(t){ return !t.completed && t.dueDate && t.dueDate>today; }).length,
+    completed: todos.filter(function(t){ return t.completed; }).length,
+    high:      active.filter(function(t){ return t.priority==='high'; }).length,
+    medium:    active.filter(function(t){ return t.priority==='medium'; }).length,
+    low:       active.filter(function(t){ return t.priority==='low'; }).length,
+  };
+  for (var k in map) {
+    var el = document.getElementById('c-' + k);
+    if (el) el.textContent = map[k];
+  }
+}
+
+/* ── 모달 ── */
+function openModal() {
+  editingId = null;
+  document.getElementById('modal-ttl').textContent    = '할 일 추가';
+  document.getElementById('f-title').value            = '';
+  document.getElementById('f-desc').value             = '';
+  document.getElementById('f-priority').value         = 'medium';
+  document.getElementById('f-date').value             = new Date().toISOString().split('T')[0];
+  document.getElementById('f-cat').value              = '';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(function(){ document.getElementById('f-title').focus(); }, 80);
+}
+function openEditModal(id) {
+  var t = todos.find(function(x){ return x.id === id; });
+  if (!t) return;
+  editingId = id;
+  document.getElementById('modal-ttl').textContent    = '할 일 수정';
+  document.getElementById('f-title').value            = t.title    || '';
+  document.getElementById('f-desc').value             = t.desc     || '';
+  document.getElementById('f-priority').value         = t.priority || 'medium';
+  document.getElementById('f-date').value             = t.dueDate  || '';
+  document.getElementById('f-cat').value              = t.category || '';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(function(){ document.getElementById('f-title').focus(); }, 80);
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+/* ── 사이드바 (모바일) ── */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sb-ov').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-ov').classList.remove('open');
+}
+
+/* ── Helpers ── */
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+var _tt;
+function showToast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'show ' + (type||'');
+  clearTimeout(_tt);
+  _tt = setTimeout(function(){ el.className=''; }, 2600);
+}
+function showAuthErr(msg) {
+  var el = document.getElementById('auth-err');
+  el.textContent = msg; el.classList.add('show');
+}
+function clearAuthErr() {
+  document.getElementById('auth-err').classList.remove('show');
+}
+function setBtnLoading(id, loading, label) {
+  var btn = document.getElementById(id);
+  btn.disabled = loading;
+  btn.innerHTML = loading ? '<span class="sp"></span>' : (label || '');
+}
+function fbErrMsg(code) {
+  var map = {
+    'auth/user-not-found':       '존재하지 않는 아이디입니다.',
+    'auth/wrong-password':       '비밀번호가 올바르지 않습니다.',
+    'auth/email-already-in-use': '이미 사용 중인 아이디입니다.',
+    'auth/invalid-email':        '아이디 형식이 올바르지 않습니다.',
+    'auth/weak-password':        '비밀번호는 6자 이상이어야 합니다.',
+    'auth/too-many-requests':    '로그인 시도가 너무 많습니다. 잠시 후 다시 시도하세요.',
+    'auth/invalid-credential':   '아이디 또는 비밀번호가 올바르지 않습니다.',
+    'auth/network-request-failed':'네트워크 오류. 인터넷 연결을 확인하세요.',
+  };
+  return map[code] || ('오류: ' + code);
+}
+
+/* ── 키보드 ── */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    if (document.getElementById('modal').classList.contains('open')) saveTodo();
+  }
+});
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target.id === 'modal') closeModal();
+});
+</script>
+</body>
+</html>
