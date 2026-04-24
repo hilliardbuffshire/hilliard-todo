@@ -8,7 +8,148 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <!-- Firebase Compat -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js">
+/* ══════════════════════════════════════════
+   테마 시스템
+══════════════════════════════════════════ */
+var THEMES = [
+  { id:'dark',   label:'다크',    sw:'linear-gradient(135deg,#09090f,#5a57f5)' },
+  { id:'light',  label:'라이트',  sw:'linear-gradient(135deg,#eceef8,#5a57f5)' },
+  { id:'ocean',  label:'오션',    sw:'linear-gradient(135deg,#050d17,#0ea5e9)' },
+  { id:'forest', label:'포레스트',sw:'linear-gradient(135deg,#060e06,#22c55e)' },
+  { id:'sunset', label:'선셋',    sw:'linear-gradient(135deg,#fff8f2,#ea580c)' },
+  { id:'rose',   label:'로즈',    sw:'linear-gradient(135deg,#fdf2f7,#db2777)' },
+];
+var _theme = localStorage.getItem('hb_todo_theme') || 'dark';
+
+function applyTheme(id) {
+  _theme = id;
+  if (id === 'dark') document.documentElement.removeAttribute('data-theme');
+  else               document.documentElement.setAttribute('data-theme', id);
+  localStorage.setItem('hb_todo_theme', id);
+  renderThemePicker();
+}
+function renderThemePicker() {
+  var g = document.getElementById('tp-grid');
+  if (!g) return;
+  g.innerHTML = THEMES.map(function(t) {
+    return '<div class="tp-item ' + (t.id === _theme ? 'active' : '')
+      + '" onclick="applyTheme(\'' + t.id + '\');closeThemePicker()">'
+      + '<div class="tp-swatch" style="background:' + t.sw + '"></div>'
+      + '<div class="tp-lbl">' + t.label + '</div></div>';
+  }).join('');
+}
+function toggleThemePicker() {
+  document.getElementById('theme-picker').classList.toggle('open');
+  renderThemePicker();
+}
+function closeThemePicker() {
+  var el = document.getElementById('theme-picker');
+  if (el) el.classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  var pk = document.getElementById('theme-picker');
+  if (pk && pk.classList.contains('open')
+      && !pk.contains(e.target)
+      && !e.target.classList.contains('theme-btn')) closeThemePicker();
+});
+applyTheme(_theme);
+
+/* ══════════════════════════════════════════
+   캘린더 뷰
+══════════════════════════════════════════ */
+var calY = new Date().getFullYear();
+var calM = new Date().getMonth();
+var calSel = null;
+
+function renderCalendar() {
+  var grid = document.getElementById('cal-grid');
+  if (!grid) return;
+  var today = new Date().toISOString().split('T')[0];
+  var first = new Date(calY, calM, 1);
+  var last  = new Date(calY, calM + 1, 0);
+  var startDow = first.getDay();
+  var dim = last.getDate();
+  var months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  document.getElementById('cal-month-title').textContent = calY + '년 ' + months[calM];
+
+  var tmap = {};
+  todos.forEach(function(t) {
+    if (t.dueDate) { if (!tmap[t.dueDate]) tmap[t.dueDate]=[]; tmap[t.dueDate].push(t); }
+  });
+
+  var cells = [];
+  for (var i = 0; i < startDow; i++) {
+    var pd = new Date(calY, calM, -(startDow-i-1));
+    cells.push({ day:pd.getDate(), ds:pd.toISOString().split('T')[0], other:true, dow:i });
+  }
+  for (var d = 1; d <= dim; d++) {
+    var dt = new Date(calY, calM, d);
+    cells.push({ day:d, ds:dt.toISOString().split('T')[0], other:false, dow:dt.getDay() });
+  }
+  var rem = (7 - (cells.length % 7)) % 7;
+  for (var j = 0; j < rem; j++) {
+    var nd = new Date(calY, calM+1, j+1);
+    cells.push({ day:nd.getDate(), ds:nd.toISOString().split('T')[0], other:true, dow:nd.getDay() });
+  }
+
+  grid.innerHTML = cells.map(function(c) {
+    var td = tmap[c.ds] || [];
+    var cls = 'cal-cell';
+    if (c.other)      cls += ' other-month';
+    if (c.ds===today) cls += ' today';
+    if (c.ds===calSel)cls += ' selected';
+    if (c.dow===0)    cls += ' sun';
+    if (c.dow===6)    cls += ' sat';
+    var dots = td.slice(0,7).map(function(t) {
+      return '<div class="cal-dot ' + (t.completed ? 'cdone' : (t.priority||'medium')) + '"></div>';
+    }).join('');
+    var cnt = td.length > 7 ? '<div class="cal-count">+' + td.length + '</div>' : '';
+    return '<div class="' + cls + '" onclick="selCalDate(\'' + c.ds + '\')">'
+      + '<div class="cal-cell-num">' + c.day + '</div>'
+      + '<div class="cal-dot-row">' + dots + '</div>' + cnt + '</div>';
+  }).join('');
+  renderCalDetail();
+}
+
+function selCalDate(ds) { calSel = calSel===ds ? null : ds; renderCalendar(); }
+
+function renderCalDetail() {
+  var det = document.getElementById('cal-detail');
+  if (!calSel) { det.style.display='none'; return; }
+  det.style.display = 'block';
+  var td = todos.filter(function(t){ return t.dueDate===calSel; });
+  var dt = new Date(calSel + 'T00:00:00');
+  var dows = ['일','월','화','수','목','금','토'];
+  document.getElementById('cal-detail-hd').textContent =
+    (dt.getMonth()+1) + '월 ' + dt.getDate() + '일 (' + dows[dt.getDay()] + ')  —  ' + td.length + '개';
+  if (!td.length) {
+    document.getElementById('cal-detail-body').innerHTML =
+      '<div class="cal-detail-empty">이 날의 할 일이 없습니다.</div>';
+    return;
+  }
+  var pl = { high:'HIGH', medium:'MID', low:'LOW' };
+  document.getElementById('cal-detail-body').innerHTML = td.map(function(t) {
+    var p = t.priority||'medium';
+    return '<div class="cal-todo-row">'
+      + '<div class="cal-todo-chk ' + (t.completed?'chk-done':'') + '" '
+      + 'onclick="toggleTodo(\'' + t.id + '\');setTimeout(renderCalendar,300)">'
+      + (t.completed?'✓':'') + '</div>'
+      + '<div class="cal-todo-body">'
+      + '<div class="cal-todo-title ' + (t.completed?'txt-done':'') + '">' + esc(t.title) + '</div>'
+      + '<div class="cal-todo-meta">'
+      + '<span class="badge b-' + p + '">' + (pl[p]||p) + '</span>'
+      + (t.category ? '<span class="badge b-cat">' + esc(t.category) + '</span>' : '')
+      + '</div></div>'
+      + '<button class="icon-btn" onclick="openEditModal(\'' + t.id + '\')">✏️</button>'
+      + '</div>';
+  }).join('');
+}
+
+function calPrev() { calM--; if(calM<0){calM=11;calY--;} renderCalendar(); }
+function calNext() { calM++; if(calM>11){calM=0;calY++;} renderCalendar(); }
+
+</script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
@@ -727,6 +868,172 @@
       .stats-grid { gap:8px; }
       .stat-val { font-size:1.6rem; }
     }
+
+    /* ════════════ COLOR THEMES ════════════ */
+    [data-theme="light"] {
+      --bg:#f4f5fb; --bg2:#eceef8; --bg3:#e2e4f0;
+      --surface:rgba(0,0,0,0.04); --surface2:rgba(0,0,0,0.08);
+      --border:rgba(0,0,0,0.09); --border2:rgba(0,0,0,0.16);
+      --text:#1a1d30; --text2:#56597a; --text3:#9a9db8;
+      --accent:#5a57f5; --accent2:#7b78ff; --accent3:#a09eff;
+      --accent-glow:rgba(90,87,245,0.15);
+      --gold:#b8840a; --gold2:#cf9c1a;
+      --success:#059669; --danger:#dc2626; --warning:#d97706;
+    }
+    [data-theme="ocean"] {
+      --bg:#050d17; --bg2:#0a1522; --bg3:#0f1d2d;
+      --surface:rgba(14,165,233,0.07); --surface2:rgba(14,165,233,0.12);
+      --border:rgba(14,165,233,0.1); --border2:rgba(14,165,233,0.2);
+      --text:#c8e8f8; --text2:#5090b8; --text3:#284a68;
+      --accent:#0ea5e9; --accent2:#38bdf8; --accent3:#7dd3fc;
+      --accent-glow:rgba(14,165,233,0.28);
+      --gold:#c9a84c; --gold2:#e8c97a;
+      --success:#10b981; --danger:#f87171; --warning:#fbbf24;
+    }
+    [data-theme="forest"] {
+      --bg:#060e06; --bg2:#0c160c; --bg3:#111e11;
+      --surface:rgba(34,197,94,0.06); --surface2:rgba(34,197,94,0.1);
+      --border:rgba(34,197,94,0.1); --border2:rgba(34,197,94,0.18);
+      --text:#c8ecc8; --text2:#4a8a4a; --text3:#254025;
+      --accent:#22c55e; --accent2:#4ade80; --accent3:#86efac;
+      --accent-glow:rgba(34,197,94,0.28);
+      --gold:#ca8a04; --gold2:#eab308;
+      --success:#10b981; --danger:#f87171; --warning:#fbbf24;
+    }
+    [data-theme="sunset"] {
+      --bg:#fff8f2; --bg2:#fef0e4; --bg3:#fde6d2;
+      --surface:rgba(0,0,0,0.04); --surface2:rgba(0,0,0,0.08);
+      --border:rgba(0,0,0,0.09); --border2:rgba(0,0,0,0.15);
+      --text:#2d1505; --text2:#7a4a30; --text3:#b08870;
+      --accent:#ea580c; --accent2:#f97316; --accent3:#fb923c;
+      --accent-glow:rgba(234,88,12,0.2);
+      --gold:#b45309; --gold2:#d97706;
+      --success:#059669; --danger:#dc2626; --warning:#b45309;
+    }
+    [data-theme="rose"] {
+      --bg:#fdf2f7; --bg2:#fce8f2; --bg3:#f9d8ea;
+      --surface:rgba(0,0,0,0.04); --surface2:rgba(0,0,0,0.08);
+      --border:rgba(0,0,0,0.09); --border2:rgba(0,0,0,0.15);
+      --text:#2d081e; --text2:#7a2856; --text3:#b06888;
+      --accent:#db2777; --accent2:#ec4899; --accent3:#f472b6;
+      --accent-glow:rgba(219,39,119,0.2);
+      --gold:#b45309; --gold2:#d97706;
+      --success:#059669; --danger:#dc2626; --warning:#d97706;
+    }
+    [data-theme="light"] .mf-group select option,
+    [data-theme="sunset"] .mf-group select option,
+    [data-theme="rose"] .mf-group select option { background:var(--bg2); color:var(--text); }
+    [data-theme="light"] .auth-brand,
+    [data-theme="sunset"] .auth-brand,
+    [data-theme="rose"] .auth-brand {
+      background:linear-gradient(145deg,var(--bg2) 0%,var(--bg3) 50%,var(--bg2) 100%);
+    }
+
+    /* ════════════ THEME PICKER ════════════ */
+    .theme-btn {
+      width:36px; height:36px; border-radius:var(--radius-sm);
+      border:1px solid var(--border2); background:var(--surface2); color:var(--text2);
+      font-size:1.1rem; cursor:pointer; transition:var(--trans);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .theme-btn:hover { background:var(--surface); color:var(--text); }
+    .theme-picker {
+      position:fixed; top:58px; right:16px;
+      background:var(--bg2); border:1px solid var(--border2);
+      border-radius:var(--radius); padding:14px;
+      box-shadow:0 16px 48px rgba(0,0,0,0.45);
+      z-index:200; display:none; min-width:215px;
+    }
+    .theme-picker.open { display:block; animation:slideUp 0.18s ease; }
+    .tp-title { font-size:0.7rem; font-weight:700; color:var(--text3);
+      letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; }
+    .tp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .tp-item {
+      display:flex; flex-direction:column; align-items:center; gap:5px;
+      cursor:pointer; padding:8px 4px; border-radius:8px;
+      border:1.5px solid transparent; transition:var(--trans);
+    }
+    .tp-item:hover { background:var(--surface2); border-color:var(--border); }
+    .tp-item.active { border-color:var(--accent); background:var(--accent-glow); }
+    .tp-swatch { width:34px; height:34px; border-radius:50%; box-shadow:0 2px 8px rgba(0,0,0,0.25); }
+    .tp-lbl { font-size:0.68rem; color:var(--text2); white-space:nowrap; font-weight:500; }
+
+    /* ════════════ CALENDAR VIEW ════════════ */
+    .cal-wrap { display:none; }
+    .cal-wrap.active { display:block; }
+    .cal-nav {
+      display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;
+    }
+    .cal-nav-btn {
+      width:34px; height:34px; border-radius:8px;
+      border:1px solid var(--border2); background:var(--surface); color:var(--text2);
+      font-size:1.2rem; cursor:pointer; transition:var(--trans);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .cal-nav-btn:hover { background:var(--surface2); color:var(--text); }
+    .cal-month-title {
+      font-family:'Montserrat',sans-serif;
+      font-size:1rem; font-weight:700; color:var(--text); letter-spacing:0.5px;
+    }
+    .cal-hd-row { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:4px; }
+    .cal-day-hd {
+      text-align:center; font-size:0.65rem; font-weight:700;
+      color:var(--text3); padding:5px 0; letter-spacing:1px; text-transform:uppercase;
+    }
+    .cal-day-hd:first-child { color:#f87171; }
+    .cal-day-hd:last-child  { color:#60a5fa; }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+    .cal-cell {
+      min-height:74px; padding:6px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:8px; cursor:pointer; transition:var(--trans); position:relative;
+    }
+    .cal-cell:hover { background:var(--surface2); border-color:var(--border2); }
+    .cal-cell.today { border-color:var(--accent); background:var(--accent-glow); }
+    .cal-cell.other-month { opacity:0.28; pointer-events:none; }
+    .cal-cell.selected { border-color:var(--gold); background:rgba(201,168,76,0.1); }
+    .cal-cell-num { font-size:0.77rem; font-weight:600; color:var(--text2); margin-bottom:4px; }
+    .cal-cell.today .cal-cell-num { color:var(--accent2); font-weight:800; }
+    .cal-cell.sun .cal-cell-num { color:#f87171; }
+    .cal-cell.sat .cal-cell-num { color:#60a5fa; }
+    .cal-dot-row { display:flex; flex-wrap:wrap; gap:2px; }
+    .cal-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .cal-dot.high   { background:var(--danger); }
+    .cal-dot.medium { background:var(--warning); }
+    .cal-dot.low    { background:var(--success); }
+    .cal-dot.cdone  { background:var(--text3); }
+    .cal-count { position:absolute; bottom:4px; right:5px; font-size:0.62rem; color:var(--text3); font-weight:700; }
+    .cal-detail {
+      display:none; margin-top:14px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:16px;
+    }
+    .cal-detail-title {
+      font-size:0.8rem; font-weight:700; color:var(--text2);
+      margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--border);
+    }
+    .cal-detail-empty { font-size:0.82rem; color:var(--text3); text-align:center; padding:12px 0; }
+    .cal-todo-row {
+      display:flex; align-items:flex-start; gap:10px;
+      padding:8px 0; border-bottom:1px solid var(--border);
+    }
+    .cal-todo-row:last-child { border-bottom:none; }
+    .cal-todo-chk {
+      width:18px; height:18px; border-radius:50%;
+      border:2px solid var(--border2); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.65rem; flex-shrink:0; margin-top:2px; transition:var(--trans);
+    }
+    .cal-todo-chk.chk-done { background:var(--success); border-color:var(--success); color:#fff; }
+    .cal-todo-body { flex:1; }
+    .cal-todo-title { font-size:0.83rem; font-weight:500; color:var(--text); }
+    .cal-todo-title.txt-done { text-decoration:line-through; color:var(--text3); }
+    .cal-todo-meta { display:flex; gap:5px; margin-top:3px; flex-wrap:wrap; }
+    @media(max-width:600px) {
+      .cal-cell { min-height:50px; padding:4px; }
+      .cal-cell-num { font-size:0.7rem; }
+      .cal-dot { width:5px; height:5px; }
+    }
   </style>
 </head>
 <body>
@@ -849,6 +1156,12 @@
       <span class="nav-icon">🟢</span>낮음<span class="nav-count" id="c-low">0</span>
     </button>
 
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label" style="margin-bottom:8px;">보기</div>
+    <button class="nav-item" id="nav-calendar" onclick="setView('calendar')">
+      <span class="nav-icon">📆</span>캘린더
+    </button>
+
     <div class="sidebar-bottom">
       <div class="user-card">
         <div class="user-avatar" id="user-av">?</div>
@@ -870,10 +1183,15 @@
         <span style="color:var(--text3);font-size:0.8rem;">🔍</span>
         <input type="text" id="search-inp" placeholder="검색..." oninput="renderTodos()" />
       </div>
+      <button class="theme-btn" onclick="toggleThemePicker()" title="테마 변경">🎨</button>
       <button class="add-btn" onclick="openModal()">
         + <span class="add-label">할 일 추가</span>
       </button>
     </header>
+    <div class="theme-picker" id="theme-picker">
+      <div class="tp-title">색상 테마</div>
+      <div class="tp-grid" id="tp-grid"></div>
+    </div>
 
     <main class="content">
 
@@ -943,6 +1261,26 @@
         <div class="empty-state">
           <div class="empty-icon">⏳</div>
           <div class="empty-title">불러오는 중...</div>
+        </div>
+      </div>
+
+      <!-- ═══ Calendar View ═══ -->
+      <div class="cal-wrap" id="cal-wrap">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="calPrev()">&#8249;</button>
+          <div class="cal-month-title" id="cal-month-title">—</div>
+          <button class="cal-nav-btn" onclick="calNext()">&#8250;</button>
+        </div>
+        <div class="cal-hd-row">
+          <div class="cal-day-hd">일</div><div class="cal-day-hd">월</div>
+          <div class="cal-day-hd">화</div><div class="cal-day-hd">수</div>
+          <div class="cal-day-hd">목</div><div class="cal-day-hd">금</div>
+          <div class="cal-day-hd">토</div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-detail" id="cal-detail">
+          <div class="cal-detail-title" id="cal-detail-hd">—</div>
+          <div id="cal-detail-body"></div>
         </div>
       </div>
 
@@ -1209,7 +1547,8 @@ function deleteTodo(id) {
 var viewLabels = {
   today: '오늘의 할 일 목록', all: '전체 할 일',
   upcoming: '예정된 할 일', completed: '완료한 할 일',
-  high: '긴급 우선순위', medium: '보통 우선순위', low: '낮은 우선순위'
+  high: '긴급 우선순위', medium: '보통 우선순위', low: '낮은 우선순위',
+  calendar: '캘린더'
 };
 function setView(v) {
   view = v;
@@ -1219,7 +1558,15 @@ function setView(v) {
   var lbl = viewLabels[v] || v;
   document.getElementById('view-title').textContent = lbl;
   document.getElementById('sec-title').textContent  = lbl;
-  renderTodos();
+  var isCal = v === 'calendar';
+  var tl = document.getElementById('todo-list');
+  var cw = document.getElementById('cal-wrap');
+  var chips = document.querySelector('.chips');
+  if (tl)    tl.style.display    = isCal ? 'none' : '';
+  if (cw)    cw.classList.toggle('active', isCal);
+  if (chips) chips.style.display = isCal ? 'none' : '';
+  if (isCal) renderCalendar();
+  else renderTodos();
   closeSidebar();
 }
 
@@ -1397,7 +1744,7 @@ function fbErrMsg(code) {
 
 /* ── 키보드 ── */
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') { closeModal(); closeThemePicker(); }
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
     if (document.getElementById('modal').classList.contains('open')) saveTodo();
   }
