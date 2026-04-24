@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Hilliard Buffshire · Task Planner</title>
+<title>HILLIARD BUFFSHIRE · Task Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -14,23 +14,134 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
-tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','Noto Sans KR','system-ui','sans-serif']}}}}
+tailwind.config={
+  darkMode:'class',
+  theme:{
+    extend:{
+      fontFamily:{sans:['Inter','Noto Sans KR','system-ui','sans-serif']},
+      colors:{
+        gold:{DEFAULT:'#c9a84c',light:'#e8c97a',dim:'rgba(201,168,76,0.15)',border:'rgba(201,168,76,0.2)'},
+        ink:{950:'#060608',900:'#09090b',850:'#0d0d10',800:'#111113',750:'#161618',700:'#1c1c1f',650:'#222226',600:'#2a2a2f',500:'#3f3f46',400:'#52525b',300:'#71717a',200:'#a1a1aa',100:'#d4d4d8',50:'#f4f4f5'},
+      },
+      letterSpacing:{widest:'0.25em',ultra:'0.35em'},
+    }
+  }
+}
 </script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter','Noto Sans KR',system-ui,sans-serif}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px}
-.dark ::-webkit-scrollbar-thumb{background:#374151}
+html{background:#09090b}
+body{font-family:'Inter','Noto Sans KR',system-ui,sans-serif;background:#09090b;color:#f4f4f5;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#2a2a2f;border-radius:4px}
 .no-scroll::-webkit-scrollbar{width:0}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Luxury glow effects */
+.glow-gold{box-shadow:0 0 30px rgba(201,168,76,0.12),0 0 60px rgba(201,168,76,0.06)}
+.glow-indigo{box-shadow:0 0 20px rgba(99,102,241,0.2)}
+.border-gold-subtle{border-color:rgba(201,168,76,0.2)}
+.border-white-subtle{border-color:rgba(255,255,255,0.06)}
+
+/* Auth background gradient */
+.auth-bg{
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(99,102,241,0.12) 0%,transparent 60%),
+            radial-gradient(ellipse 50% 40% at 80% 80%,rgba(201,168,76,0.07) 0%,transparent 55%),
+            #09090b;
+}
+
+/* Main app ambient gradient */
+.app-bg{
+  background:radial-gradient(ellipse 60% 40% at 0% 0%,rgba(99,102,241,0.06) 0%,transparent 50%),#09090b;
+}
+
+/* Gold text gradient */
+.text-gold-gradient{
+  background:linear-gradient(135deg,#e8c97a 0%,#c9a84c 50%,#b8960d 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* Brand mark */
+.brand-mark{
+  background:linear-gradient(135deg,#c9a84c 0%,#e8c97a 50%,#c9a84c 100%);
+}
+
+/* Sidebar */
+.sidebar-bg{
+  background:linear-gradient(180deg,#0d0d10 0%,#09090b 100%);
+  border-right:1px solid rgba(255,255,255,0.05);
+}
+
+/* Card surface */
+.surface{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06)}
+.surface-hover:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1)}
+
+/* Task item */
+.task-row{
+  border:1px solid rgba(255,255,255,0.055);
+  background:rgba(255,255,255,0.022);
+  transition:all .15s ease;
+}
+.task-row:hover{background:rgba(255,255,255,0.045);border-color:rgba(255,255,255,0.1);}
+
+/* Nav item */
+.nav-active{background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc}
+.nav-idle{border:1px solid transparent;color:#52525b}
+.nav-idle:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06);color:#a1a1aa}
+
+/* Inputs */
+.inp-base{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  color:#f4f4f5;
+  transition:all .15s ease;
+}
+.inp-base:focus{
+  background:rgba(255,255,255,0.06);
+  border-color:rgba(99,102,241,0.5);
+  box-shadow:0 0 0 3px rgba(99,102,241,0.1);
+  outline:none;
+}
+.inp-base::placeholder{color:#3f3f46}
+
+/* Button primary */
+.btn-primary{
+  background:linear-gradient(135deg,#4f46e5 0%,#6366f1 100%);
+  box-shadow:0 4px 24px rgba(99,102,241,0.3),0 1px 0 rgba(255,255,255,0.1) inset;
+  transition:all .15s ease;
+}
+.btn-primary:hover{filter:brightness(1.1);box-shadow:0 6px 28px rgba(99,102,241,0.4)}
+.btn-primary:active{transform:scale(0.98)}
+
+/* Progress bar */
+.prog-bar{background:linear-gradient(90deg,#4f46e5,#818cf8)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.fade-up{animation:fadeUp .2s ease both}
-.fade-in{animation:fadeIn .15s ease both}
-.task-row{transition:all .12s ease}
-.cal-cell{transition:all .12s ease}
-select option{background:#18181b;color:#f4f4f5}
-.dark select{color-scheme:dark}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.fade-up{animation:fadeUp .22s cubic-bezier(.16,1,.3,1) both}
+.fade-in{animation:fadeIn .18s ease both}
+
+/* Select */
+select option{background:#161618;color:#f4f4f5}
+
+/* Divider line */
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent)}
+
+/* Gold accent line */
+.gold-line{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent)}
+
+/* Cal cells */
+.cal-cell{transition:all .12s ease;cursor:pointer}
+.cal-cell:hover{transform:scale(1.03)}
+
+/* Topbar blur */
+.topbar-glass{
+  background:rgba(9,9,11,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
 </style>
 </head>
 <body>
@@ -39,7 +150,6 @@ select option{background:#18181b;color:#f4f4f5}
 (()=>{
 const {useState,useEffect,useRef,useMemo,useCallback}=React;
 
-/* ─── Firebase ─── */
 firebase.initializeApp({
   apiKey:"AIzaSyDEPq3SqOCiltpmesT3vP9Jp7a_ujFou1k",
   authDomain:"daily-task-planner-9187f.firebaseapp.com",
@@ -53,36 +163,34 @@ const db=firebase.firestore();
 const ID_DOMAIN="@hilliard.buffshire.internal";
 const toEmail=id=>id.toLowerCase().trim()+ID_DOMAIN;
 
-/* ─── Icons ─── */
+/* Icons */
 const I=({n,s=16,c=""})=>{
-  const d={
+  const icons={
     check:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2.5"strokeLinecap="round"strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
     plus:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><line x1="12"y1="5"x2="12"y2="19"/><line x1="5"y1="12"x2="19"y2="12"/></svg>,
-    cal:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><rect x="3"y="4"width="18"height="18"rx="2"/><line x1="16"y1="2"x2="16"y2="6"/><line x1="8"y1="2"x2="8"y2="6"/><line x1="3"y1="10"x2="21"y2="10"/></svg>,
-    edit:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>,
-    trash:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
-    sun:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><circle cx="12"cy="12"r="5"/><line x1="12"y1="1"x2="12"y2="3"/><line x1="12"y1="21"x2="12"y2="23"/><line x1="4.22"y1="4.22"x2="5.64"y2="5.64"/><line x1="18.36"y1="18.36"x2="19.78"y2="19.78"/><line x1="1"y1="12"x2="3"y2="12"/><line x1="21"y1="12"x2="23"y2="12"/><line x1="4.22"y1="19.78"x2="5.64"y2="18.36"/><line x1="18.36"y1="5.64"x2="19.78"y2="4.22"/></svg>,
-    moon:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
+    cal:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><rect x="3"y="4"width="18"height="18"rx="2"/><line x1="16"y1="2"x2="16"y2="6"/><line x1="8"y1="2"x2="8"y2="6"/><line x1="3"y1="10"x2="21"y2="10"/></svg>,
+    edit:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>,
+    trash:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+    sun:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><circle cx="12"cy="12"r="5"/><line x1="12"y1="1"x2="12"y2="3"/><line x1="12"y1="21"x2="12"y2="23"/><line x1="4.22"y1="4.22"x2="5.64"y2="5.64"/><line x1="18.36"y1="18.36"x2="19.78"y2="19.78"/><line x1="1"y1="12"x2="3"y2="12"/><line x1="21"y1="12"x2="23"y2="12"/><line x1="4.22"y1="19.78"x2="5.64"y2="18.36"/><line x1="18.36"y1="5.64"x2="19.78"y2="4.22"/></svg>,
+    moon:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
     x:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><line x1="18"y1="6"x2="6"y2="18"/><line x1="6"y1="6"x2="18"y2="18"/></svg>,
-    chevL:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>,
-    chevR:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
-    search:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><circle cx="11"cy="11"r="8"/><line x1="21"y1="21"x2="16.65"y2="16.65"/></svg>,
-    logout:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21"y1="12"x2="9"y2="12"/></svg>,
-    menu:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><line x1="3"y1="12"x2="21"y2="12"/><line x1="3"y1="6"x2="21"y2="6"/><line x1="3"y1="18"x2="21"y2="18"/></svg>,
-    clock:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><circle cx="12"cy="12"r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-    inbox:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>,
-    list:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="2"strokeLinecap="round"strokeLinejoin="round"><line x1="8"y1="6"x2="21"y2="6"/><line x1="8"y1="12"x2="21"y2="12"/><line x1="8"y1="18"x2="21"y2="18"/><line x1="3"y1="6"x2="3.01"y2="6"/><line x1="3"y1="12"x2="3.01"y2="12"/><line x1="3"y1="18"x2="3.01"y2="18"/></svg>,
+    chevL:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>,
+    chevR:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+    search:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><circle cx="11"cy="11"r="8"/><line x1="21"y1="21"x2="16.65"y2="16.65"/></svg>,
+    logout:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21"y1="12"x2="9"y2="12"/></svg>,
+    menu:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><line x1="3"y1="12"x2="21"y2="12"/><line x1="3"y1="6"x2="21"y2="6"/><line x1="3"y1="18"x2="21"y2="18"/></svg>,
+    clock:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><circle cx="12"cy="12"r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    inbox:<svg width={s}height={s}viewBox="0 0 24 24"fill="none"stroke="currentColor"strokeWidth="1.8"strokeLinecap="round"strokeLinejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>,
   };
-  return <span className={`inline-flex items-center justify-center ${c}`}>{d[n]||null}</span>;
+  return <span className={`inline-flex items-center justify-center ${c}`}>{icons[n]||null}</span>;
 };
 
-/* ─── Utils ─── */
 const TODAY=()=>new Date().toISOString().split('T')[0];
 const fmtDate=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return`${dt.getMonth()+1}/${dt.getDate()}`;};
-const PRI={high:{lbl:'높음',dot:'bg-red-500',txt:'text-red-500'},medium:{lbl:'보통',dot:'bg-amber-400',txt:'text-amber-500'},low:{lbl:'낮음',dot:'bg-emerald-500',txt:'text-emerald-500'}};
+const PRI={high:{lbl:'URGENT',dot:'bg-red-500',txt:'text-red-400',bg:'rgba(239,68,68,0.1)',border:'rgba(239,68,68,0.2)'},medium:{lbl:'NORMAL',dot:'bg-amber-400',txt:'text-amber-400',bg:'rgba(251,191,36,0.08)',border:'rgba(251,191,36,0.2)'},low:{lbl:'LOW',dot:'bg-emerald-500',txt:'text-emerald-400',bg:'rgba(16,185,129,0.08)',border:'rgba(16,185,129,0.2)'}};
 const ERRMAP={'auth/user-not-found':'존재하지 않는 아이디입니다.','auth/wrong-password':'비밀번호가 올바르지 않습니다.','auth/email-already-in-use':'이미 사용 중인 아이디입니다.','auth/weak-password':'비밀번호는 6자 이상이어야 합니다.','auth/invalid-credential':'아이디 또는 비밀번호가 올바르지 않습니다.','auth/too-many-requests':'잠시 후 다시 시도하세요.'};
 
-/* ─── AUTH ─── */
+/* ══ AUTH ══ */
 function AuthScreen(){
   const[tab,setTab]=useState('login');
   const[id,setId]=useState('');
@@ -96,7 +204,7 @@ function AuthScreen(){
     if(!pw){setErr('비밀번호를 입력하세요.');return;}
     if(tab==='signup'){
       if(id.trim().length<4){setErr('아이디는 4자 이상이어야 합니다.');return;}
-      if(!/^[a-zA-Z0-9_]+$/.test(id.trim())){setErr('영문, 숫자, 밑줄(_)만 사용 가능합니다.');return;}
+      if(!/^[a-zA-Z0-9_]+$/.test(id.trim())){setErr('영문, 숫자, 밑줄만 사용 가능합니다.');return;}
       if(pw.length<6){setErr('비밀번호는 6자 이상이어야 합니다.');return;}
     }
     setBusy(true);
@@ -105,41 +213,79 @@ function AuthScreen(){
       else{const c=await auth.createUserWithEmailAndPassword(toEmail(id),pw);await c.user.updateProfile({displayName:id.trim()});}
     }catch(e){setErr(ERRMAP[e.code]||e.message);setBusy(false);}
   };
-  const inp=`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-all bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20`;
   return(
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 p-4">
-      <div className="w-full max-w-sm fade-up">
-        <div className="text-center mb-8">
-          <div className="inline-flex w-14 h-14 rounded-2xl bg-indigo-600 items-center justify-center mb-4 shadow-lg shadow-indigo-500/30">
-            <I n="list" s={22} c="text-white"/>
+    <div className="min-h-screen auth-bg flex">
+      {/* Left brand panel */}
+      <div className="hidden lg:flex flex-col justify-between w-[480px] flex-shrink-0 p-16 border-r border-white/[0.04]">
+        <div>
+          <div className="flex items-center gap-3 mb-20">
+            <div className="w-8 h-8 brand-mark rounded flex items-center justify-center">
+              <span className="text-black text-xs font-black tracking-tight">HB</span>
+            </div>
           </div>
-          <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Hilliard Buffshire</h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-500 mt-1">Task Planner · 힐리아드 버프셔</p>
+          <div className="gold-line mb-10 w-16"/>
+          <h1 className="text-4xl font-black tracking-widest text-gold-gradient uppercase mb-4 leading-tight">
+            HILLIARD<br/>BUFFSHIRE
+          </h1>
+          <p className="text-sm font-light tracking-[0.2em] text-ink-400 uppercase mb-2">Task Planner</p>
+          <p className="text-xs tracking-[0.15em] text-ink-600 uppercase">힐리아드 버프셔 태스크 플래너</p>
+          <div className="mt-16 space-y-5">
+            {[['실시간 동기화','모든 기기에서 동일한 데이터'],['클라우드 저장','Firebase 보안 저장소'],['반응형 디자인','PC·태블릿·모바일 완벽 지원']].map(([t,d])=>(
+              <div key={t} className="flex items-start gap-3">
+                <div className="w-1 h-1 rounded-full bg-gold-DEFAULT mt-2 flex-shrink-0"/>
+                <div><div className="text-xs font-semibold text-ink-200 tracking-wide">{t}</div><div className="text-xs text-ink-500 mt-0.5">{d}</div></div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 shadow-xl shadow-black/5 dark:shadow-black/40">
-          <div className="flex rounded-xl bg-zinc-100 dark:bg-zinc-800 p-1 mb-5">
+        <div className="text-xs text-ink-700 tracking-widest uppercase">© 2025 Hilliard Buffshire</div>
+      </div>
+
+      {/* Right form */}
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-sm fade-up">
+          {/* Mobile logo */}
+          <div className="lg:hidden text-center mb-10">
+            <div className="inline-flex w-10 h-10 brand-mark rounded-lg items-center justify-center mb-4">
+              <span className="text-black text-sm font-black">HB</span>
+            </div>
+            <h1 className="text-xl font-black tracking-widest text-gold-gradient uppercase">HILLIARD BUFFSHIRE</h1>
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-lg font-bold text-ink-50 tracking-tight">{tab==='login'?'로그인':'계정 만들기'}</h2>
+            <p className="text-sm text-ink-500 mt-1">{tab==='login'?'아이디와 비밀번호로 로그인하세요':'사용할 아이디와 비밀번호를 설정하세요'}</p>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex surface rounded-xl p-1 mb-6">
             {['login','signup'].map(t=>(
               <button key={t} onClick={()=>{setTab(t);setErr('');}}
-                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${tab===t?'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm':'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'}`}>
+                className={`flex-1 py-2 text-xs font-semibold rounded-lg tracking-wide uppercase transition-all
+                  ${tab===t?'bg-white/[0.07] text-ink-100':'text-ink-500 hover:text-ink-300'}`}>
                 {t==='login'?'로그인':'회원가입'}
               </button>
             ))}
           </div>
+
           <div className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">아이디</label>
-              <input className={inp} placeholder="아이디 입력" value={id} onChange={e=>setId(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submit()}/>
+              <label className="block text-[10px] font-semibold text-ink-500 tracking-widest uppercase mb-2">아이디</label>
+              <input className="inp-base w-full px-4 py-3 rounded-xl text-sm" placeholder="아이디 입력" value={id} onChange={e=>setId(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submit()}/>
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">비밀번호</label>
+              <label className="block text-[10px] font-semibold text-ink-500 tracking-widest uppercase mb-2">비밀번호</label>
               <div className="relative">
-                <input className={inp} type={showPw?'text':'password'} placeholder="비밀번호 입력" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submit()}/>
-                <button onClick={()=>setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">{showPw?'숨김':'표시'}</button>
+                <input className="inp-base w-full px-4 py-3 rounded-xl text-sm pr-16" type={showPw?'text':'password'} placeholder="비밀번호 입력" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==='Enter'&&submit()}/>
+                <button onClick={()=>setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-ink-500 hover:text-ink-300 tracking-widest uppercase transition-colors">{showPw?'숨김':'표시'}</button>
               </div>
             </div>
           </div>
-          {err&&<div className="mt-3 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-xs">{err}</div>}
-          <button onClick={submit} disabled={busy} className="w-full mt-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-[.98] text-white text-sm font-semibold transition-all shadow-md shadow-indigo-500/25 disabled:opacity-60">
+
+          {err&&<div className="mt-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs tracking-wide">{err}</div>}
+
+          <button onClick={submit} disabled={busy}
+            className="btn-primary w-full mt-5 py-3 rounded-xl text-sm font-bold tracking-widest uppercase text-white disabled:opacity-50">
             {busy?'처리 중...':(tab==='login'?'로그인':'회원가입')}
           </button>
         </div>
@@ -148,8 +294,8 @@ function AuthScreen(){
   );
 }
 
-/* ─── QUICK ADD ─── */
-function QuickAdd({onAdd,darkMode,defDate}){
+/* ══ QUICK ADD ══ */
+function QuickAdd({onAdd,defDate}){
   const[open,setOpen]=useState(false);
   const[title,setTitle]=useState('');
   const[pri,setPri]=useState('medium');
@@ -163,31 +309,31 @@ function QuickAdd({onAdd,darkMode,defDate}){
     setTitle('');setPri('medium');setDue(defDate||'');setCat('');setDesc('');setOpen(false);
   };
   useEffect(()=>{if(open)setTimeout(()=>ref.current?.focus(),50);},[open]);
-  const inp=`w-full px-3 py-2 rounded-xl border text-sm outline-none transition-all bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30`;
   return(
-    <div className="mb-4">
+    <div className="mb-5">
       {!open?(
         <button id="quick-add-trigger" onClick={()=>setOpen(true)}
-          className="w-full flex items-center gap-2.5 px-4 py-3 rounded-xl border border-dashed border-zinc-300 dark:border-zinc-700 text-zinc-400 dark:text-zinc-600 hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500/50 dark:hover:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-500/5 transition-all text-sm">
-          <I n="plus" s={16}/><span>할 일 추가<span className="text-xs opacity-50 ml-2">Ctrl+N</span></span>
+          className="w-full flex items-center gap-3 px-5 py-3.5 rounded-xl border border-white/[0.06] border-dashed text-ink-600 hover:border-indigo-500/40 hover:text-indigo-400 hover:bg-indigo-500/[0.04] transition-all text-sm tracking-wide group">
+          <I n="plus" s={15}/><span className="font-medium">할 일 추가</span><span className="text-xs text-ink-700 ml-auto group-hover:text-ink-500">Ctrl+N</span>
         </button>
       ):(
-        <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4 shadow-lg dark:shadow-black/30 fade-up">
-          <input ref={ref} className={inp+' mb-2.5 font-medium'} placeholder="무엇을 해야 하나요?" value={title} onChange={e=>setTitle(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')submit();if(e.key==='Escape')setOpen(false);}}/>
-          <textarea className={inp+' mb-2.5 resize-none h-14 text-xs'} placeholder="메모 (선택)" value={desc} onChange={e=>setDesc(e.target.value)}/>
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            <div><label className="block text-xs text-zinc-400 dark:text-zinc-500 mb-1">우선순위</label>
-              <select className={inp+' cursor-pointer text-xs'} value={pri} onChange={e=>setPri(e.target.value)}>
-                <option value="high">🔴 높음</option><option value="medium">🟡 보통</option><option value="low">🟢 낮음</option>
-              </select></div>
-            <div><label className="block text-xs text-zinc-400 dark:text-zinc-500 mb-1">마감일</label>
-              <input type="date" className={inp+' text-xs'} value={due} onChange={e=>setDue(e.target.value)}/></div>
-            <div><label className="block text-xs text-zinc-400 dark:text-zinc-500 mb-1">카테고리</label>
-              <input className={inp+' text-xs'} placeholder="예: 업무" value={cat} onChange={e=>setCat(e.target.value)}/></div>
+        <div className="rounded-xl border border-white/[0.08] bg-ink-800/60 p-5 fade-up" style={{background:'rgba(22,22,24,0.8)'}}>
+          <input ref={ref} className="inp-base w-full px-4 py-3 rounded-xl text-sm font-medium mb-3" placeholder="무엇을 해야 하나요?" value={title} onChange={e=>setTitle(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')submit();if(e.key==='Escape')setOpen(false);}}/>
+          <textarea className="inp-base w-full px-4 py-2.5 rounded-xl text-xs mb-3 resize-none h-16" placeholder="메모 (선택)" value={desc} onChange={e=>setDesc(e.target.value)}/>
+          <div className="grid grid-cols-3 gap-2.5 mb-4">
+            {[['우선순위','sel',pri,setPri],['마감일','date',due,setDue],['카테고리','txt',cat,setCat]].map(([lbl,type,val,setter])=>(
+              <div key={lbl}>
+                <label className="block text-[10px] font-semibold text-ink-600 tracking-widest uppercase mb-1.5">{lbl}</label>
+                {type==='sel'?<select className="inp-base w-full px-3 py-2 rounded-lg text-xs cursor-pointer" value={val} onChange={e=>setter(e.target.value)}>
+                  <option value="high">🔴 높음</option><option value="medium">🟡 보통</option><option value="low">🟢 낮음</option>
+                </select>:type==='date'?<input type="date" className="inp-base w-full px-3 py-2 rounded-lg text-xs" value={val} onChange={e=>setter(e.target.value)}/>
+                :<input className="inp-base w-full px-3 py-2 rounded-lg text-xs" placeholder="예: 업무" value={val} onChange={e=>setter(e.target.value)}/>}
+              </div>
+            ))}
           </div>
           <div className="flex gap-2 justify-end">
-            <button onClick={()=>setOpen(false)} className="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">취소</button>
-            <button onClick={submit} className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-all">추가</button>
+            <button onClick={()=>setOpen(false)} className="px-4 py-2 rounded-lg text-xs font-semibold text-ink-500 hover:text-ink-300 hover:bg-white/[0.04] transition-all tracking-wide">취소</button>
+            <button onClick={submit} className="btn-primary px-5 py-2 rounded-lg text-xs font-bold tracking-wide uppercase">추가</button>
           </div>
         </div>
       )}
@@ -195,7 +341,7 @@ function QuickAdd({onAdd,darkMode,defDate}){
   );
 }
 
-/* ─── TASK ITEM ─── */
+/* ══ TASK ITEM ══ */
 function TaskItem({task,onToggle,onEdit,onDelete}){
   const[hover,setHover]=useState(false);
   const today=TODAY();
@@ -203,70 +349,85 @@ function TaskItem({task,onToggle,onEdit,onDelete}){
   const isToday=task.dueDate===today;
   const p=PRI[task.priority]||PRI.medium;
   return(
-    <div className={`task-row flex items-start gap-3 px-4 py-3 rounded-xl border mb-1.5 group bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800/70 border-zinc-100 dark:border-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700 ${task.completed?'opacity-55':''}`}
+    <div className={`task-row flex items-start gap-3.5 px-5 py-3.5 rounded-xl mb-2 ${task.completed?'opacity-40':''}`}
       onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
+      {/* Checkbox */}
       <button onClick={()=>onToggle(task.id)}
-        className={`flex-shrink-0 mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${task.completed?'bg-indigo-600 border-indigo-600':'border-zinc-300 dark:border-zinc-600 hover:border-indigo-500'}`}>
+        className={`flex-shrink-0 mt-0.5 w-5 h-5 rounded-full border flex items-center justify-center transition-all
+          ${task.completed?'bg-indigo-600 border-indigo-600':'border-white/20 hover:border-indigo-500/60 hover:bg-indigo-500/10'}`}>
         {task.completed&&<I n="check" s={10} c="text-white"/>}
       </button>
+      {/* Body */}
       <div className="flex-1 min-w-0">
-        <div className={`text-sm font-medium leading-snug ${task.completed?'line-through text-zinc-400 dark:text-zinc-600':'text-zinc-900 dark:text-zinc-100'}`}>{task.title}</div>
-        {task.desc&&<div className="text-xs mt-0.5 text-zinc-400 dark:text-zinc-600 truncate">{task.desc}</div>}
-        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-          <span className={`flex items-center gap-1 text-xs font-medium ${p.txt}`}><span className={`w-1.5 h-1.5 rounded-full ${p.dot}`}/>{p.lbl}</span>
-          {task.dueDate&&<span className={`flex items-center gap-1 text-xs ${overdue?'text-red-500':isToday?'text-amber-500':'text-zinc-400 dark:text-zinc-600'}`}><I n="clock" s={10}/>{overdue?'⚠ ':''}{fmtDate(task.dueDate)}</span>}
-          {task.category&&<span className="text-xs px-2 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500">{task.category}</span>}
+        <div className={`text-sm font-medium tracking-tight ${task.completed?'line-through text-ink-600':'text-ink-100'}`}>{task.title}</div>
+        {task.desc&&<div className="text-xs mt-0.5 text-ink-600 truncate">{task.desc}</div>}
+        <div className="flex items-center gap-2.5 mt-2 flex-wrap">
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded-md" style={{background:p.bg,border:`1px solid ${p.border}`,color:p.txt.replace('text-','').includes('red')?'#f87171':p.txt.includes('amber')?'#fbbf24':'#34d399'}}>
+            <span className={`w-1.5 h-1.5 rounded-full ${p.dot}`}/>{p.lbl}
+          </span>
+          {task.dueDate&&<span className={`flex items-center gap-1 text-[10px] font-medium tracking-wide
+            ${overdue?'text-red-400':isToday?'text-amber-400':'text-ink-600'}`}>
+            <I n="clock" s={10}/>{overdue?'⚠ ':''}{fmtDate(task.dueDate)}
+          </span>}
+          {task.category&&<span className="text-[10px] font-medium px-2 py-1 rounded-md tracking-wide" style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.07)',color:'#71717a'}}>{task.category}</span>}
         </div>
       </div>
+      {/* Actions */}
       <div className={`flex items-center gap-1 flex-shrink-0 transition-opacity duration-100 ${hover?'opacity-100':'opacity-0'}`}>
-        <button onClick={()=>onEdit(task.id,null,true)} className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-all"><I n="edit" s={13}/></button>
-        <button onClick={()=>onDelete(task.id)} className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-zinc-400 hover:text-red-500 dark:hover:text-red-400 transition-all"><I n="trash" s={13}/></button>
+        <button onClick={()=>onEdit(task.id,null,true)} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-ink-600 hover:text-ink-300 transition-all"><I n="edit" s={13}/></button>
+        <button onClick={()=>onDelete(task.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-ink-600 hover:text-red-400 transition-all"><I n="trash" s={13}/></button>
       </div>
     </div>
   );
 }
 
-/* ─── EDIT MODAL ─── */
+/* ══ EDIT MODAL ══ */
 function EditModal({task,onSave,onClose}){
   const[title,setTitle]=useState(task.title||'');
   const[desc,setDesc]=useState(task.desc||'');
   const[pri,setPri]=useState(task.priority||'medium');
   const[due,setDue]=useState(task.dueDate||'');
   const[cat,setCat]=useState(task.category||'');
-  const inp=`w-full px-3 py-2.5 rounded-xl border text-sm outline-none transition-all bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30`;
   return(
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 fade-in" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="w-full max-w-md rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 fade-up">
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">할 일 수정</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 transition-all"><I n="x" s={16}/></button>
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-4 fade-in" style={{background:'rgba(0,0,0,0.75)'}}>
+      <div className="w-full max-w-md rounded-2xl p-6 fade-up" style={{background:'#111113',border:'1px solid rgba(255,255,255,0.08)',boxShadow:'0 24px 80px rgba(0,0,0,0.7)'}}>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-sm font-bold text-ink-100 tracking-tight">할 일 수정</h3>
+            <div className="gold-line mt-2 w-8"/>
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-ink-600 hover:text-ink-300 transition-all"><I n="x" s={15}/></button>
         </div>
-        <div className="space-y-3">
-          <div><label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">할 일 *</label>
-            <input className={inp} value={title} onChange={e=>setTitle(e.target.value)} autoFocus/></div>
-          <div><label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">메모</label>
-            <textarea className={inp+' resize-none h-20'} value={desc} onChange={e=>setDesc(e.target.value)}/></div>
-          <div className="grid grid-cols-3 gap-2">
-            <div><label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">우선순위</label>
-              <select className={inp+' cursor-pointer'} value={pri} onChange={e=>setPri(e.target.value)}>
+        <div className="space-y-3.5">
+          <div>
+            <label className="block text-[10px] font-semibold text-ink-600 tracking-widest uppercase mb-2">할 일 *</label>
+            <input className="inp-base w-full px-4 py-3 rounded-xl text-sm" value={title} onChange={e=>setTitle(e.target.value)} autoFocus/>
+          </div>
+          <div>
+            <label className="block text-[10px] font-semibold text-ink-600 tracking-widest uppercase mb-2">메모</label>
+            <textarea className="inp-base w-full px-4 py-2.5 rounded-xl text-sm resize-none h-20" value={desc} onChange={e=>setDesc(e.target.value)}/>
+          </div>
+          <div className="grid grid-cols-3 gap-2.5">
+            <div><label className="block text-[10px] font-semibold text-ink-600 tracking-widest uppercase mb-2">우선순위</label>
+              <select className="inp-base w-full px-3 py-2.5 rounded-lg text-xs cursor-pointer" value={pri} onChange={e=>setPri(e.target.value)}>
                 <option value="high">🔴 높음</option><option value="medium">🟡 보통</option><option value="low">🟢 낮음</option>
               </select></div>
-            <div><label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">마감일</label>
-              <input type="date" className={inp} value={due} onChange={e=>setDue(e.target.value)}/></div>
-            <div><label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">카테고리</label>
-              <input className={inp} placeholder="예: 업무" value={cat} onChange={e=>setCat(e.target.value)}/></div>
+            <div><label className="block text-[10px] font-semibold text-ink-600 tracking-widest uppercase mb-2">마감일</label>
+              <input type="date" className="inp-base w-full px-3 py-2.5 rounded-lg text-xs" value={due} onChange={e=>setDue(e.target.value)}/></div>
+            <div><label className="block text-[10px] font-semibold text-ink-600 tracking-widest uppercase mb-2">카테고리</label>
+              <input className="inp-base w-full px-3 py-2.5 rounded-lg text-xs" placeholder="예: 업무" value={cat} onChange={e=>setCat(e.target.value)}/></div>
           </div>
         </div>
-        <div className="flex gap-2 justify-end mt-5">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-medium text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">취소</button>
-          <button onClick={()=>{onSave({title,desc,priority:pri,dueDate:due,category:cat});onClose();}} className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-all shadow-md shadow-indigo-500/25">저장</button>
+        <div className="flex gap-2.5 justify-end mt-6">
+          <button onClick={onClose} className="px-4 py-2.5 rounded-xl text-xs font-bold tracking-widest uppercase text-ink-500 hover:text-ink-300 hover:bg-white/[0.04] transition-all">취소</button>
+          <button onClick={()=>{onSave({title,desc,priority:pri,dueDate:due,category:cat});onClose();}} className="btn-primary px-6 py-2.5 rounded-xl text-xs font-bold tracking-widest uppercase text-white">저장</button>
         </div>
       </div>
     </div>
   );
 }
 
-/* ─── CALENDAR ─── */
+/* ══ CALENDAR ══ */
 function CalendarView({todos,onToggle,onEdit,onDelete}){
   const now=new Date();
   const[calY,setCalY]=useState(now.getFullYear());
@@ -274,7 +435,7 @@ function CalendarView({todos,onToggle,onEdit,onDelete}){
   const[sel,setSel]=useState(null);
   const today=TODAY();
   const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  const DOWS=['일','월','화','수','목','금','토'];
+  const DOWS=['SUN','MON','TUE','WED','THU','FRI','SAT'];
   const tmap=useMemo(()=>{const m={};todos.forEach(t=>{if(t.dueDate){if(!m[t.dueDate])m[t.dueDate]=[];m[t.dueDate].push(t);}});return m;},[todos]);
   const cells=useMemo(()=>{
     const f=new Date(calY,calM,1),l=new Date(calY,calM+1,0);
@@ -290,14 +451,16 @@ function CalendarView({todos,onToggle,onEdit,onDelete}){
   const next=()=>{let m=calM+1,y=calY;if(m>11){m=0;y++;}setCalM(m);setCalY(y);};
   return(
     <div>
-      <div className="flex items-center justify-between mb-5">
-        <button onClick={prev} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 transition-all"><I n="chevL" s={18}/></button>
-        <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">{calY}년 {MONTHS[calM]}</h2>
-        <button onClick={next} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 transition-all"><I n="chevR" s={18}/></button>
+      <div className="flex items-center justify-between mb-6">
+        <button onClick={prev} className="p-2 rounded-lg hover:bg-white/[0.05] text-ink-500 hover:text-ink-300 transition-all border border-white/[0.05]"><I n="chevL" s={16}/></button>
+        <div className="text-center">
+          <div className="text-base font-bold text-ink-100 tracking-tight">{calY}년 {MONTHS[calM]}</div>
+        </div>
+        <button onClick={next} className="p-2 rounded-lg hover:bg-white/[0.05] text-ink-500 hover:text-ink-300 transition-all border border-white/[0.05]"><I n="chevR" s={16}/></button>
       </div>
-      <div className="grid grid-cols-7 gap-1.5 mb-1.5">
+      <div className="grid grid-cols-7 gap-1.5 mb-2">
         {DOWS.map((d,i)=>(
-          <div key={d} className={`text-center text-xs font-semibold py-1 ${i===0?'text-red-400':i===6?'text-blue-400':'text-zinc-400 dark:text-zinc-600'}`}>{d}</div>
+          <div key={d} className={`text-center text-[9px] font-bold tracking-widest py-1.5 ${i===0?'text-red-500/70':i===6?'text-blue-500/70':'text-ink-700'}`}>{d}</div>
         ))}
       </div>
       <div className="grid grid-cols-7 gap-1.5">
@@ -306,30 +469,31 @@ function CalendarView({todos,onToggle,onEdit,onDelete}){
           const isT=c.ds===today,isSel=c.ds===sel;
           return(
             <div key={idx} onClick={()=>!c.other&&setSel(isSel?null:c.ds)}
-              className={`cal-cell rounded-xl border p-2 min-h-[70px] cursor-pointer
-                ${c.other?'opacity-20 pointer-events-none border-transparent bg-transparent':'bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600'}
-                ${isT&&!c.other?'!border-indigo-400 dark:!border-indigo-500 !bg-indigo-50 dark:!bg-indigo-500/10':''}
-                ${isSel&&!isT&&!c.other?'!border-amber-400 dark:!border-amber-500/60 !bg-amber-50 dark:!bg-amber-500/10':''}`}>
-              <div className={`text-xs font-semibold mb-1.5 ${isT?'text-indigo-600 dark:text-indigo-400':c.dow===0?'text-red-400':c.dow===6?'text-blue-400':'text-zinc-700 dark:text-zinc-300'}`}>{c.day}</div>
+              className={`cal-cell rounded-xl p-2 min-h-[68px] border
+                ${c.other?'opacity-0 pointer-events-none border-transparent':'border-white/[0.05] hover:border-white/[0.1]'}
+                ${isT&&!c.other?'border-indigo-500/40':''}
+                ${isSel&&!isT&&!c.other?'border-gold-DEFAULT/40':''}`}
+              style={{background:c.other?'transparent':isT?'rgba(99,102,241,0.08)':isSel&&!isT?'rgba(201,168,76,0.06)':'rgba(255,255,255,0.02)'}}>
+              <div className={`text-xs font-bold mb-2 ${isT?'text-indigo-400':c.dow===0?'text-red-500/70':c.dow===6?'text-blue-500/70':'text-ink-400'}`}>{c.day}</div>
               <div className="flex flex-wrap gap-1">
-                {td.slice(0,4).map((t,i)=>(
-                  <span key={i} className={`w-2 h-2 rounded-full ${t.completed?'bg-zinc-300 dark:bg-zinc-700':t.priority==='high'?'bg-red-500':t.priority==='low'?'bg-emerald-500':'bg-amber-400'}`}/>
+                {td.slice(0,5).map((t,i)=>(
+                  <span key={i} className={`w-1.5 h-1.5 rounded-full ${t.completed?'bg-white/20':t.priority==='high'?'bg-red-500':t.priority==='low'?'bg-emerald-500':'bg-amber-400'}`}/>
                 ))}
-                {td.length>4&&<span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-600">+{td.length-4}</span>}
+                {td.length>5&&<span className="text-[8px] font-bold text-ink-700">+{td.length-5}</span>}
               </div>
             </div>
           );
         })}
       </div>
       {sel&&(
-        <div className="mt-4 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 p-4 fade-up">
-          <div className="flex items-center gap-2 mb-3">
-            <I n="cal" s={14} c="text-zinc-400 dark:text-zinc-500"/>
-            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">{(()=>{const d=new Date(sel+'T00:00:00');return`${d.getMonth()+1}월 ${d.getDate()}일`;})()}</h3>
-            <span className="text-xs text-zinc-400 dark:text-zinc-600">{selTodos.length}개</span>
+        <div className="mt-5 rounded-xl border border-white/[0.07] p-4 fade-up" style={{background:'rgba(17,17,19,0.8)'}}>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="gold-line w-6"/>
+            <h3 className="text-xs font-bold text-ink-300 tracking-widest uppercase">{(()=>{const d=new Date(sel+'T00:00:00');return`${d.getMonth()+1}월 ${d.getDate()}일`;})()}</h3>
+            <span className="text-[10px] text-ink-700 tracking-wide">{selTodos.length}개</span>
           </div>
           {selTodos.length===0
-            ?<p className="text-xs text-zinc-400 dark:text-zinc-600">이 날의 할 일이 없습니다.</p>
+            ?<p className="text-xs text-ink-700 text-center py-4 tracking-wide">이 날의 할 일이 없습니다.</p>
             :selTodos.map(t=><TaskItem key={t.id} task={t} onToggle={onToggle} onEdit={onEdit} onDelete={onDelete}/>)
           }
         </div>
@@ -338,51 +502,70 @@ function CalendarView({todos,onToggle,onEdit,onDelete}){
   );
 }
 
-/* ─── SIDEBAR ─── */
+/* ══ SIDEBAR ══ */
 function Sidebar({view,setView,counts,user,onLogout,darkMode,setDarkMode,mob,setMob}){
-  const NAV=[{id:'today',n:'clock',lbl:'오늘',cnt:counts.today},{id:'upcoming',n:'cal',lbl:'예정',cnt:counts.upcoming},{id:'all',n:'inbox',lbl:'전체',cnt:counts.all},{id:'completed',n:'check',lbl:'완료',cnt:counts.completed}];
-  const PRI_NAV=[{id:'high',lbl:'높음',dot:'bg-red-500'},{id:'medium',lbl:'보통',dot:'bg-amber-400'},{id:'low',lbl:'낮음',dot:'bg-emerald-500'}];
-  const nav=id=>`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${view===id?'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300':'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-200'}`;
+  const NAV=[{id:'today',n:'clock',lbl:'TODAY',sub:'오늘',cnt:counts.today},{id:'upcoming',n:'cal',lbl:'UPCOMING',sub:'예정',cnt:counts.upcoming},{id:'all',n:'inbox',lbl:'ALL TASKS',sub:'전체',cnt:counts.all},{id:'completed',n:'check',lbl:'COMPLETED',sub:'완료',cnt:counts.completed}];
+  const PRI_NAV=[{id:'high',lbl:'URGENT',dot:'bg-red-500'},{id:'medium',lbl:'NORMAL',dot:'bg-amber-400'},{id:'low',lbl:'LOW',dot:'bg-emerald-500'}];
+  const nav=id=>`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold tracking-widest uppercase transition-all cursor-pointer ${view===id?'nav-active':'nav-idle'}`;
   return(
     <>
-      {mob&&<div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={()=>setMob(false)}/>}
-      <aside className={`fixed top-0 left-0 h-full w-60 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transition-transform duration-200 lg:translate-x-0 ${mob?'translate-x-0':'-translate-x-full'}`}>
-        <div className="p-4 border-b border-zinc-100 dark:border-zinc-800">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-indigo-500/30"><I n="list" s={16} c="text-white"/></div>
-            <div className="min-w-0"><div className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">Task Planner</div><div className="text-xs text-zinc-400 dark:text-zinc-600 truncate">Hilliard Buffshire</div></div>
+      {mob&&<div className="fixed inset-0 z-30 lg:hidden" style={{background:'rgba(0,0,0,0.7)'}} onClick={()=>setMob(false)}/>}
+      <aside className={`fixed top-0 left-0 h-full w-64 sidebar-bg flex flex-col z-40 transition-transform duration-200 lg:translate-x-0 ${mob?'translate-x-0':'-translate-x-full'}`}>
+        {/* Brand */}
+        <div className="p-6 pb-5">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-9 h-9 brand-mark rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
+              <span className="text-black text-xs font-black tracking-tight">HB</span>
+            </div>
+            <div className="min-w-0">
+              <div className="text-[10px] font-black tracking-widest text-gold-DEFAULT uppercase leading-none">HILLIARD</div>
+              <div className="text-[10px] font-black tracking-widest text-gold-DEFAULT uppercase leading-none">BUFFSHIRE</div>
+            </div>
           </div>
+          <div className="gold-line"/>
+          <div className="text-[9px] font-semibold tracking-[0.25em] text-ink-700 uppercase mt-3">Task Planner</div>
         </div>
-        <div className="flex-1 overflow-y-auto no-scroll p-3 space-y-0.5">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-600 px-3 py-2">메뉴</p>
+
+        {/* Nav */}
+        <div className="flex-1 overflow-y-auto no-scroll px-3 pb-3 space-y-0.5">
+          <p className="text-[9px] font-bold tracking-[0.2em] text-ink-700 uppercase px-3 py-3">메뉴</p>
           {NAV.map(item=>(
             <button key={item.id} onClick={()=>{setView(item.id);setMob(false);}} className={nav(item.id)}>
-              <span className="flex items-center gap-2.5"><I n={item.n} s={14}/>{item.lbl}</span>
-              {item.cnt>0&&<span className={`text-xs px-1.5 py-0.5 rounded-lg font-semibold ${view===item.id?'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300':'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500'}`}>{item.cnt}</span>}
+              <span className="flex items-center gap-2.5"><I n={item.n} s={13}/>{item.sub}</span>
+              {item.cnt>0&&<span className={`text-[10px] px-2 py-0.5 rounded-lg font-bold ${view===item.id?'bg-indigo-500/20 text-indigo-300':'bg-white/[0.05] text-ink-600'}`}>{item.cnt}</span>}
             </button>
           ))}
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-600 px-3 py-2 mt-3">우선순위</p>
+          <div className="divider mx-3 my-3"/>
+          <p className="text-[9px] font-bold tracking-[0.2em] text-ink-700 uppercase px-3 py-1">우선순위</p>
           {PRI_NAV.map(item=>(
             <button key={item.id} onClick={()=>{setView(item.id);setMob(false);}} className={nav(item.id)}>
-              <span className="flex items-center gap-2.5"><span className={`w-2 h-2 rounded-full ${item.dot}`}/>{item.lbl}</span>
+              <span className="flex items-center gap-2.5"><span className={`w-1.5 h-1.5 rounded-full ${item.dot}`}/>{item.lbl}</span>
             </button>
           ))}
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 dark:text-zinc-600 px-3 py-2 mt-3">보기</p>
+          <div className="divider mx-3 my-3"/>
+          <p className="text-[9px] font-bold tracking-[0.2em] text-ink-700 uppercase px-3 py-1">보기</p>
           <button onClick={()=>{setView('calendar');setMob(false);}} className={nav('calendar')}>
-            <span className="flex items-center gap-2.5"><I n="cal" s={14}/>캘린더</span>
+            <span className="flex items-center gap-2.5"><I n="cal" s={13}/>CALENDAR</span>
           </button>
         </div>
-        <div className="p-3 border-t border-zinc-100 dark:border-zinc-800">
-          <div className="flex items-center gap-2.5 mb-3 px-1">
-            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">{(user?.displayName||'?')[0].toUpperCase()}</div>
-            <div className="flex-1 min-w-0"><div className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">{user?.displayName||'—'}</div><div className="text-xs text-zinc-400 dark:text-zinc-600">멤버</div></div>
+
+        {/* Bottom */}
+        <div className="p-4 border-t border-white/[0.04]">
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="w-8 h-8 rounded-full brand-mark flex items-center justify-center text-xs font-black text-black flex-shrink-0">
+              {(user?.displayName||'?')[0].toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-bold text-ink-200 truncate tracking-wide">{user?.displayName||'—'}</div>
+              <div className="text-[10px] text-ink-700 tracking-widest uppercase">멤버</div>
+            </div>
           </div>
           <div className="flex gap-1.5">
-            <button onClick={()=>setDarkMode(!darkMode)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-400 transition-all">
-              <I n={darkMode?'sun':'moon'} s={13}/>{darkMode?'라이트':'다크'}
+            <button onClick={()=>setDarkMode(!darkMode)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[10px] font-bold tracking-widest uppercase surface surface-hover text-ink-500 hover:text-ink-300 transition-all">
+              <I n={darkMode?'sun':'moon'} s={12}/>{darkMode?'LIGHT':'DARK'}
             </button>
-            <button onClick={onLogout} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-400 transition-all">
-              <I n="logout" s={13}/>로그아웃
+            <button onClick={onLogout} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-[10px] font-bold tracking-widest uppercase surface surface-hover text-ink-500 hover:text-red-400 transition-all">
+              <I n="logout" s={12}/>OUT
             </button>
           </div>
         </div>
@@ -391,7 +574,7 @@ function Sidebar({view,setView,counts,user,onLogout,darkMode,setDarkMode,mob,set
   );
 }
 
-/* ─── MAIN APP ─── */
+/* ══ MAIN APP ══ */
 function MainApp({user}){
   const[todos,setTodos]=useState([]);
   const[view,setView]=useState('today');
@@ -455,51 +638,74 @@ function MainApp({user}){
     completed:todos.filter(t=>t.completed).length,
   }),[todos,today]);
   const total=todos.length,done=todos.filter(t=>t.completed).length,pct=total?Math.round(done/total*100):0;
-  const LABELS={today:'오늘의 할 일',upcoming:'예정된 할 일',all:'전체 할 일',completed:'완료한 할 일',high:'높은 우선순위',medium:'보통 우선순위',low:'낮은 우선순위',calendar:'캘린더'};
+  const LABELS={today:'TODAY',upcoming:'UPCOMING',all:'ALL TASKS',completed:'COMPLETED',high:'URGENT',medium:'NORMAL',low:'LOW PRIORITY',calendar:'CALENDAR'};
   return(
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen app-bg">
       <Sidebar view={view} setView={setView} counts={counts} user={user} onLogout={logout} darkMode={darkMode} setDarkMode={setDarkMode} mob={mob} setMob={setMob}/>
-      <div className="lg:ml-60 min-h-screen flex flex-col">
-        <header className="sticky top-0 z-20 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 px-4 sm:px-6 py-3 flex items-center gap-3">
-          <button onClick={()=>setMob(true)} className="lg:hidden p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-all"><I n="menu" s={18}/></button>
-          <h1 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex-1">{LABELS[view]}</h1>
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-            <I n="search" s={13} c="text-zinc-400 dark:text-zinc-600"/>
-            <input className="bg-transparent outline-none w-28 sm:w-44 text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-600" placeholder="검색..." value={search} onChange={e=>setSearch(e.target.value)}/>
+      <div className="lg:ml-64 min-h-screen flex flex-col">
+        {/* Topbar */}
+        <header className="sticky top-0 z-20 topbar-glass px-5 sm:px-8 py-4 flex items-center gap-4">
+          <button onClick={()=>setMob(true)} className="lg:hidden p-2 rounded-lg hover:bg-white/[0.05] text-ink-600 transition-all"><I n="menu" s={17}/></button>
+          <div className="flex-1">
+            <div className="text-[10px] font-black tracking-[0.25em] text-ink-700 uppercase">HILLIARD BUFFSHIRE</div>
+            <div className="text-sm font-bold text-ink-200 tracking-widest uppercase mt-0.5">{LABELS[view]}</div>
           </div>
-          <select value={sortBy} onChange={e=>setSortBy(e.target.value)} className="px-2.5 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs font-medium text-zinc-600 dark:text-zinc-400 outline-none cursor-pointer">
-            <option value="created">최신순</option><option value="priority">우선순위순</option><option value="dueDate">마감일순</option>
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/[0.07]" style={{background:'rgba(255,255,255,0.03)'}}>
+            <I n="search" s={13} c="text-ink-700"/>
+            <input className="bg-transparent outline-none w-28 sm:w-48 text-sm text-ink-300 placeholder-ink-700" placeholder="검색..." value={search} onChange={e=>setSearch(e.target.value)}/>
+          </div>
+          <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
+            className="px-3 py-2.5 rounded-xl border border-white/[0.07] text-[10px] font-bold tracking-widest uppercase text-ink-500 hover:text-ink-300 outline-none cursor-pointer transition-all"
+            style={{background:'rgba(255,255,255,0.03)'}}>
+            <option value="created">RECENT</option>
+            <option value="priority">PRIORITY</option>
+            <option value="dueDate">DUE DATE</option>
           </select>
         </header>
-        <main className="flex-1 p-4 sm:p-6 max-w-3xl w-full mx-auto">
+
+        <main className="flex-1 p-5 sm:p-8 max-w-3xl w-full mx-auto">
+          {/* Stats */}
           {view!=='calendar'&&(
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-4 mb-5 shadow-sm">
-              <div className="grid grid-cols-4 gap-3 mb-3">
-                {[{lbl:'전체',val:total,c:'text-zinc-700 dark:text-zinc-300'},{lbl:'완료',val:done,c:'text-indigo-600 dark:text-indigo-400'},{lbl:'진행',val:total-done,c:'text-amber-500'},{lbl:'긴급',val:todos.filter(t=>t.priority==='high'&&!t.completed).length,c:'text-red-500'}].map(s=>(
+            <div className="rounded-2xl p-5 mb-6" style={{background:'rgba(255,255,255,0.02)',border:'1px solid rgba(255,255,255,0.055)'}}>
+              <div className="grid grid-cols-4 gap-4 mb-4">
+                {[
+                  {lbl:'TOTAL',val:total,c:'text-ink-300'},
+                  {lbl:'DONE',val:done,c:'text-indigo-400'},
+                  {lbl:'ACTIVE',val:total-done,c:'text-amber-400'},
+                  {lbl:'URGENT',val:todos.filter(t=>t.priority==='high'&&!t.completed).length,c:'text-red-400'},
+                ].map(s=>(
                   <div key={s.lbl} className="text-center">
-                    <div className={`text-2xl font-bold ${s.c}`}>{s.val}</div>
-                    <div className="text-xs mt-0.5 text-zinc-400 dark:text-zinc-600">{s.lbl}</div>
+                    <div className={`text-2xl font-black ${s.c}`}>{s.val}</div>
+                    <div className="text-[9px] font-bold tracking-[0.2em] text-ink-700 mt-1 uppercase">{s.lbl}</div>
                   </div>
                 ))}
               </div>
-              <div className="h-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
-                <div className="h-full bg-indigo-500 rounded-full transition-all duration-700" style={{width:`${pct}%`}}/>
+              <div className="h-px rounded-full overflow-hidden" style={{background:'rgba(255,255,255,0.05)'}}>
+                <div className="h-full prog-bar rounded-full transition-all duration-700" style={{width:`${pct}%`}}/>
               </div>
-              <div className="text-xs mt-1.5 text-right text-zinc-400 dark:text-zinc-600">{pct}% 완료</div>
+              <div className="flex justify-between mt-2">
+                <div className="text-[10px] text-ink-700 tracking-widest uppercase">Progress</div>
+                <div className="text-[10px] font-bold text-ink-500 tracking-widest">{pct}%</div>
+              </div>
             </div>
           )}
+
           {view==='calendar'?(
-            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 p-5 shadow-sm">
+            <div className="rounded-2xl p-6" style={{background:'rgba(255,255,255,0.02)',border:'1px solid rgba(255,255,255,0.055)'}}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="gold-line w-6"/>
+                <span className="text-[10px] font-black tracking-[0.2em] text-ink-600 uppercase">Calendar View</span>
+              </div>
               <CalendarView todos={todos} onToggle={toggleTask} onEdit={editFn} onDelete={deleteTask}/>
             </div>
           ):(
             <>
-              <QuickAdd onAdd={addTask} darkMode={darkMode} defDate={view==='today'?today:''}/>
+              <QuickAdd onAdd={addTask} defDate={view==='today'?today:''}/>
               {filtered.length===0?(
-                <div className="text-center py-16">
-                  <div className="text-5xl mb-3">{search?'🔍':'🎉'}</div>
-                  <div className="text-sm font-medium text-zinc-500 dark:text-zinc-500">{search?'검색 결과가 없습니다':'할 일이 없습니다!'}</div>
-                  <div className="text-xs mt-1 text-zinc-400 dark:text-zinc-600">{search?'다른 키워드로 검색해보세요.':'위에서 할 일을 추가해보세요.'}</div>
+                <div className="text-center py-20">
+                  <div className="text-4xl mb-4 opacity-20">{search?'○':'◎'}</div>
+                  <div className="text-xs font-bold tracking-[0.2em] text-ink-700 uppercase">{search?'NO RESULTS FOUND':'NO TASKS'}</div>
+                  <div className="text-xs text-ink-800 mt-2 tracking-wide">{search?'다른 키워드로 검색해보세요':'위에서 할 일을 추가해보세요'}</div>
                 </div>
               ):(
                 <div>{filtered.map(t=><TaskItem key={t.id} task={t} onToggle={toggleTask} onEdit={editFn} onDelete={deleteTask}/>)}</div>
@@ -513,17 +719,15 @@ function MainApp({user}){
   );
 }
 
-/* ─── ROOT ─── */
 function App(){
   const[user,setUser]=useState(undefined);
   useEffect(()=>{
-    const dark=localStorage.getItem('hb_dark')!=='false';
-    if(dark)document.documentElement.classList.add('dark');
+    document.documentElement.classList.add('dark');
     return auth.onAuthStateChanged(u=>setUser(u||null));
   },[]);
   if(user===undefined)return(
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
-      <div className="w-8 h-8 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"/>
+    <div className="min-h-screen flex items-center justify-center" style={{background:'#09090b'}}>
+      <div className="w-6 h-6 rounded-full border-2 border-gold-DEFAULT border-t-transparent animate-spin"/>
     </div>
   );
   if(!user)return <AuthScreen/>;
