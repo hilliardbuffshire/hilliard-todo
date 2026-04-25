@@ -279,7 +279,36 @@ input,select,textarea{font-family:inherit}
 .calPill{font-size:10.5px;padding:2px 6px;border-radius:4px;background:var(--ac-bg);color:var(--ac);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .calPill.cpDone{background:var(--bg3);color:var(--tx3);text-decoration:line-through}
 .calMore{font-size:10px;color:var(--tx3);padding-left:2px;margin-top:1px}
-.calDetail{margin-top:28px;display:none}
+.calDetail{margin-top:32px;display:none}
+.calDetPanel{
+  background:var(--card);border:1px solid var(--br);border-radius:var(--rl);
+  overflow:hidden;box-shadow:var(--sh-s);
+}
+.calDetHeader{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 24px;border-bottom:1px solid var(--br);
+  background:var(--bg2);
+}
+.calDetDate{
+  font-family:'Inter',system-ui,sans-serif;font-size:16px;font-weight:700;
+  color:var(--tx);letter-spacing:-.01em;
+}
+.calDetCount{
+  font-size:12px;color:var(--tx3);font-weight:500;margin-top:2px;
+}
+.calDetAddBtn{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;background:var(--ac);color:#fff;
+  border:none;border-radius:8px;font-size:13px;font-weight:600;
+  transition:background .15s;flex-shrink:0;
+}
+.calDetAddBtn:hover{background:var(--ac2)}
+.calDetAddBtn svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}
+.calDetBody{padding:16px 20px 20px}
+.calDetEmpty{display:flex;flex-direction:column;align-items:center;padding:40px 20px;text-align:center}
+.calDetEmpty .emIco{font-size:32px;margin-bottom:12px;opacity:.25}
+.calDetEmpty .emT{font-size:15px;opacity:.55}
+.calDetEmpty .emS{font-size:13px;color:var(--tx3);margin-top:4px}
 
 /* MODAL */
 .mOv{position:fixed;inset:0;background:rgba(0,0,0,.35);pointer-events:none;
@@ -526,12 +555,21 @@ textarea.mFi{resize:vertical;min-height:80px}
           <div class="calDays" id="calDays"></div>
         </div>
         <div class="calDetail" id="calDetail">
-          <div class="divider">
-            <div class="divL"></div>
-            <div class="divT" id="calDetTitle"></div>
-            <div class="divL"></div>
+          <div class="calDetPanel">
+            <div class="calDetHeader">
+              <div>
+                <div class="calDetDate" id="calDetTitle">날짜 선택</div>
+                <div class="calDetCount" id="calDetCount"></div>
+              </div>
+              <button class="calDetAddBtn" id="calDetAddBtn" onclick="openModalForDate()">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                이 날 추가
+              </button>
+            </div>
+            <div class="calDetBody">
+              <div id="calDetTasks"></div>
+            </div>
           </div>
-          <div id="calDetTasks" class="tList"></div>
         </div>
       </div>
 
@@ -823,7 +861,7 @@ function renderMiniCal(){
     else if(ds===selDate)el.classList.add('mcSel');
     el.textContent=d;
     if(tdMap[ds]){var dot=document.createElement('div');dot.className='mcDot';el.appendChild(dot)}
-    (function(s){el.onclick=function(){selDate=s;renderMiniCal();if(curView==='calendar'){renderCal();showCalDet(s)}}})(ds);
+    (function(s){el.onclick=function(){var d=new Date(s);selDate=s;calY=d.getFullYear();calM=d.getMonth();mcY=d.getFullYear();mcM=d.getMonth();setView('calendar');setTimeout(function(){showCalDet(s);scrollToDetail();},60);}})(ds);
     grid.appendChild(el);
   }
   var rem=(7-(first+dim)%7)%7;
@@ -856,19 +894,46 @@ function renderCal(){
     dt.slice(0,2).forEach(function(t){var p=document.createElement('div');p.className='calPill'+(t.done?' cpDone':'');p.textContent=t.text;pills.appendChild(p)});
     if(dt.length>2){var mp=document.createElement('div');mp.className='calMore';mp.textContent='+'+(dt.length-2)+'개';pills.appendChild(mp)}
     cell.appendChild(pills);
-    (function(s){cell.onclick=function(){selDate=s;renderCal();showCalDet(s);renderMiniCal()}})(ds);
+    (function(s){cell.onclick=function(){selDate=s;renderCal();showCalDet(s);renderMiniCal();setTimeout(scrollToDetail,80);}})(ds);
     days.appendChild(cell);
   }
   if(selDate)showCalDet(selDate);
 }
 function showCalDet(ds){
   var det=document.getElementById('calDetail');
-  document.getElementById('calDetTitle').textContent=(ds===todayStr()?'오늘 · ':'')+ds;
   det.style.display='block';
-  var tasks=document.getElementById('calDetTasks');tasks.innerHTML='';
+  // Header
+  var d=new Date(ds+'T00:00:00');
+  var days=['일','월','화','수','목','금','토'];
+  var label=d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+days[d.getDay()]+')';
+  if(ds===todayStr()) label='오늘 · '+label;
+  document.getElementById('calDetTitle').textContent=label;
+  // Tasks
   var dt=todos.filter(function(t){return t.date===ds});
-  if(!dt.length){tasks.innerHTML='<div class="empty" style="padding:28px"><div class="emIco" style="font-size:32px">📅</div><div class="emT" style="font-size:16px">이 날짜에 할 일이 없습니다</div></div>';return}
-  dt.forEach(function(t){tasks.appendChild(mkCard(t))});
+  var pend=dt.filter(function(t){return !t.done});
+  var done=dt.filter(function(t){return t.done});
+  var countEl=document.getElementById('calDetCount');
+  if(!dt.length) countEl.textContent='등록된 할 일이 없습니다';
+  else countEl.textContent='총 '+dt.length+'개 (완료 '+done.length+'개 · 진행 '+pend.length+'개)';
+  var container=document.getElementById('calDetTasks');
+  container.innerHTML='';
+  if(!dt.length){
+    container.innerHTML='<div class="calDetEmpty"><div class="emIco">📅</div><div class="emT">이 날짜에 할 일이 없습니다</div><div class="emS">아래 버튼으로 추가해보세요</div></div>';
+    return;
+  }
+  var list=document.createElement('div');list.className='tList';
+  dt.forEach(function(t){list.appendChild(mkCard(t))});
+  container.appendChild(list);
+}
+function openModalForDate(){
+  openModal();
+  document.getElementById('mDate').value=selDate||todayStr();
+}
+function scrollToDetail(){
+  var det=document.getElementById('calDetail');
+  if(det&&det.style.display!=='none'){
+    det.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
 }
 function calPrev(){calM--;if(calM<0){calM=11;calY--}mcM=calM;mcY=calY;renderCal();renderMiniCal()}
 function calNext(){calM++;if(calM>11){calM=0;calY++}mcM=calM;mcY=calY;renderCal();renderMiniCal()}
@@ -884,7 +949,7 @@ function setView(v){
   document.getElementById('nv-'+v).classList.add('on');
   var titles={today:'오늘의 할 일',all:'전체 할 일 목록',calendar:'캘린더',done:'완료된 항목'};
   document.getElementById('pTitle').textContent=titles[v];
-  if(v==='calendar')renderCal();
+  if(v==='calendar'){renderCal();if(selDate)setTimeout(function(){showCalDet(selDate);},80);}
   if(window.innerWidth<=780)toggleSb(false);
 }
 function filterP(p){
