@@ -133,6 +133,11 @@ input,select,textarea{font-family:inherit}
   transition:background .1s;color:var(--sb-t);font-size:13px;font-weight:500;
   opacity:.65;-webkit-tap-highlight-color:transparent;user-select:none;
 }
+/* iOS Safari: button 기본 스타일 리셋 — <button> 태그로 바꿔야 모바일 터치 신뢰성 확보 */
+button.navItem{
+  background:none;border:none;text-align:left;width:100%;
+  font-family:inherit;line-height:inherit;
+}
 .navItem:hover,.navItem:active{background:var(--sb-h)!important;opacity:.9}
 .navItem.on{background:var(--sb-a);opacity:1}
 .navIco{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
@@ -409,6 +414,8 @@ input,select,textarea{font-family:inherit}
   :root{--sw:0px}
   #sidebar{transform:translateX(-264px);width:264px;transition:transform .25s cubic-bezier(.4,0,.2,1)}
   #sidebar.mOpen{transform:translateX(0)}
+  /* 오버레이가 사이드바 영역(0~264px)을 덮지 않도록 → iOS 터치 이벤트 간섭 방지 */
+  #sbOv{left:264px}
   .mobBtn{display:flex}
   #main{margin-left:0}
   /* Header: push content right to avoid overlap with mobBtn */
@@ -497,20 +504,20 @@ input,select,textarea{font-family:inherit}
     </div>
     <div class="sbNav">
       <div class="navLbl">메뉴</div>
-      <div class="navItem on" id="nv-today" onclick="setView('today')"><span class="navIco">☀️</span>오늘의 할 일<span class="navBadge" id="b-today">0</span></div>
-      <div class="navItem" id="nv-all" onclick="setView('all')"><span class="navIco">📋</span>전체 목록<span class="navBadge" id="b-all">0</span></div>
-      <div class="navItem" id="nv-calendar" onclick="setView('calendar')"><span class="navIco">📅</span>캘린더</div>
-      <div class="navItem" id="nv-done" onclick="setView('done')"><span class="navIco">✅</span>완료된 항목<span class="navBadge" id="b-done">0</span></div>
-      <div class="navItem" id="nv-recurring" onclick="setView('recurring')"><span class="navIco">🔁</span>반복 일정<span class="navBadge" id="b-rec">0</span></div>
+      <button type="button" class="navItem on" id="nv-today" onclick="setView('today')"><span class="navIco">☀️</span>오늘의 할 일<span class="navBadge" id="b-today">0</span></button>
+      <button type="button" class="navItem" id="nv-all" onclick="setView('all')"><span class="navIco">📋</span>전체 목록<span class="navBadge" id="b-all">0</span></button>
+      <button type="button" class="navItem" id="nv-calendar" onclick="setView('calendar')"><span class="navIco">📅</span>캘린더</button>
+      <button type="button" class="navItem" id="nv-done" onclick="setView('done')"><span class="navIco">✅</span>완료된 항목<span class="navBadge" id="b-done">0</span></button>
+      <button type="button" class="navItem" id="nv-recurring" onclick="setView('recurring')"><span class="navIco">🔁</span>반복 일정<span class="navBadge" id="b-rec">0</span></button>
       <div class="navLbl" style="margin-top:8px">우선순위</div>
-      <div class="navItem" id="nv-high" onclick="filterP('high')"><span class="navIco">🔴</span>높음<span class="navBadge" id="b-hi">0</span></div>
-      <div class="navItem" id="nv-medium" onclick="filterP('medium')"><span class="navIco">🟡</span>보통<span class="navBadge" id="b-me">0</span></div>
-      <div class="navItem" id="nv-low" onclick="filterP('low')"><span class="navIco">🟢</span>낮음<span class="navBadge" id="b-lo">0</span></div>
+      <button type="button" class="navItem" id="nv-high" onclick="filterP('high')"><span class="navIco">🔴</span>높음<span class="navBadge" id="b-hi">0</span></button>
+      <button type="button" class="navItem" id="nv-medium" onclick="filterP('medium')"><span class="navIco">🟡</span>보통<span class="navBadge" id="b-me">0</span></button>
+      <button type="button" class="navItem" id="nv-low" onclick="filterP('low')"><span class="navIco">🟢</span>낮음<span class="navBadge" id="b-lo">0</span></button>
       <div class="navLbl" style="margin-top:8px">카테고리</div>
-      <div class="navItem" id="nv-work" onclick="filterCat('work')"><span class="navIco">💼</span>업무</div>
-      <div class="navItem" id="nv-personal" onclick="filterCat('personal')"><span class="navIco">👤</span>개인</div>
-      <div class="navItem" id="nv-health" onclick="filterCat('health')"><span class="navIco">💪</span>건강</div>
-      <div class="navItem" id="nv-study" onclick="filterCat('study')"><span class="navIco">📚</span>학습</div>
+      <button type="button" class="navItem" id="nv-work" onclick="filterCat('work')"><span class="navIco">💼</span>업무</button>
+      <button type="button" class="navItem" id="nv-personal" onclick="filterCat('personal')"><span class="navIco">👤</span>개인</button>
+      <button type="button" class="navItem" id="nv-health" onclick="filterCat('health')"><span class="navIco">💪</span>건강</button>
+      <button type="button" class="navItem" id="nv-study" onclick="filterCat('study')"><span class="navIco">📚</span>학습</button>
     </div>
     <div class="sbBot">
       <div class="thLbl">테마 선택</div>
@@ -1273,20 +1280,4 @@ function deleteTodo(id){if(confirm('정말 삭제하시겠습니까?'))db.collec
 var toastTmr=null;
 function toast(ico,title,sub){
   clearTimeout(toastTmr);
-  document.getElementById('aIco').textContent=ico;
-  document.getElementById('aTitle2').textContent=title;
-  document.getElementById('aSub2').textContent=sub;
-  var el=document.getElementById('aToast');el.classList.add('show');
-  toastTmr=setTimeout(function(){el.classList.remove('show')},3000);
-}
-
-/* ── Mobile Sidebar ── */
-function toggleSb(force){
-  var sb=document.getElementById('sidebar'),ov=document.getElementById('sbOv');
-  var open=sb.classList.contains('mOpen');
-  if(force===false||open){sb.classList.remove('mOpen');ov.style.display='none'}
-  else{sb.classList.add('mOpen');ov.style.display='block'}
-}
-</script>
-</body>
-</html>
+  document.getElementById('aIco').textConten
