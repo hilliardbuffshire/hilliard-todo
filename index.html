@@ -1280,4 +1280,20 @@ function deleteTodo(id){if(confirm('정말 삭제하시겠습니까?'))db.collec
 var toastTmr=null;
 function toast(ico,title,sub){
   clearTimeout(toastTmr);
-  document.getElementById('aIco').textConten
+  document.getElementById('aIco').textContent=ico;
+  document.getElementById('aTitle2').textContent=title;
+  document.getElementById('aSub2').textContent=sub;
+  var el=document.getElementById('aToast');el.classList.add('show');
+  toastTmr=setTimeout(function(){el.classList.remove('show')},3000);
+}
+
+/* ── Mobile Sidebar ── */
+function toggleSb(force){
+  var sb=document.getElementById('sidebar'),ov=document.getElementById('sbOv');
+  var open=sb.classList.contains('mOpen');
+  if(force===false||open){sb.classList.remove('mOpen');ov.style.display='none'}
+  else{sb.classList.add('mOpen');ov.style.display='block'}
+}
+</script>
+</body>
+</html>
