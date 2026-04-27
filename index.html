@@ -408,14 +408,14 @@ button.navItem{
 }
 #sbOv{
   display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,.4);z-index:190; /* just below sidebar */
+  background:rgba(0,0,0,.4);z-index:150;
+  pointer-events:none; /* 기본은 none — JS에서만 활성화 */
 }
 @media(max-width:780px){
   :root{--sw:0px}
-  #sidebar{transform:translateX(-264px);width:264px;transition:transform .25s cubic-bezier(.4,0,.2,1)}
-  #sidebar.mOpen{transform:translateX(0)}
-  /* 오버레이가 사이드바 영역(0~264px)을 덮지 않도록 → iOS 터치 이벤트 간섭 방지 */
-  #sbOv{left:264px}
+  /* transform 대신 left 사용 — iOS Safari transform 내부 touch 버그 회피 */
+  #sidebar{left:-264px;width:264px;transition:left .28s cubic-bezier(.4,0,.2,1);transform:none!important}
+  #sidebar.mOpen{left:0;transform:none!important}
   .mobBtn{display:flex}
   #main{margin-left:0}
   /* Header: push content right to avoid overlap with mobBtn */
@@ -483,7 +483,7 @@ button.navItem{
 </div>
 
 <button class="mobBtn" id="mobBtn" onclick="toggleSb()">☰</button>
-<div id="sbOv" onclick="toggleSb(false)"></div>
+<div id="sbOv"></div>
 
 <!-- APP -->
 <div id="appScreen">
@@ -1281,19 +1281,4 @@ var toastTmr=null;
 function toast(ico,title,sub){
   clearTimeout(toastTmr);
   document.getElementById('aIco').textContent=ico;
-  document.getElementById('aTitle2').textContent=title;
-  document.getElementById('aSub2').textContent=sub;
-  var el=document.getElementById('aToast');el.classList.add('show');
-  toastTmr=setTimeout(function(){el.classList.remove('show')},3000);
-}
-
-/* ── Mobile Sidebar ── */
-function toggleSb(force){
-  var sb=document.getElementById('sidebar'),ov=document.getElementById('sbOv');
-  var open=sb.classList.contains('mOpen');
-  if(force===false||open){sb.classList.remove('mOpen');ov.style.display='none'}
-  else{sb.classList.add('mOpen');ov.style.display='block'}
-}
-</script>
-</body>
-</html>
+  docu
