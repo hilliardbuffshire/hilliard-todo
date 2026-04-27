@@ -1281,4 +1281,36 @@ var toastTmr=null;
 function toast(ico,title,sub){
   clearTimeout(toastTmr);
   document.getElementById('aIco').textContent=ico;
-  docu
+  document.getElementById('aTitle2').textContent=title;
+  document.getElementById('aSub2').textContent=sub;
+  var el=document.getElementById('aToast');el.classList.add('show');
+  toastTmr=setTimeout(function(){el.classList.remove('show')},3000);
+}
+
+/* ── Mobile Sidebar ── */
+function toggleSb(force){
+  var sb=document.getElementById('sidebar'),ov=document.getElementById('sbOv');
+  var open=sb.classList.contains('mOpen');
+  if(force===false||open){
+    sb.classList.remove('mOpen');
+    ov.style.display='none';
+    ov.style.pointerEvents='none';
+  } else {
+    sb.classList.add('mOpen');
+    /* 오버레이는 사이드바 오른쪽만 덮도록 — 터치 이벤트 간섭 완전 차단 */
+    ov.style.display='block';
+    ov.style.left='264px';
+    ov.style.right='0';
+    ov.style.top='0';
+    ov.style.bottom='0';
+    ov.style.pointerEvents='auto';
+  }
+}
+/* 오버레이 탭으로 닫기 */
+document.addEventListener('DOMContentLoaded',function(){
+  var ov=document.getElementById('sbOv');
+  if(ov) ov.addEventListener('click',function(){toggleSb(false);});
+});
+</script>
+</body>
+</html>
