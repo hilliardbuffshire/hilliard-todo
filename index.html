@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
 <title>HILLIARD BUFFSHIRE · Task Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
 /* ── THEMES ── */
 :root{
@@ -738,6 +739,7 @@ button.navItem{
 </div>
 
 <script>
+window.addEventListener('load',function(){
 /* ── Firebase ── */
 firebase.initializeApp({
   apiKey:"AIzaSyDEPq3SqOCiltpmesT3vP9Jp7a_ujFou1k",
@@ -842,8 +844,8 @@ auth.onAuthStateChanged(function(u){
           var tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;
           return tb-ta;
         });
-        renderAll();
-      },function(err){console.error('Firestore:',err);renderAll()});
+        scheduleRender();
+      },function(err){console.error('Firestore:',err);scheduleRender()});
   } else {
     curUser=null;
     document.getElementById('authScreen').style.display='flex';
@@ -851,6 +853,7 @@ auth.onAuthStateChanged(function(u){
     document.getElementById('mobBtn').style.display='none';
   }
 });
+}); /* end load */
 
 /* ── Streak ── */
 function updateStreak(){
@@ -882,105 +885,108 @@ function initUI(){
 /* ── Render ── */
 var CAT_LABELS={'work':'💼 업무','personal':'👤 개인','health':'💪 건강','study':'📚 학습','other':'⭐ 기타'};
 
+/* 오늘 날짜 캐시 */
+var _today=todayStr();
+setInterval(function(){_today=todayStr();},60000);
+
+/* RAF 디바운스: Firestore 연속 이벤트를 한 프레임으로 합산 */
+var _rafId=null;
+function scheduleRender(){
+  if(_rafId)return;
+  _rafId=requestAnimationFrame(function(){_rafId=null;renderAll();});
+}
+
+/* 단일 패스 계산: 배열 1회 순회로 배지+통계 모두 처리 */
+function computeCounts(){
+  var today=_today,c={tPend:0,tDone:0,all:0,done:0,rec:0,hi:0,me:0,lo:0,pend:0,hiPend:0};
+  for(var i=0;i<todos.length;i++){
+    var t=todos[i];
+    var isT=(t.date===today)||(t.type==='recurring'&&isRecurringToday(t));
+    if(t.done){c.done++;if(isT)c.tDone++;}
+    else{
+      c.pend++;if(isT)c.tPend++;
+      if(t.type!=='recurring')c.all++;
+      if(t.priority==='high'){c.hi++;c.hiPend++;}
+      else if(t.priority==='medium')c.me++;else c.lo++;
+    }
+    if(t.type==='recurring')c.rec++;
+  }
+  return c;
+}
+
 function renderAll(){
-  updateBadges();updateStats();
-  renderToday();renderAll2();renderDone();renderRecurring();
-  if(curView==='calendar')renderCal();
-  renderMiniCal();
-}
-function updateBadges(){
-  var today=todayStr();
-  var tT=todos.filter(function(t){return !t.done&&(t.date===today||isRecurringToday(t))});
-  document.getElementById('b-today').textContent=tT.length;
-  document.getElementById('b-all').textContent=todos.filter(function(t){return !t.done&&t.type!=='recurring'}).length;
-  document.getElementById('b-done').textContent=todos.filter(function(t){return t.done}).length;
-  document.getElementById('b-rec').textContent=todos.filter(function(t){return t.type==='recurring'}).length;
-  document.getElementById('b-hi').textContent=todos.filter(function(t){return !t.done&&t.priority==='high'}).length;
-  document.getElementById('b-me').textContent=todos.filter(function(t){return !t.done&&t.priority==='medium'}).length;
-  document.getElementById('b-lo').textContent=todos.filter(function(t){return !t.done&&t.priority==='low'}).length;
-}
-function updateStats(){
-  var today=todayStr();
-  var tA=todos.filter(function(t){return t.date===today||(t.type==='recurring'&&isRecurringToday(t))});
-  var tD=tA.filter(function(t){return t.done});
+  var c=computeCounts();
+  document.getElementById('b-today').textContent=c.tPend;
+  document.getElementById('b-all').textContent=c.all;
+  document.getElementById('b-done').textContent=c.done;
+  document.getElementById('b-rec').textContent=c.rec;
+  document.getElementById('b-hi').textContent=c.hi;
+  document.getElementById('b-me').textContent=c.me;
+  document.getElementById('b-lo').textContent=c.lo;
   document.getElementById('sTotal').textContent=todos.length;
-  document.getElementById('sDone').textContent=todos.filter(function(t){return t.done}).length;
-  document.getElementById('sPend').textContent=todos.filter(function(t){return !t.done}).length;
-  document.getElementById('sHigh').textContent=todos.filter(function(t){return !t.done&&t.priority==='high'}).length;
-  var pct=tA.length>0?Math.round(tD.length/tA.length*100):0;
+  document.getElementById('sDone').textContent=c.done;
+  document.getElementById('sPend').textContent=c.pend;
+  document.getElementById('sHigh').textContent=c.hiPend;
+  var todayAll=c.tPend+c.tDone;
+  var pct=todayAll>0?Math.round(c.tDone/todayAll*100):0;
   document.getElementById('progPct').textContent=pct+'%';
   document.getElementById('progCircle').style.strokeDashoffset=113.1-(pct/100)*113.1;
+  if(curView==='today')renderToday();
+  else if(curView==='all')renderAll2();
+  else if(curView==='done')renderDone();
+  else if(curView==='recurring')renderRecurring();
+  else if(curView==='calendar')renderCal();
+  renderMiniCal();
 }
+function updateBadges(){}
+function updateStats(){}
 
-/* ── Card Builder ── */
+/* ── Card Builder (innerHTML: createElement 루프보다 빠름) ── */
+function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function mkCard(t){
+  var pc=t.priority==='high'?'var(--hi)':t.priority==='medium'?'var(--me)':'var(--lo)';
+  var pl={high:'높음',medium:'보통',low:'낮음'},pe={high:'🔴',medium:'🟡',low:'🟢'},pri=t.priority||'low';
+  var priCls=t.priority==='high'?'tHi':t.priority==='medium'?'tMe':'tLo';
+  var metaH='<span class="tTag '+priCls+'">'+pe[pri]+' '+(pl[pri]||pri)+'</span>';
+  if(t.type==='recurring')metaH+='<span class="tTag tType-recurring">🔁 반복</span>';
+  if(t.type==='note')metaH+='<span class="tTag tType-note">📝 메모</span>';
+  if(t.category&&CAT_LABELS[t.category])metaH+='<span class="tTag tCat-'+t.category+'">'+CAT_LABELS[t.category]+'</span>';
+  if(t.date&&t.type!=='recurring')metaH+='<span class="tTag tDt">📅 '+_esc(t.date)+'</span>';
+  var subH='';
+  if(t.subTasks&&t.subTasks.length){
+    subH='<div class="tSubList">';
+    for(var si=0;si<t.subTasks.length;si++){
+      var sub=t.subTasks[si];
+      subH+='<div class="tSubItem"><div class="tSubCk'+(sub.done?' ck':'')+'" data-act="sub" data-sid="'+si+'"></div><span class="tSubTxt'+(sub.done?' ck':'')+'">'+_esc(sub.text)+'</span></div>';
+    }
+    subH+='</div>';
+  }
   var card=document.createElement('div');
   card.className='tCard'+(t.done?' done':'');
-  var pc=t.priority==='high'?'var(--hi)':t.priority==='medium'?'var(--me)':'var(--lo)';
   card.style.setProperty('--pc',pc);
-
-  var chk=document.createElement('div');
-  chk.className='chk'+(t.done?' ck':'');
-  chk.onclick=function(e){e.stopPropagation();toggleDone(t.id,t.done);chk.classList.add('pop');setTimeout(function(){chk.classList.remove('pop')},200)};
-
-  var body=document.createElement('div');body.className='tBody';
-  var txt=document.createElement('div');txt.className='tTxt';txt.textContent=t.text;
-  body.appendChild(txt);
-
-  /* Description snippet */
-  if(t.note&&t.note.trim()){
-    var desc=document.createElement('div');desc.className='tDesc';
-    desc.textContent=t.note.length>60?t.note.substring(0,60)+'…':t.note;
-    body.appendChild(desc);
-  }
-  /* Time */
-  if(t.time){var tm=document.createElement('div');tm.className='tTime';tm.textContent='⏰ '+t.time;body.appendChild(tm)}
-
-  /* Meta tags */
-  var meta=document.createElement('div');meta.className='tMeta';
-  /* Priority */
-  var pl={high:'높음',medium:'보통',low:'낮음'},pe={high:'🔴',medium:'🟡',low:'🟢'};
-  var ptag=document.createElement('span');
-  ptag.className='tTag '+(t.priority==='high'?'tHi':t.priority==='medium'?'tMe':'tLo');
-  ptag.textContent=pe[t.priority]+' '+pl[t.priority];
-  meta.appendChild(ptag);
-  /* Type badges */
-  if(t.type==='recurring'){var rt=document.createElement('span');rt.className='tTag tType-recurring';rt.textContent='🔁 반복';meta.appendChild(rt)}
-  if(t.type==='note'){var nt=document.createElement('span');nt.className='tTag tType-note';nt.textContent='📝 메모';meta.appendChild(nt)}
-  /* Category */
-  if(t.category&&CAT_LABELS[t.category]){
-    var ct=document.createElement('span');ct.className='tTag tCat-'+t.category;ct.textContent=CAT_LABELS[t.category];meta.appendChild(ct);
-  }
-  /* Date (non-recurring) */
-  if(t.date&&t.type!=='recurring'){var dt=document.createElement('span');dt.className='tTag tDt';dt.textContent='📅 '+t.date;meta.appendChild(dt)}
-  body.appendChild(meta);
-
-  /* Sub-tasks */
-  if(t.subTasks&&t.subTasks.length){
-    var sl=document.createElement('div');sl.className='tSubList';
-    t.subTasks.forEach(function(sub,idx){
-      var si=document.createElement('div');si.className='tSubItem';
-      var sc=document.createElement('div');sc.className='tSubCk'+(sub.done?' ck':'');
-      sc.onclick=function(e){e.stopPropagation();toggleSubTask(t.id,idx,sub.done)};
-      var st=document.createElement('span');st.className='tSubTxt'+(sub.done?' ck':'');st.textContent=sub.text;
-      si.appendChild(sc);si.appendChild(st);sl.appendChild(si);
-    });
-    body.appendChild(sl);
-  }
-
-  /* Actions */
-  var acts=document.createElement('div');acts.className='tActs';
-  var eb=document.createElement('button');eb.className='tBtn';
-  eb.innerHTML='<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
-  eb.onclick=function(e){e.stopPropagation();openModal(t)};
-  var db2=document.createElement('button');db2.className='tBtn del';
-  db2.innerHTML='<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>';
-  db2.onclick=function(e){e.stopPropagation();deleteTodo(t.id)};
-  acts.appendChild(eb);acts.appendChild(db2);
-  card.appendChild(chk);card.appendChild(body);card.appendChild(acts);
+  card.innerHTML=
+    '<div class="chk'+(t.done?' ck':'')+'" data-act="chk"></div>'+
+    '<div class="tBody">'+
+      '<div class="tTxt">'+_esc(t.text)+'</div>'+
+      (t.note&&t.note.trim()?'<div class="tDesc">'+_esc(t.note.length>60?t.note.substring(0,60)+'…':t.note)+'</div>':'')+
+      (t.time?'<div class="tTime">⏰ '+_esc(t.time)+'</div>':'')+
+      '<div class="tMeta">'+metaH+'</div>'+subH+
+    '</div>'+
+    '<div class="tActs">'+
+      '<button type="button" class="tBtn" data-act="edit"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>'+
+      '<button type="button" class="tBtn del" data-act="del"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>'+
+    '</div>';
+  card.addEventListener('click',function(e){
+    var el=e.target.closest('[data-act]');if(!el)return;e.stopPropagation();
+    var a=el.dataset.act;
+    if(a==='chk'){toggleDone(t.id,t.done);el.classList.add('pop');setTimeout(function(){el.classList.remove('pop')},180);}
+    else if(a==='edit')openModal(t);
+    else if(a==='del')deleteTodo(t.id);
+    else if(a==='sub'){var sid=parseInt(el.dataset.sid);if(!isNaN(sid)&&t.subTasks[sid])toggleSubTask(t.id,sid,t.subTasks[sid].done);}
+  });
   return card;
 }
-function mkList(tasks){var l=document.createElement('div');l.className='tList';tasks.forEach(function(t){l.appendChild(mkCard(t))});return l}
+function mkList(tasks){var l=document.createElement('div');l.className='tList';for(var i=0;i<tasks.length;i++)l.appendChild(mkCard(tasks[i]));return l}
 function mkEmpty(ico,t,s){return '<div class="empty"><div class="emIco">'+ico+'</div><div class="emT">'+t+'</div><div class="emS">'+s+'</div></div>'}
 
 /* ── Views ── */
