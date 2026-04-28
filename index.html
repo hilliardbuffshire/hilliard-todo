@@ -441,6 +441,107 @@ button.navItem{
   .mBody{padding:12px 16px}
   .mFoot{padding:12px 16px}
 }
+
+/* ── GOALS ────────────────────────────────────────────── */
+.goalTabs{display:flex;gap:6px;padding:18px 24px 0;flex-wrap:wrap}
+.goalTab{padding:7px 16px;border-radius:20px;border:1.5px solid var(--br);background:transparent;
+  color:var(--tx2);font-size:12px;font-weight:600;letter-spacing:.06em;cursor:pointer;
+  transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;font-family:inherit}
+.goalTab.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.goalTab:active{opacity:.8}
+.goalHorizon{padding:6px 24px 2px;font-size:11px;color:var(--tx3);font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.goalGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:14px 24px 80px}
+@media(max-width:780px){.goalGrid{grid-template-columns:1fr;padding:12px 14px 80px}}
+.goalCard{background:var(--card);border:1.5px solid var(--br);border-radius:var(--r);padding:18px;
+  box-shadow:var(--sh-s);transition:box-shadow .15s;position:relative;overflow:hidden}
+.goalCard:hover{box-shadow:var(--sh)}
+.goalCard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gc,var(--ac))}
+.goalCardHead{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.goalEmoji{font-size:22px;flex-shrink:0;line-height:1}
+.goalTitle{font-size:15px;font-weight:700;color:var(--tx);flex:1;line-height:1.3}
+.goalPeriod{font-size:10px;font-weight:600;color:var(--ac);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.goalDesc{font-size:12px;color:var(--tx2);margin-bottom:12px;line-height:1.5}
+.goalProgress{margin-bottom:12px}
+.goalProgBar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:5px}
+.goalProgFill{height:100%;background:var(--ac);border-radius:3px;transition:width .3s}
+.goalProgRow{display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);font-weight:600}
+.goalActions{border-top:1px solid var(--br);padding-top:10px;margin-top:4px}
+.goalActLbl{font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.goalActItem{display:flex;align-items:center;gap:8px;padding:5px 0}
+.goalActCk{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--br2);flex-shrink:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .12s;touch-action:manipulation}
+.goalActCk.ck{background:var(--ac);border-color:var(--ac)}
+.goalActCk.ck::after{content:'✓';font-size:9px;color:#fff;font-weight:700}
+.goalActTxt{font-size:12px;color:var(--tx2);flex:1}
+.goalActTxt.ck{text-decoration:line-through;color:var(--tx3)}
+.goalCardBtns{display:flex;gap:6px;margin-top:12px}
+.goalActBtn{padding:5px 12px;border-radius:7px;border:1px solid var(--br);background:transparent;
+  color:var(--tx2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .12s}
+.goalActBtn:hover,.goalActBtn:active{background:var(--bg2)}
+.goalActBtn.del{color:var(--hi);border-color:rgba(176,58,46,.2)}
+.addGoalBtn{display:flex;align-items:center;justify-content:center;gap:8px;padding:20px;
+  border:2px dashed var(--br2);border-radius:var(--r);color:var(--tx3);font-size:13px;font-weight:600;
+  cursor:pointer;background:transparent;width:100%;font-family:inherit;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;transition:all .15s}
+.addGoalBtn:hover,.addGoalBtn:active{border-color:var(--ac);color:var(--ac);background:var(--ac-bg)}
+/* Goal Modal */
+.gmRow{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.gmLbl{font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase}
+.gmInput{padding:9px 12px;border:1.5px solid var(--br);border-radius:9px;background:var(--bg);
+  color:var(--tx);font-size:13px;font-family:inherit;outline:none;transition:border .15s}
+.gmInput:focus{border-color:var(--ac)}
+.gmTextarea{min-height:70px;resize:vertical;line-height:1.5}
+.gmColorRow{display:flex;gap:8px;flex-wrap:wrap}
+.gmColor{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;
+  transition:transform .12s,border-color .12s;touch-action:manipulation}
+.gmColor.on{border-color:var(--tx);transform:scale(1.2)}
+.gmHorizRow{display:flex;gap:6px;flex-wrap:wrap}
+.gmHorizBtn{padding:6px 14px;border-radius:16px;border:1.5px solid var(--br);background:transparent;
+  color:var(--tx2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;
+  touch-action:manipulation;transition:all .12s}
+.gmHorizBtn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.gmActList{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.gmActItem{display:flex;gap:6px;align-items:center}
+.gmActInput{flex:1;padding:7px 10px;border:1.5px solid var(--br);border-radius:7px;background:var(--bg);
+  color:var(--tx);font-size:12px;font-family:inherit;outline:none}
+.gmActInput:focus{border-color:var(--ac)}
+.gmActDel{width:24px;height:24px;border:none;background:transparent;color:var(--tx3);cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;border-radius:5px;flex-shrink:0}
+.gmActDel:active{background:var(--bg2)}
+.gmAddAct{display:flex;align-items:center;gap:6px;padding:7px 10px;border:1.5px dashed var(--br2);
+  border-radius:7px;color:var(--tx3);font-size:12px;font-weight:600;cursor:pointer;background:transparent;
+  font-family:inherit;touch-action:manipulation;transition:all .12s;margin-top:4px}
+.gmAddAct:hover,.gmAddAct:active{border-color:var(--ac);color:var(--ac)}
+
+/* ── IDEAS / BRAINSTORM ────────────────────────────────── */
+.ideaToolbar{display:flex;align-items:center;gap:10px;padding:16px 24px 0;flex-wrap:wrap}
+.ideaSearch{flex:1;min-width:160px;padding:8px 12px;border:1.5px solid var(--br);border-radius:9px;
+  background:var(--bg);color:var(--tx);font-size:13px;font-family:inherit;outline:none}
+.ideaSearch:focus{border-color:var(--ac)}
+.addIdeaBtn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--ac);color:#fff;
+  border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.addIdeaBtn:active{background:var(--ac2)}
+.ideaGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:16px 24px 80px}
+@media(max-width:780px){.ideaGrid{grid-template-columns:1fr;padding:12px 14px 80px}}
+.ideaCard{border-radius:var(--r);padding:16px;box-shadow:var(--sh-s);position:relative;min-height:120px;
+  display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s,transform .12s}
+.ideaCard:hover{box-shadow:var(--sh);transform:translateY(-2px)}
+.ideaCard:active{transform:translateY(0)}
+.ideaCardTitle{font-size:14px;font-weight:700;color:rgba(0,0,0,.75);margin-bottom:8px;line-height:1.3}
+.ideaCardBody{font-size:12px;color:rgba(0,0,0,.6);flex:1;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.ideaCardDate{font-size:10px;color:rgba(0,0,0,.4);margin-top:10px;font-weight:500}
+.ideaCardDel{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;
+  background:rgba(0,0,0,.12);border:none;color:rgba(0,0,0,.5);font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;touch-action:manipulation}
+.ideaCard:hover .ideaCardDel{opacity:1}
+@media(hover:none){.ideaCardDel{opacity:1}}
+/* Idea Modal */
+.imColorRow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.imColor{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;
+  transition:transform .12s,border-color .12s;touch-action:manipulation}
+.imColor.on{border-color:rgba(0,0,0,.4);transform:scale(1.15)}
 </style>
 </head>
 <body>
@@ -514,6 +615,9 @@ button.navItem{
       <button type="button" class="navItem" id="nv-high" onclick="filterP('high')"><span class="navIco">🔴</span>높음<span class="navBadge" id="b-hi">0</span></button>
       <button type="button" class="navItem" id="nv-medium" onclick="filterP('medium')"><span class="navIco">🟡</span>보통<span class="navBadge" id="b-me">0</span></button>
       <button type="button" class="navItem" id="nv-low" onclick="filterP('low')"><span class="navIco">🟢</span>낮음<span class="navBadge" id="b-lo">0</span></button>
+      <div class="navLbl" style="margin-top:8px">플래닝</div>
+      <button type="button" class="navItem" id="nv-goals" onclick="setView('goals')"><span class="navIco">🎯</span>목표 관리</button>
+      <button type="button" class="navItem" id="nv-ideas" onclick="setView('ideas')"><span class="navIco">💡</span>아이디어 노트</button>
       <div class="navLbl" style="margin-top:8px">카테고리</div>
       <button type="button" class="navItem" id="nv-work" onclick="filterCat('work')"><span class="navIco">💼</span>업무</button>
       <button type="button" class="navItem" id="nv-personal" onclick="filterCat('personal')"><span class="navIco">👤</span>개인</button>
@@ -618,6 +722,28 @@ button.navItem{
       <div class="vPg" id="vDone"><div id="doneSec"></div></div>
       <!-- RECURRING -->
       <div class="vPg" id="vRecurring"><div id="recurringSec"></div></div>
+
+      <!-- ── GOALS VIEW ── -->
+      <div class="vPg" id="vGoals">
+        <div class="goalTabs">
+          <button type="button" class="goalTab on" data-hz="yearly" onclick="setGoalHz(this,'yearly')">YEARLY</button>
+          <button type="button" class="goalTab" data-hz="quarterly" onclick="setGoalHz(this,'quarterly')">QUARTERLY</button>
+          <button type="button" class="goalTab" data-hz="monthly" onclick="setGoalHz(this,'monthly')">MONTHLY</button>
+          <button type="button" class="goalTab" data-hz="weekly" onclick="setGoalHz(this,'weekly')">WEEKLY</button>
+          <button type="button" class="goalTab" data-hz="daily" onclick="setGoalHz(this,'daily')">DAILY</button>
+        </div>
+        <div class="goalHorizon" id="goalHorizonLabel">장기 목표 · 연간 계획</div>
+        <div class="goalGrid" id="goalGrid"></div>
+      </div>
+
+      <!-- ── IDEAS VIEW ── -->
+      <div class="vPg" id="vIdeas">
+        <div class="ideaToolbar">
+          <input class="ideaSearch" id="ideaSearch" type="text" placeholder="아이디어 검색…" oninput="renderIdeas()"/>
+          <button type="button" class="addIdeaBtn" onclick="openIdeaModal()">✦ 새 아이디어</button>
+        </div>
+        <div class="ideaGrid" id="ideaGrid"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -736,6 +862,95 @@ button.navItem{
 <div class="aToast" id="aToast">
   <div class="aIco" id="aIco">🎉</div>
   <div><div class="aTitle" id="aTitle2">달성!</div><div class="aSub" id="aSub2">훌륭합니다</div></div>
+
+<!-- ── GOAL MODAL ── -->
+<div class="mOv" id="goalModal" style="pointer-events:none">
+  <div class="mBox" style="max-width:520px">
+    <div class="mHd">
+      <div class="mTtl" id="goalModalTitle">새 목표 추가</div>
+      <button type="button" class="mCls" onclick="closeGoalModal()">✕</button>
+    </div>
+    <div class="mBd">
+      <input type="hidden" id="goalEditId"/>
+      <div class="gmRow">
+        <div class="gmLbl">기간 (시간 범위)</div>
+        <div class="gmHorizRow">
+          <button type="button" class="gmHorizBtn on" data-hz="yearly" onclick="setGHz(this,'yearly')">YEARLY</button>
+          <button type="button" class="gmHorizBtn" data-hz="quarterly" onclick="setGHz(this,'quarterly')">QUARTERLY</button>
+          <button type="button" class="gmHorizBtn" data-hz="monthly" onclick="setGHz(this,'monthly')">MONTHLY</button>
+          <button type="button" class="gmHorizBtn" data-hz="weekly" onclick="setGHz(this,'weekly')">WEEKLY</button>
+          <button type="button" class="gmHorizBtn" data-hz="daily" onclick="setGHz(this,'daily')">DAILY</button>
+        </div>
+      </div>
+      <div class="gmRow">
+        <div class="gmLbl">목표 제목</div>
+        <input class="gmInput" id="gTitle" type="text" placeholder="달성하고 싶은 목표를 입력하세요"/>
+      </div>
+      <div class="gmRow">
+        <div class="gmLbl">설명 (선택)</div>
+        <textarea class="gmInput gmTextarea" id="gDesc" placeholder="목표에 대한 설명이나 동기를 적어보세요"></textarea>
+      </div>
+      <div class="gmRow">
+        <div class="gmLbl">목표 색상</div>
+        <div class="gmColorRow">
+          <div class="gmColor on" data-gc="#C9A96E" style="background:#C9A96E" onclick="setGColor(this,'#C9A96E')"></div>
+          <div class="gmColor" data-gc="#3D7A3D" style="background:#3D7A3D" onclick="setGColor(this,'#3D7A3D')"></div>
+          <div class="gmColor" data-gc="#1E4A8A" style="background:#1E4A8A" onclick="setGColor(this,'#1E4A8A')"></div>
+          <div class="gmColor" data-gc="#8B2FC9" style="background:#8B2FC9" onclick="setGColor(this,'#8B2FC9')"></div>
+          <div class="gmColor" data-gc="#B03A2E" style="background:#B03A2E" onclick="setGColor(this,'#B03A2E')"></div>
+          <div class="gmColor" data-gc="#1A8A6E" style="background:#1A8A6E" onclick="setGColor(this,'#1A8A6E')"></div>
+        </div>
+      </div>
+      <div class="gmRow">
+        <div class="gmLbl">실행 계획 / 액션 아이템</div>
+        <div class="gmActList" id="gActList"></div>
+        <button type="button" class="gmAddAct" onclick="addGAct()">+ 계획 추가</button>
+      </div>
+    </div>
+    <div class="mFt">
+      <button type="button" class="mBtn sec" onclick="closeGoalModal()">취소</button>
+      <button type="button" class="mBtn pri" onclick="saveGoal()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── IDEA MODAL ── -->
+<div class="mOv" id="ideaModal" style="pointer-events:none">
+  <div class="mBox" style="max-width:480px">
+    <div class="mHd">
+      <div class="mTtl" id="ideaModalTitle">새 아이디어</div>
+      <button type="button" class="mCls" onclick="closeIdeaModal()">✕</button>
+    </div>
+    <div class="mBd">
+      <input type="hidden" id="ideaEditId"/>
+      <div class="gmRow">
+        <div class="gmLbl">메모 색상</div>
+        <div class="imColorRow">
+          <div class="imColor on" data-ic="#FFF9E6" style="background:#FFF9E6" onclick="setIColor(this,'#FFF9E6')"></div>
+          <div class="imColor" data-ic="#E8F5E9" style="background:#E8F5E9" onclick="setIColor(this,'#E8F5E9')"></div>
+          <div class="imColor" data-ic="#E3F2FD" style="background:#E3F2FD" onclick="setIColor(this,'#E3F2FD')"></div>
+          <div class="imColor" data-ic="#FCE4EC" style="background:#FCE4EC" onclick="setIColor(this,'#FCE4EC')"></div>
+          <div class="imColor" data-ic="#F3E5F5" style="background:#F3E5F5" onclick="setIColor(this,'#F3E5F5')"></div>
+          <div class="imColor" data-ic="#FBE9E7" style="background:#FBE9E7" onclick="setIColor(this,'#FBE9E7')"></div>
+          <div class="imColor" data-ic="#E0F7FA" style="background:#E0F7FA" onclick="setIColor(this,'#E0F7FA')"></div>
+          <div class="imColor" data-ic="#F5F5F5" style="background:#F5F5F5" onclick="setIColor(this,'#F5F5F5')"></div>
+        </div>
+      </div>
+      <div class="gmRow">
+        <div class="gmLbl">제목</div>
+        <input class="gmInput" id="iTitle" type="text" placeholder="아이디어 제목"/>
+      </div>
+      <div class="gmRow">
+        <div class="gmLbl">내용 (자유롭게 브레인스토밍)</div>
+        <textarea class="gmInput gmTextarea" id="iBody" placeholder="아이디어, 메모, 브레인스토밍 내용을 자유롭게 적어보세요…" style="min-height:140px"></textarea>
+      </div>
+    </div>
+    <div class="mFt">
+      <button type="button" class="mBtn sec" onclick="closeIdeaModal()">취소</button>
+      <button type="button" class="mBtn pri" onclick="saveIdea()">저장</button>
+    </div>
+  </div>
+</div>
 </div>
 
 <script>
@@ -761,6 +976,9 @@ var lastAct=localStorage.getItem('hb-la')||'';
 var curTheme=localStorage.getItem('hb-t')||'signiel';
 /* Modal state */
 var mType='todo',mPri='medium',mCat=null,mFreq='daily',mDays=[1,2,3,4,5],mSubTasks=[];
+/* Goals & Ideas state */
+var goals=[],ideas=[],unsubGoals=null,unsubIdeas=null;
+var curGoalHz='yearly',gColor='#C9A96E',gActs=[],iColor='#FFF9E6';
 
 function pad(n){return String(n).padStart(2,'0')}
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
@@ -822,7 +1040,7 @@ function doSignup(){
       showErr(m);
     }).finally(function(){btn.textContent='계정 만들기';btn.disabled=false});
 }
-function doLogout(){if(unsubFn){unsubFn();unsubFn=null}auth.signOut()}
+function doLogout(){if(unsubFn){unsubFn();unsubFn=null}if(unsubGoals){unsubGoals();unsubGoals=null}if(unsubIdeas){unsubIdeas();unsubIdeas=null}auth.signOut()}
 
 auth.onAuthStateChanged(function(u){
   if(u){
@@ -834,6 +1052,19 @@ auth.onAuthStateChanged(function(u){
     document.getElementById('uName').textContent=id.toUpperCase();
     document.getElementById('uAv').textContent=(id[0]||'H').toUpperCase();
     initUI();updateStreak();
+    /* Goals listener */
+    if(unsubGoals)unsubGoals();
+    unsubGoals=db.collection('goals').where('uid','==',u.uid).onSnapshot(function(snap){
+      goals=[];snap.forEach(function(d){goals.push(Object.assign({id:d.id},d.data()))});
+      if(curView==='goals')renderGoals();
+    });
+    /* Ideas listener */
+    if(unsubIdeas)unsubIdeas();
+    unsubIdeas=db.collection('ideas').where('uid','==',u.uid).onSnapshot(function(snap){
+      ideas=[];snap.forEach(function(d){ideas.push(Object.assign({id:d.id},d.data()))});
+      ideas.sort(function(a,b){var ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;var tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});
+      if(curView==='ideas')renderIdeas();
+    });
     if(unsubFn)unsubFn();
     unsubFn=db.collection('todos').where('uid','==',u.uid)
       .onSnapshot(function(snap){
@@ -1118,12 +1349,14 @@ function setView(v){
   curView=v;priF=null;catF=null;
   document.querySelectorAll('.vPg').forEach(function(el){el.classList.remove('va')});
   document.querySelectorAll('.navItem').forEach(function(el){el.classList.remove('on')});
-  var vm={today:'vToday',all:'vAll',calendar:'vCalendar',done:'vDone',recurring:'vRecurring'};
+  var vm={today:'vToday',all:'vAll',calendar:'vCalendar',done:'vDone',recurring:'vRecurring',goals:'vGoals',ideas:'vIdeas'};
   if(vm[v]){document.getElementById(vm[v]).classList.add('va')}
   if(document.getElementById('nv-'+v))document.getElementById('nv-'+v).classList.add('on');
-  var titles={today:'오늘의 할 일',all:'전체 할 일 목록',calendar:'캘린더',done:'완료된 항목',recurring:'반복 일정'};
+  var titles={today:'오늘의 할 일',all:'전체 할 일 목록',calendar:'캘린더',done:'완료된 항목',recurring:'반복 일정',goals:'🎯 목표 관리',ideas:'💡 아이디어 노트'};
   document.getElementById('pTitle').textContent=titles[v]||v;
   if(v==='calendar'){renderCal();if(selDate)setTimeout(function(){showCalDet(selDate)},80)}
+  if(v==='goals')renderGoals();
+  if(v==='ideas')renderIdeas();
   if(window.innerWidth<=780)toggleSb(false);
 }
 function filterP(p){
@@ -1317,6 +1550,205 @@ document.addEventListener('DOMContentLoaded',function(){
   var ov=document.getElementById('sbOv');
   if(ov) ov.addEventListener('click',function(){toggleSb(false);});
 });
+/* ══════════════════════════════════════════════
+   GOALS
+══════════════════════════════════════════════ */
+var HZ_LABELS={yearly:'장기 목표 · 연간 계획',quarterly:'중기 목표 · 분기 계획',monthly:'월간 목표',weekly:'주간 목표',daily:'일간 목표 · 습관'};
+var HZ_KR={yearly:'연간',quarterly:'분기',monthly:'월간',weekly:'주간',daily:'일간'};
+
+function setGoalHz(btn,hz){
+  curGoalHz=hz;
+  document.querySelectorAll('.goalTab').forEach(function(el){el.classList.toggle('on',el.dataset.hz===hz)});
+  document.getElementById('goalHorizonLabel').textContent=HZ_LABELS[hz]||hz;
+  renderGoals();
+}
+function renderGoals(){
+  var grid=document.getElementById('goalGrid');if(!grid)return;
+  var filtered=goals.filter(function(g){return g.horizon===curGoalHz});
+  grid.innerHTML='';
+  filtered.forEach(function(g){grid.appendChild(mkGoalCard(g))});
+  /* 추가 버튼 */
+  var addBtn=document.createElement('button');addBtn.type='button';addBtn.className='addGoalBtn';
+  addBtn.innerHTML='<span style="font-size:18px">+</span> 새 '+HZ_KR[curGoalHz]+' 목표 추가';
+  addBtn.onclick=function(){openGoalModal()};
+  grid.appendChild(addBtn);
+}
+function mkGoalCard(g){
+  var acts=g.actions||[];
+  var done=acts.filter(function(a){return a.done}).length;
+  var pct=acts.length>0?Math.round(done/acts.length*100):0;
+  var card=document.createElement('div');card.className='goalCard';
+  card.style.setProperty('--gc',g.color||'var(--ac)');
+  var actsHTML='';
+  acts.forEach(function(a,i){
+    actsHTML+='<div class="goalActItem">'+
+      '<div class="goalActCk'+(a.done?' ck':'')+'" data-gid="'+g.id+'" data-idx="'+i+'" onclick="toggleGoalAct(''+g.id+'','+i+','+a.done+')"></div>'+
+      '<span class="goalActTxt'+(a.done?' ck':'')+'">'+_esc(a.text)+'</span>'+
+    '</div>';
+  });
+  card.innerHTML=
+    '<div class="goalCardHead">'+
+      '<div class="goalEmoji">🎯</div>'+
+      '<div><div class="goalTitle">'+_esc(g.title)+'</div>'+
+        '<div class="goalPeriod">'+HZ_KR[g.horizon||'yearly']+'</div>'+
+      '</div>'+
+    '</div>'+
+    (g.desc?'<div class="goalDesc">'+_esc(g.desc)+'</div>':'')+
+    (acts.length?
+      '<div class="goalProgress">'+
+        '<div class="goalProgRow"><span>진행률</span><span>'+pct+'% ('+done+'/'+acts.length+')</span></div>'+
+        '<div class="goalProgBar"><div class="goalProgFill" style="width:'+pct+'%"></div></div>'+
+      '</div>'+
+      '<div class="goalActions"><div class="goalActLbl">실행 계획</div>'+actsHTML+'</div>':'')+
+    '<div class="goalCardBtns">'+
+      '<button type="button" class="goalActBtn" onclick="openGoalModal(goals.find(function(x){return x.id===''+g.id+''}))">✏️ 수정</button>'+
+      '<button type="button" class="goalActBtn del" onclick="deleteGoal(''+g.id+'')">삭제</button>'+
+    '</div>';
+  return card;
+}
+function toggleGoalAct(gid,idx,wasDone){
+  var g=goals.find(function(x){return x.id===gid});if(!g)return;
+  var acts=(g.actions||[]).map(function(a,i){return i===idx?{text:a.text,done:!wasDone}:a});
+  db.collection('goals').doc(gid).update({actions:acts});
+}
+function deleteGoal(id){if(confirm('목표를 삭제하시겠습니까?'))db.collection('goals').doc(id).delete()}
+
+/* Goal Modal */
+function openGoalModal(g){
+  gActs=[];gColor='#C9A96E';
+  document.getElementById('goalEditId').value='';
+  document.getElementById('gTitle').value='';
+  document.getElementById('gDesc').value='';
+  document.getElementById('goalModalTitle').textContent='새 목표 추가';
+  /* horizon 기본값 = 현재 탭 */
+  setGHz(document.querySelector('.gmHorizBtn[data-hz="'+curGoalHz+'"]'),curGoalHz);
+  setGColor(document.querySelector('.gmColor[data-gc="#C9A96E"]'),'#C9A96E');
+  if(g){
+    document.getElementById('goalEditId').value=g.id;
+    document.getElementById('gTitle').value=g.title||'';
+    document.getElementById('gDesc').value=g.desc||'';
+    document.getElementById('goalModalTitle').textContent='목표 수정';
+    gColor=g.color||'#C9A96E';
+    gActs=(g.actions||[]).map(function(a){return{text:a.text,done:a.done||false}});
+    if(g.horizon)setGHz(document.querySelector('.gmHorizBtn[data-hz="'+g.horizon+'"]'),g.horizon);
+    var gc=document.querySelector('.gmColor[data-gc="'+gColor+'"]');
+    if(gc)setGColor(gc,gColor);
+  }
+  renderGActs();
+  var modal=document.getElementById('goalModal');
+  modal.style.display='flex';modal.style.pointerEvents='auto';modal.classList.add('open');
+  setTimeout(function(){document.getElementById('gTitle').focus()},80);
+}
+function closeGoalModal(){
+  var modal=document.getElementById('goalModal');
+  modal.classList.remove('open');
+  setTimeout(function(){modal.style.display='none';modal.style.pointerEvents='none';},300);
+}
+var _gHz='yearly';
+function setGHz(btn,hz){
+  _gHz=hz;
+  document.querySelectorAll('.gmHorizBtn').forEach(function(el){el.classList.toggle('on',el&&el.dataset&&el.dataset.hz===hz)});
+}
+function setGColor(el,color){
+  gColor=color;
+  document.querySelectorAll('.gmColor').forEach(function(e){e.classList.remove('on')});
+  if(el)el.classList.add('on');
+}
+function addGAct(txt){gActs.push({text:txt||'',done:false});renderGActs();setTimeout(function(){var inps=document.querySelectorAll('.gmActInput');if(inps.length)inps[inps.length-1].focus();},50)}
+function renderGActs(){
+  var list=document.getElementById('gActList');list.innerHTML='';
+  gActs.forEach(function(a,i){
+    var row=document.createElement('div');row.className='gmActItem';
+    var inp=document.createElement('input');inp.className='gmActInput';inp.type='text';inp.value=a.text;inp.placeholder='실행 계획 입력…';
+    inp.oninput=function(){gActs[i].text=this.value};
+    inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();addGAct()}};
+    var del=document.createElement('button');del.type='button';del.className='gmActDel';del.textContent='×';
+    del.onclick=function(){gActs.splice(i,1);renderGActs()};
+    row.appendChild(inp);row.appendChild(del);list.appendChild(row);
+  });
+}
+function saveGoal(){
+  var title=document.getElementById('gTitle').value.trim();
+  if(!title){document.getElementById('gTitle').focus();return}
+  if(!curUser)return;
+  var acts=gActs.filter(function(a){return a.text.trim()}).map(function(a){return{text:a.text.trim(),done:a.done}});
+  var data={uid:curUser.uid,title:title,desc:document.getElementById('gDesc').value.trim(),horizon:_gHz,color:gColor,actions:acts};
+  var eid=document.getElementById('goalEditId').value;
+  if(eid){db.collection('goals').doc(eid).update(data).then(closeGoalModal)}
+  else{data.createdAt=firebase.firestore.FieldValue.serverTimestamp();db.collection('goals').add(data).then(closeGoalModal)}
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeGoalModal();closeIdeaModal()}});
+
+/* ══════════════════════════════════════════════
+   IDEAS / BRAINSTORMING
+══════════════════════════════════════════════ */
+function renderIdeas(){
+  var grid=document.getElementById('ideaGrid');if(!grid)return;
+  var q=(document.getElementById('ideaSearch')||{}).value||'';
+  var filtered=q?ideas.filter(function(x){return (x.title||'').toLowerCase().includes(q.toLowerCase())||(x.body||'').toLowerCase().includes(q.toLowerCase())}):ideas;
+  grid.innerHTML='';
+  if(!filtered.length){
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--tx3)"><div style="font-size:40px;margin-bottom:12px">💡</div><div style="font-size:15px;font-weight:600">아이디어가 없습니다</div><div style="font-size:13px;margin-top:6px">새 아이디어를 추가해 브레인스토밍을 시작해보세요</div></div>';
+    return;
+  }
+  filtered.forEach(function(idea){grid.appendChild(mkIdeaCard(idea))});
+}
+function mkIdeaCard(idea){
+  var card=document.createElement('div');card.className='ideaCard';
+  card.style.background=idea.color||'#FFF9E6';
+  var dt=idea.createdAt&&idea.createdAt.toDate?idea.createdAt.toDate().toLocaleDateString('ko-KR',{year:'numeric',month:'short',day:'numeric'}):'';
+  card.innerHTML=
+    '<button type="button" class="ideaCardDel" onclick="event.stopPropagation();deleteIdea(''+idea.id+'')">✕</button>'+
+    '<div class="ideaCardTitle">'+_esc(idea.title||'제목 없음')+'</div>'+
+    '<div class="ideaCardBody">'+_esc(idea.body||'')+'</div>'+
+    (dt?'<div class="ideaCardDate">'+dt+'</div>':'');
+  card.onclick=function(){openIdeaModal(idea)};
+  return card;
+}
+function deleteIdea(id){if(confirm('아이디어를 삭제하시겠습니까?'))db.collection('ideas').doc(id).delete()}
+
+/* Idea Modal */
+function openIdeaModal(idea){
+  iColor='#FFF9E6';
+  document.getElementById('ideaEditId').value='';
+  document.getElementById('iTitle').value='';
+  document.getElementById('iBody').value='';
+  document.getElementById('ideaModalTitle').textContent='새 아이디어';
+  setIColor(document.querySelector('.imColor[data-ic="#FFF9E6"]'),'#FFF9E6');
+  if(idea){
+    document.getElementById('ideaEditId').value=idea.id;
+    document.getElementById('iTitle').value=idea.title||'';
+    document.getElementById('iBody').value=idea.body||'';
+    document.getElementById('ideaModalTitle').textContent='아이디어 수정';
+    iColor=idea.color||'#FFF9E6';
+    var ic=document.querySelector('.imColor[data-ic="'+iColor+'"]');
+    if(ic)setIColor(ic,iColor);
+  }
+  var modal=document.getElementById('ideaModal');
+  modal.style.display='flex';modal.style.pointerEvents='auto';modal.classList.add('open');
+  setTimeout(function(){document.getElementById('iTitle').focus()},80);
+}
+function closeIdeaModal(){
+  var modal=document.getElementById('ideaModal');
+  modal.classList.remove('open');
+  setTimeout(function(){modal.style.display='none';modal.style.pointerEvents='none';},300);
+}
+function setIColor(el,color){
+  iColor=color;
+  document.querySelectorAll('.imColor').forEach(function(e){e.classList.remove('on')});
+  if(el)el.classList.add('on');
+}
+function saveIdea(){
+  var title=document.getElementById('iTitle').value.trim();
+  var body=document.getElementById('iBody').value.trim();
+  if(!title&&!body){document.getElementById('iTitle').focus();return}
+  if(!curUser)return;
+  var data={uid:curUser.uid,title:title,body:body,color:iColor};
+  var eid=document.getElementById('ideaEditId').value;
+  if(eid){db.collection('ideas').doc(eid).update(data).then(closeIdeaModal)}
+  else{data.createdAt=firebase.firestore.FieldValue.serverTimestamp();db.collection('ideas').add(data).then(closeIdeaModal)}
+}
+
 </script>
 </body>
 </html>
