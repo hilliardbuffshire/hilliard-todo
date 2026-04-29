@@ -1,1088 +1,2176 @@
 <!DOCTYPE html>
 
+
+
 <html lang="ko">
+
+
 
 <head>
 
+
+
 <meta charset="UTF-8"/>
+
+
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1"/>
 
+
+
 <title>HILLIARD BUFFSHIRE · Task Planner</title>
+
+
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 
+
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+
+
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
-<style>:root{--bg:#FAF8F4;--bg2:#F5F0E8;--bg3:#EDE5D8;--card:#FFF;--sb:#18140F;--sb-t:#F5F0E8;--sb-m:#7A6A55;--sb-h:rgba(201,169,110,.10);--sb-a:rgba(201,169,110,.18);--tx:#1A1612;--tx2:#6B5E4C;--tx3:#A89880;--ac:#C9A96E;--ac2:#A88040;--ac-bg:rgba(201,169,110,.10);--ac-br:rgba(201,169,110,.28);--br:#E8E0D4;--br2:#D8CCBC;--sh-s:0 1px 4px rgba(26,22,18,.07);--sh:0 4px 20px rgba(26,22,18,.09);--sh-l:0 8px 40px rgba(26,22,18,.13);--hi:#B03A2E;--hi-bg:#FEF0EE;--me:#B7770D;--me-bg:#FEF9E8;--lo:#276749;--lo-bg:#EEF6EF;--done:#C0B0A0;--r:12px;--rl:18px;--sw:264px}[data-theme="obsidian"]{--bg:#0E0C09;--bg2:#17140F;--bg3:#201C16;--card:#1E1B15;--sb:#0A0907;--sb-t:#F5F0E8;--sb-m:#5E5040;--sb-h:rgba(201,169,110,.07);--sb-a:rgba(201,169,110,.14);--tx:#F0EBE2;--tx2:#C4B49A;--tx3:#7A6A55;--ac:#C9A96E;--ac2:#E8C870;--ac-bg:rgba(201,169,110,.08);--ac-br:rgba(201,169,110,.2);--br:#2E2820;--br2:#3E3428;--sh-s:0 1px 4px rgba(0,0,0,.35);--sh:0 4px 20px rgba(0,0,0,.45);--sh-l:0 8px 40px rgba(0,0,0,.55);--hi:#E07070;--hi-bg:rgba(224,112,112,.10);--me:#FFBA6B;--me-bg:rgba(255,186,107,.10);--lo:#7CC87C;--lo-bg:rgba(124,200,124,.10);--done:#4A4030}[data-theme="blanc"]{--bg:#FFF;--bg2:#F8F8F6;--bg3:#EFEFEC;--card:#FFF;--sb:#191919;--sb-t:#FFF;--sb-m:#767676;--sb-h:rgba(255,255,255,.07);--sb-a:rgba(255,255,255,.14);--tx:#191919;--tx2:#696969;--tx3:#ADADAD;--ac:#191919;--ac2:#333;--ac-bg:rgba(25,25,25,.06);--ac-br:rgba(25,25,25,.14);--br:#E9E9E7;--br2:#D9D9D7;--sh-s:0 1px 4px rgba(0,0,0,.04);--sh:0 4px 20px rgba(0,0,0,.07);--sh-l:0 8px 40px rgba(0,0,0,.09);--hi:#E53E3E;--hi-bg:#FFF5F5;--me:#C05621;--me-bg:#FFFAF0;--lo:#276749;--lo-bg:#F0FFF4;--done:#C0C0C0}[data-theme="jade"]{--bg:#F4F7F4;--bg2:#EBF0EB;--bg3:#DEE8DE;--card:#FFF;--sb:#182818;--sb-t:#F4F7F4;--sb-m:#6A8A6A;--sb-h:rgba(70,160,70,.10);--sb-a:rgba(70,160,70,.20);--tx:#1A2B1A;--tx2:#4A6A4A;--tx3:#8AAA8A;--ac:#3D7A3D;--ac2:#2D6A2D;--ac-bg:rgba(61,122,61,.09);--ac-br:rgba(61,122,61,.22);--br:#D8E8D8;--br2:#C4D8C4;--sh-s:0 1px 4px rgba(26,43,26,.06);--sh:0 4px 20px rgba(26,43,26,.09);--sh-l:0 8px 40px rgba(26,43,26,.13);--hi:#C62828;--hi-bg:#FFEBEE;--me:#E65100;--me-bg:#FFF3E0;--lo:#1B5E20;--lo-bg:#E8F5E9;--done:#9ABB9A}[data-theme="sapphire"]{--bg:#F0F4F8;--bg2:#E2EAF4;--bg3:#D0DFEE;--card:#FFF;--sb:#0D1B2E;--sb-t:#F0F4F8;--sb-m:#5A7898;--sb-h:rgba(100,160,220,.10);--sb-a:rgba(100,160,220,.20);--tx:#0D1B2E;--tx2:#3A5472;--tx3:#8AA0B8;--ac:#1E4A8A;--ac2:#153A6E;--ac-bg:rgba(30,74,138,.08);--ac-br:rgba(30,74,138,.20);--br:#D0DCE8;--br2:#BCCCE0;--sh-s:0 1px 4px rgba(13,27,46,.06);--sh:0 4px 20px rgba(13,27,46,.09);--sh-l:0 8px 40px rgba(13,27,46,.13);--hi:#B71C1C;--hi-bg:#FFEBEE;--me:#E65100;--me-bg:#FFF3E0;--lo:#1A237E;--lo-bg:#E8EAF6;--done:#8AA0B8}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;overflow:hidden}body{font-family:'Inter','Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;transition:background .15s,color .15s}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--br2);border-radius:4px}button,a{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}input,select,textarea{font-family:inherit}#authScreen{position:fixed;inset:0;display:flex;z-index:200;background:var(--bg)}.aL{width:44%;background:var(--sb);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 48px;position:relative;overflow:hidden;flex-shrink:0}.aL::before{content:'';position:absolute;top:-40%;left:-30%;width:160%;height:160%;background:radial-gradient(ellipse at 55% 40%,rgba(201,169,110,.07) 0%,transparent 65%);pointer-events:none}.aL::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,.3),transparent)}.aMark{width:60px;height:60px;border:1.5px solid rgba(201,169,110,.6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;background:rgba(201,169,110,.06)}.aMark svg{width:28px;height:28px;stroke:#C9A96E;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.aBrand{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;color:#C9A96E;letter-spacing:.12em;text-align:center;line-height:1.35;margin-bottom:10px}.aSub{font-size:11px;color:var(--sb-m);letter-spacing:.2em;text-transform:uppercase;text-align:center;margin-bottom:52px}.aFeats{list-style:none;width:100%;max-width:260px;display:flex;flex-direction:column;gap:18px}.aFeat{display:flex;align-items:center;gap:14px;font-size:13.5px;color:var(--sb-t);opacity:.72;line-height:1.5}.aDot{width:5px;height:5px;border-radius:50%;background:#C9A96E;flex-shrink:0}.aCopy{position:absolute;bottom:28px;font-size:10px;color:var(--sb-m);letter-spacing:.18em;text-transform:uppercase}.aR{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 56px;background:var(--bg)}.aWrap{width:100%;max-width:360px}.aTitle{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:var(--tx);margin-bottom:8px}.aDesc{font-size:14px;color:var(--tx3);margin-bottom:32px;line-height:1.65}.aTabs{display:flex;border-bottom:1px solid var(--br);margin-bottom:28px}.aTab{padding:10px 22px;font-size:14px;font-weight:500;color:var(--tx3);cursor:pointer;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;transition:all .2s;-webkit-tap-highlight-color:transparent}.aTab.on{color:var(--ac);border-bottom-color:var(--ac)}.fg{margin-bottom:16px}.fl{display:block;font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:7px;letter-spacing:.07em;text-transform:uppercase}.fi{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--br);border-radius:10px;font-size:15px;color:var(--tx);outline:none;transition:border-color .2s,box-shadow .2s}.fi:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-bg)}.fi::placeholder{color:var(--tx3)}.btnAuth{width:100%;padding:14px;background:var(--ac);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;letter-spacing:.03em;margin-top:6px;transition:background .15s,transform .1s;-webkit-tap-highlight-color:transparent}.btnAuth:active{transform:scale(.98)}.aErr{background:#FEF0EE;border:1px solid #FCDDD9;color:#B03A2E;border-radius:8px;padding:11px 14px;font-size:13px;margin-top:14px;display:none}#appScreen{display:none;position:fixed;inset:0}#sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--sb);display:flex;flex-direction:column;z-index:200;overflow:hidden;transition:transform .25s}.sbH{padding:26px 20px 18px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0}.sbBrand{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#C9A96E;letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px}.sbSub{font-size:12px;color:var(--sb-m);letter-spacing:.18em;text-transform:uppercase}.mCal{padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0}.mcH{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.mcT{font-size:14px;font-weight:600;color:var(--sb-t)}.mcNavs{display:flex;gap:4px}.mcBtn{width:22px;height:22px;border:none;background:rgba(255,255,255,.06);border-radius:5px;color:var(--sb-t);display:flex;align-items:center;justify-content:center;font-size:12px;transition:background .15s;-webkit-tap-highlight-color:transparent}.mcBtn:hover,.mcBtn:active{background:rgba(255,255,255,.14)}.mcGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}.mcDow{font-size:9px;color:var(--sb-m);text-align:center;padding:3px 0;font-weight:700}.mcDay{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--sb-t);border-radius:5px;cursor:pointer;touch-action:manipulation;position:relative;gap:2px;-webkit-tap-highlight-color:transparent}.mcDay:active{background:var(--sb-a)!important}.mcDay.mcToday{background:#C9A96E;color:#fff;font-weight:700}.mcDay.mcSel:not(.mcToday){background:var(--sb-a)}.mcDay.mcOther{color:var(--sb-m);opacity:.35}.mcDot{width:3px;height:3px;border-radius:50%;background:#C9A96E;opacity:.8}.mcDay.mcToday .mcDot{background:#fff}.sbNav{flex:1;padding:10px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;-webkit-overflow-scrolling:touch}.navLbl{font-size:13px;font-weight:700;color:var(--sb-m);letter-spacing:.18em;text-transform:uppercase;padding:10px 8px 5px}.navItem{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:8px;cursor:pointer;touch-action:manipulation;transition:background .1s;color:var(--sb-t);font-size:17px;font-weight:500;opacity:.65;-webkit-tap-highlight-color:transparent;user-select:none}button.navItem{background:none;border:none;text-align:left;width:100%;font-family:inherit;line-height:inherit}.navItem:hover,.navItem:active{background:var(--sb-h)!important;opacity:.9}.navItem.on{background:var(--sb-a);opacity:1}.navIco{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}.navBadge{margin-left:auto;font-size:13px;font-weight:600;color:#C9A96E;background:rgba(201,169,110,.15);padding:2px 7px;border-radius:10px;min-width:20px;text-align:center}.sbBot{padding:14px 20px 20px;border-top:1px solid rgba(255,255,255,.05);flex-shrink:0}.thLbl{font-size:9px;font-weight:700;color:var(--sb-m);letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}.thRow{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}.thSw{width:24px;height:24px;border-radius:50%;cursor:pointer;touch-action:manipulation;border:2px solid transparent;transition:transform .15s,border-color .15s;-webkit-tap-highlight-color:transparent}.thSw:active{transform:scale(1.2)}.thSw.on{border-color:rgba(255,255,255,.7)}.thSw[data-t="signiel"]{background:conic-gradient(#C9A96E 180deg,#FAF8F4 180deg)}.thSw[data-t="obsidian"]{background:conic-gradient(#C9A96E 180deg,#0E0C09 180deg)}.thSw[data-t="blanc"]{background:conic-gradient(#191919 180deg,#FFF 180deg)}.thSw[data-t="jade"]{background:conic-gradient(#3D7A3D 180deg,#F4F7F4 180deg)}.thSw[data-t="sapphire"]{background:conic-gradient(#1E4A8A 180deg,#F0F4F8 180deg)}.sbUser{display:flex;align-items:center;gap:10px}.uAv{width:32px;height:32px;border-radius:50%;background:#C9A96E;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}.uInfo{flex:1;min-width:0}.uName{font-size:12px;font-weight:700;color:var(--sb-t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.uSub{font-size:10px;color:var(--sb-m)}.logBtn{width:28px;height:28px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:transparent;color:var(--sb-m);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;-webkit-tap-highlight-color:transparent}.logBtn:hover,.logBtn:active{background:rgba(255,255,255,.1);color:var(--sb-t)}.logBtn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}#main{margin-left:var(--sw);height:100vh;overflow-y:auto;background:var(--bg);-webkit-overflow-scrolling:touch}.pH{padding:22px 36px 18px;border-bottom:1px solid var(--br);background:var(--card);position:sticky;top:0;z-index:10}.pHR{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}.pDate{font-size:15px;font-weight:600;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}.pTitle{font-family:'Inter',system-ui,sans-serif;font-size:29px;font-weight:700;color:var(--tx);line-height:1.2;letter-spacing:-.03em}.btnAdd{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--ac);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;transition:background .15s;-webkit-tap-highlight-color:transparent;white-space:nowrap}.btnAdd:active{background:var(--ac2)}.btnAdd svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}.statsBar{display:flex;align-items:center;flex-wrap:wrap;gap:0}.statC{padding:0 18px;border-right:1px solid var(--br)}.statC:first-child{padding-left:0}.statV{font-size:26px;font-weight:700;color:var(--tx);line-height:1;margin-bottom:3px}.statL{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em}.progW{display:flex;align-items:center;gap:12px;padding-left:18px;margin-left:auto}.progR{position:relative;width:48px;height:48px;flex-shrink:0}.progR svg{transform:rotate(-90deg)}.progT{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--ac)}.progLbl{font-size:12px;font-weight:600;color:var(--tx);margin-bottom:4px}.streakPill{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--ac);background:var(--ac-bg);border:1px solid var(--ac-br);padding:3px 9px;border-radius:20px;font-weight:500}.cArea{padding:24px 36px 80px}.chipRow{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}.chip{padding:6px 14px;border-radius:20px;font-size:15px;font-weight:500;cursor:pointer;touch-action:manipulation;border:1px solid var(--br);background:var(--card);color:var(--tx2);transition:all .15s;-webkit-tap-highlight-color:transparent}.chip:active,.chip:hover{border-color:var(--ac-br);color:var(--ac)}.chip.on{background:var(--ac);border-color:var(--ac);color:#fff}.secLbl{font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--br)}.divider{display:flex;align-items:center;gap:12px;margin:22px 0 12px}.divL{flex:1;height:1px;background:var(--br)}.divT{font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}.tList{display:flex;flex-direction:column;gap:6px;margin-bottom:24px}.tCard{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--br);border-radius:var(--r);transition:border-color .15s,box-shadow .15s;position:relative;overflow:hidden}.tCard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--pc,var(--br))}.tCard:active{border-color:var(--ac-br);box-shadow:var(--sh)}.tCard.done{opacity:.48}.tCard.done .tTxt{text-decoration:line-through;color:var(--done)}.chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--br2);background:var(--bg);cursor:pointer;touch-action:manipulation;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;-webkit-tap-highlight-color:transparent}.chk:active{border-color:var(--ac)}.chk.ck{background:var(--ac);border-color:var(--ac)}.chk.ck::after{content:'';width:10px;height:7px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px);display:block}@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}.chk.pop{animation:pop .2s ease}.tBody{flex:1;min-width:0}.tTxt{font-size:16px;font-weight:500;color:var(--tx);margin-bottom:5px;line-height:1.45;word-break:break-word}.tMeta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}.tTag{display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:500;padding:2px 7px;border-radius:9px}.tHi{color:var(--hi);background:var(--hi-bg)}.tMe{color:var(--me);background:var(--me-bg)}.tLo{color:var(--lo);background:var(--lo-bg)}.tDt{color:var(--tx3);background:var(--bg2)}.tNo{color:var(--tx3);background:var(--bg2)}.tCat-work{color:#1E5AA8;background:#EEF4FF}.tCat-personal{color:#7B3FA6;background:#F5EEFF}.tCat-health{color:#166534;background:#DCFCE7}.tCat-study{color:#92400E;background:#FEF3C7}.tCat-other{color:#64748B;background:#F1F5F9}[data-theme="obsidian"] .tCat-work{color:#7EB8E8;background:rgba(126,184,232,.12)}[data-theme="obsidian"] .tCat-personal{color:#C4A0E8;background:rgba(196,160,232,.12)}[data-theme="obsidian"] .tCat-health{color:#7CC87C;background:rgba(124,200,124,.12)}[data-theme="obsidian"] .tCat-study{color:#FFBA6B;background:rgba(255,186,107,.12)}[data-theme="obsidian"] .tCat-other{color:#9AABB8;background:rgba(154,171,184,.12)}.tType-recurring{color:#C9A96E;background:rgba(201,169,110,.12);font-size:10px}.tType-note{color:var(--tx3);background:var(--bg3);font-size:10px}.tDesc{font-size:14px;color:var(--tx3);margin-top:4px;line-height:1.5;word-break:break-word}.tTime{font-size:13px;color:var(--tx3);margin-top:2px}.tSubList{margin-top:8px;display:flex;flex-direction:column;gap:4px}.tSubItem{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2)}.tSubCk{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--br2);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:all .15s;-webkit-tap-highlight-color:transparent}.tSubCk.ck{background:var(--ac);border-color:var(--ac)}.tSubCk.ck::after{content:'';width:8px;height:5px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px);display:block}.tSubTxt.ck{text-decoration:line-through;color:var(--tx3)}.tActs{display:flex;gap:4px;opacity:0;transition:opacity .1s;flex-shrink:0}.tCard:hover .tActs{opacity:1}@media(hover:none){.tActs{opacity:1}}.tBtn{width:28px;height:28px;border:1px solid var(--br);border-radius:7px;background:var(--bg);color:var(--tx3);display:flex;align-items:center;justify-content:center;transition:all .15s;-webkit-tap-highlight-color:transparent}.tBtn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tBtn:active{border-color:var(--ac-br);color:var(--ac);background:var(--ac-bg)}.tBtn.del:active{border-color:var(--hi);color:var(--hi);background:var(--hi-bg)}.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 32px;text-align:center}.emIco{font-size:38px;margin-bottom:16px;opacity:.28}.emT{font-size:19px;font-weight:500;color:var(--tx);opacity:.55;margin-bottom:5px}.emS{font-size:15px;color:var(--tx3)}.calHead{display:flex;align-items:center;gap:10px;margin-bottom:20px}.calNav{width:34px;height:34px;border:1px solid var(--br);border-radius:8px;background:var(--card);color:var(--tx2);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;-webkit-tap-highlight-color:transparent}.calNav:active{border-color:var(--ac-br);color:var(--ac)}.calMoT{font-family:'Inter',system-ui,sans-serif;font-size:20px;font-weight:700;color:var(--tx);flex:1;letter-spacing:-.02em}.calTodayBtn{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--br);border-radius:8px;background:var(--card);color:var(--tx2);transition:all .15s;-webkit-tap-highlight-color:transparent}.calTodayBtn:active{border-color:var(--ac-br);color:var(--ac)}.calGrid{background:var(--card);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden}.calDowRow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg2);border-bottom:1px solid var(--br)}.calDow{padding:10px 6px;text-align:center;font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase}.calDays{display:grid;grid-template-columns:repeat(7,1fr)}.calCell{min-height:80px;padding:8px 8px 6px;border-right:1px solid var(--br);border-bottom:1px solid var(--br);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.calCell:nth-child(7n){border-right:none}.calCell:active{background:var(--bg2)}.calCell.cToday .calDN{background:var(--ac);color:#fff;border-radius:50%}.calCell.cSel{background:var(--ac-bg)}.calCell.cOther{opacity:.25}.calDN{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--tx);margin-bottom:5px}.calPills{display:flex;flex-direction:column;gap:2px}.calPill{font-size:10px;padding:2px 5px;border-radius:3px;background:var(--ac-bg);color:var(--ac);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.calPill.cpDone{background:var(--bg3);color:var(--tx3);text-decoration:line-through}.calMore{font-size:9px;color:var(--tx3);margin-top:1px;padding-left:2px}.calDetail{margin-top:28px;display:none}.calDetPanel{background:var(--card);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh-s)}.calDetHeader{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--br);background:var(--bg2)}.calDetDate{font-size:15px;font-weight:700;color:var(--tx);letter-spacing:-.01em}.calDetCount{font-size:12px;color:var(--tx3);margin-top:2px}.calDetAddBtn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;transition:background .15s;flex-shrink:0;-webkit-tap-highlight-color:transparent}.calDetAddBtn:active{background:var(--ac2)}.calDetAddBtn svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}.calDetBody{padding:14px 18px 18px}.calDetEmpty{display:flex;flex-direction:column;align-items:center;padding:36px 20px;text-align:center}.mOv{position:fixed;inset:0;background:rgba(0,0,0,.4);pointer-events:none;z-index:500;display:none;align-items:flex-end;justify-content:center}.mOv.open{display:flex;pointer-events:auto;animation:fIn .15s ease}@keyframes fIn{from{opacity:0}to{opacity:1}}@media(min-width:600px){.mOv{align-items:center}}.mBox{background:var(--card);border:1px solid var(--br);border-radius:var(--rl) var(--rl) 0 0;padding:0;width:100%;max-width:560px;box-shadow:var(--sh-l);animation:sUp .2s ease;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}@media(min-width:600px){.mBox{border-radius:var(--rl);max-height:88vh}}@keyframes sUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}.mHead{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between}.mHead-drag{width:40px;height:4px;border-radius:2px;background:var(--br2);margin:0 auto 16px;display:block}@media(min-width:600px){.mHead-drag{display:none}}.mTypeRow{display:flex;gap:6px;margin-bottom:20px;padding:0 24px}.mTypeBtn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);color:var(--tx2);font-size:13px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .15s;-webkit-tap-highlight-color:transparent}.mTypeBtn:active,.mTypeBtn.on{background:var(--ac-bg);border-color:var(--ac-br);color:var(--ac)}.mTitleRow{padding:0 24px 16px;border-bottom:1px solid var(--br)}.mTitleInput{width:100%;font-size:18px;font-weight:600;color:var(--tx);background:transparent;border:none;outline:none;line-height:1.4;resize:none;padding:0}.mTitleInput::placeholder{color:var(--tx3)}.mBody{padding:16px 24px}.mRow{display:flex;align-items:flex-start;gap:14px;padding:10px 0;border-bottom:1px solid var(--br)}.mRow:last-child{border-bottom:none}.mRowLabel{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--tx3);letter-spacing:.04em;width:70px;flex-shrink:0;padding-top:2px}.mRowLabel svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}.mRowVal{flex:1;min-width:0}.priPicker{display:flex;gap:6px;flex-wrap:wrap}.priBtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .15s;color:var(--tx2);-webkit-tap-highlight-color:transparent}.priBtn:active{background:var(--ac-bg)}.priBtn.on[data-p="high"]{background:var(--hi-bg);border-color:var(--hi);color:var(--hi)}.priBtn.on[data-p="medium"]{background:var(--me-bg);border-color:var(--me);color:var(--me)}.priBtn.on[data-p="low"]{background:var(--lo-bg);border-color:var(--lo);color:var(--lo)}.catPicker{display:flex;gap:6px;flex-wrap:wrap}.catBtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .15s;color:var(--tx2);-webkit-tap-highlight-color:transparent}.catBtn.on[data-c="work"]{background:#EEF4FF;border-color:#93B4E8;color:#1E5AA8}.catBtn.on[data-c="personal"]{background:#F5EEFF;border-color:#C4A0E8;color:#7B3FA6}.catBtn.on[data-c="health"]{background:#DCFCE7;border-color:#86EFAC;color:#166534}.catBtn.on[data-c="study"]{background:#FEF3C7;border-color:#FDE68A;color:#92400E}.catBtn.on[data-c="other"]{background:#F1F5F9;border-color:#CBD5E1;color:#475569}.dtRow{display:flex;gap:8px;flex-wrap:wrap}.mFiSm{padding:7px 12px;background:var(--bg2);border:1px solid var(--br);border-radius:8px;font-size:13px;color:var(--tx);outline:none;transition:border-color .2s;-webkit-appearance:none}.mFiSm:focus{border-color:var(--ac)}.recurSec{display:none}.recurSec.show{display:block}.recurRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.recurFreq{display:flex;gap:6px;margin-bottom:10px}.freqBtn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation;color:var(--tx2);transition:all .15s;-webkit-tap-highlight-color:transparent}.freqBtn.on{background:var(--ac-bg);border-color:var(--ac-br);color:var(--ac)}.dayBtn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--br);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;touch-action:manipulation;color:var(--tx2);transition:all .15s;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}.dayBtn.on{background:var(--ac);border-color:var(--ac);color:#fff}.mDescArea{width:100%;min-height:72px;background:transparent;border:none;outline:none;font-size:14px;color:var(--tx);line-height:1.6;resize:none;padding:0}.mDescArea::placeholder{color:var(--tx3)}.subTaskSec{margin-top:6px}.subTaskList{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}.subTaskItem{display:flex;align-items:center;gap:8px}.subTaskInput{flex:1;background:var(--bg2);border:1px solid var(--br);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--tx);outline:none}.subTaskInput:focus{border-color:var(--ac)}.subTaskRemove{width:22px;height:22px;border:none;background:transparent;color:var(--tx3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:4px;-webkit-tap-highlight-color:transparent}.subTaskRemove:active{color:var(--hi)}.addSubBtn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ac);background:none;border:none;padding:0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;font-weight:500}.mFoot{display:flex;gap:10px;justify-content:flex-end;padding:14px 24px;border-top:1px solid var(--br);position:sticky;bottom:0;background:var(--card)}.btnCancel{padding:10px 18px;border:1px solid var(--br);border-radius:8px;background:transparent;color:var(--tx2);font-size:14px;font-weight:500;transition:all .15s;-webkit-tap-highlight-color:transparent}.btnCancel:active{border-color:var(--ac-br);color:var(--ac)}.btnSave{padding:10px 24px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;transition:all .15s;-webkit-tap-highlight-color:transparent}.btnSave:active{background:var(--ac2)}.aToast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--ac-br);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh-l);display:flex;align-items:center;gap:12px;z-index:600;max-width:300px;transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1)}.aToast.show{transform:translateY(0);opacity:1}.aIco{font-size:24px}.aTitle{font-size:13px;font-weight:700;color:var(--ac);margin-bottom:2px}.aSub{font-size:11px;color:var(--tx3)}.vPg{display:none}.vPg.va{display:block;animation:vf .12s ease}@keyframes vf{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}.mobBtn{display:none;position:fixed;top:14px;left:14px;z-index:100;width:40px;height:40px;border:1px solid var(--br);border-radius:9px;background:var(--card);color:var(--tx);align-items:center;justify-content:center;font-size:18px;box-shadow:var(--sh-s);-webkit-tap-highlight-color:transparent;touch-action:manipulation}#sbOv{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;pointer-events:none}@media(max-width:780px){:root{--sw:0px}#sidebar{left:-264px;width:264px;transition:left .28s cubic-bezier(.4,0,.2,1);transform:none!important}#sidebar.mOpen{left:0;transform:none!important}.mobBtn{display:flex}#main{margin-left:0}.pH{padding:14px 16px 14px 64px}.pHR{margin-bottom:14px}.pDate{font-size:10px;margin-bottom:2px}.pTitle{font-size:18px}.cArea{padding:16px 16px 80px}.aL{display:none}.aR{padding:32px 24px}.mBox{border-radius:var(--rl) var(--rl) 0 0;max-height:96vh}.calCell{min-height:52px;padding:5px}.calPill{display:none}.statC{padding:0 10px}.progW{padding-left:10px}.statV{font-size:22px}.statsBar{gap:0}.calDetHeader{flex-direction:column;align-items:flex-start;gap:10px}.calDetAddBtn{align-self:stretch;justify-content:center}.mTypeRow{padding:0 16px}.mTitleRow{padding:0 16px 14px}.mBody{padding:12px 16px}.mFoot{padding:12px 16px}}.goalTabs{display:flex;gap:6px;padding:18px 24px 0;flex-wrap:wrap}.goalTab{padding:7px 16px;border-radius:20px;border:1.5px solid var(--br);background:transparent;color:var(--tx2);font-size:12px;font-weight:600;letter-spacing:.06em;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;font-family:inherit}.goalTab.on{background:var(--ac);border-color:var(--ac);color:#fff}.goalTab:active{opacity:.8}.goalHorizon{padding:6px 24px 2px;font-size:11px;color:var(--tx3);font-weight:600;letter-spacing:.12em;text-transform:uppercase}.goalGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:14px 24px 80px}@media(max-width:780px){.goalGrid{grid-template-columns:1fr;padding:12px 14px 80px}}.goalCard{background:var(--card);border:1.5px solid var(--br);border-radius:var(--r);padding:18px;box-shadow:var(--sh-s);transition:box-shadow .15s;position:relative;overflow:hidden}.goalCard:hover{box-shadow:var(--sh)}.goalCard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gc,var(--ac))}.goalCardHead{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}.goalEmoji{font-size:22px;flex-shrink:0;line-height:1}.goalTitle{font-size:17px;font-weight:700;color:var(--tx);flex:1;line-height:1.3}.goalPeriod{font-size:12px;font-weight:600;color:var(--ac);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}.goalDesc{font-size:14px;color:var(--tx2);margin-bottom:12px;line-height:1.5}.goalProgress{margin-bottom:12px}.goalProgBar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:5px}.goalProgFill{height:100%;background:var(--ac);border-radius:3px;transition:width .3s}.goalProgRow{display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);font-weight:600}.goalActions{border-top:1px solid var(--br);padding-top:10px;margin-top:4px}.goalActLbl{font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}.goalActItem{display:flex;align-items:center;gap:8px;padding:5px 0}.goalActCk{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--br2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;touch-action:manipulation}.goalActCk.ck{background:var(--ac);border-color:var(--ac)}.goalActCk.ck::after{content:'✓';font-size:9px;color:#fff;font-weight:700}.goalActTxt{font-size:14px;color:var(--tx2);flex:1}.goalActTxt.ck{text-decoration:line-through;color:var(--tx3)}.goalCardBtns{display:flex;gap:6px;margin-top:12px}.goalActBtn{padding:5px 12px;border-radius:7px;border:1px solid var(--br);background:transparent;color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .12s}.goalActBtn:hover,.goalActBtn:active{background:var(--bg2)}.goalActBtn.del{color:var(--hi);border-color:rgba(176,58,46,.2)}.addGoalBtn{display:flex;align-items:center;justify-content:center;gap:8px;padding:20px;border:2px dashed var(--br2);border-radius:var(--r);color:var(--tx3);font-size:15px;font-weight:600;cursor:pointer;background:transparent;width:100%;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .15s}.addGoalBtn:hover,.addGoalBtn:active{border-color:var(--ac);color:var(--ac);background:var(--ac-bg)}.gmRow{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}.gmLbl{font-size:13px;font-weight:700;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase}.gmInput{padding:9px 12px;border:1.5px solid var(--br);border-radius:9px;background:var(--bg);color:var(--tx);font-size:15px;font-family:inherit;outline:none;transition:border .15s}.gmInput:focus{border-color:var(--ac)}.gmTextarea{min-height:70px;resize:vertical;line-height:1.5}.gmColorRow{display:flex;gap:8px;flex-wrap:wrap}.gmColor{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:transform .12s,border-color .12s;touch-action:manipulation}.gmColor.on{border-color:var(--tx);transform:scale(1.2)}.gmHorizRow{display:flex;gap:6px;flex-wrap:wrap}.gmHorizBtn{padding:6px 14px;border-radius:16px;border:1.5px solid var(--br);background:transparent;color:var(--tx2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;transition:all .12s}.gmHorizBtn.on{background:var(--ac);border-color:var(--ac);color:#fff}.gmActList{display:flex;flex-direction:column;gap:6px;margin-top:6px}.gmActItem{display:flex;gap:6px;align-items:center}.gmActInput{flex:1;padding:7px 10px;border:1.5px solid var(--br);border-radius:7px;background:var(--bg);color:var(--tx);font-size:14px;font-family:inherit;outline:none}.gmActInput:focus{border-color:var(--ac)}.gmActDel{width:24px;height:24px;border:none;background:transparent;color:var(--tx3);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;border-radius:5px;flex-shrink:0}.gmActDel:active{background:var(--bg2)}.gmAddAct{display:flex;align-items:center;gap:6px;padding:7px 10px;border:1.5px dashed var(--br2);border-radius:7px;color:var(--tx3);font-size:12px;font-weight:600;cursor:pointer;background:transparent;font-family:inherit;touch-action:manipulation;transition:all .12s;margin-top:4px}.gmAddAct:hover,.gmAddAct:active{border-color:var(--ac);color:var(--ac)}.ideaToolbar{display:flex;align-items:center;gap:10px;padding:16px 24px 0;flex-wrap:wrap}.ideaSearch{flex:1;min-width:160px;padding:8px 12px;border:1.5px solid var(--br);border-radius:9px;background:var(--bg);color:var(--tx);font-size:13px;font-family:inherit;outline:none}.ideaSearch:focus{border-color:var(--ac)}.addIdeaBtn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--ac);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap}.addIdeaBtn:active{background:var(--ac2)}.ideaGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:16px 24px 80px}@media(max-width:780px){.ideaGrid{grid-template-columns:1fr;padding:12px 14px 80px}}.ideaCard{border-radius:var(--r);padding:16px;box-shadow:var(--sh-s);position:relative;min-height:120px;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s,transform .12s}.ideaCard:hover{box-shadow:var(--sh);transform:translateY(-2px)}.ideaCard:active{transform:translateY(0)}.ideaCardTitle{font-size:16px;font-weight:700;color:rgba(0,0,0,.75);margin-bottom:8px;line-height:1.3}.ideaCardBody{font-size:14px;color:rgba(0,0,0,.6);flex:1;line-height:1.6;white-space:pre-wrap;word-break:break-word}.ideaCardDate{font-size:10px;color:rgba(0,0,0,.4);margin-top:10px;font-weight:500}.ideaCardDel{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.12);border:none;color:rgba(0,0,0,.5);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;touch-action:manipulation}.ideaCard:hover .ideaCardDel{opacity:1}@media(hover:none){.ideaCardDel{opacity:1}}.imColorRow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.imColor{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .12s,border-color .12s;touch-action:manipulation}.imColor.on{border-color:rgba(0,0,0,.4);transform:scale(1.15)}.motivBar{display:flex;align-items:center;gap:20px;padding:12px 0 4px;flex-wrap:wrap}.motivProgress{flex:1;min-width:200px}.motivProgRow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}.motivProgLbl{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase}.motivPct{font-size:22px;font-weight:700;color:var(--ac);line-height:1}.motivProgTrack{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}.motivProgFill{height:100%;background:var(--ac);border-radius:3px;transition:width .4s ease}.motivMeta{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:5px}.motivGoal{display:flex;align-items:center;gap:10px;background:var(--ac-bg);border:1px solid var(--ac-br);border-radius:10px;padding:10px 14px;flex-shrink:0;max-width:260px}.motivGoalIcon{font-size:20px;flex-shrink:0}.motivGoalLbl{font-size:9px;font-weight:700;color:var(--ac);letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}.motivGoalTitle{font-size:12px;font-weight:600;color:var(--tx);line-height:1.3;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:780px){.motivBar{gap:12px}.motivGoal{max-width:100%;width:100%}}.goalPlanSection{background:var(--card);border:1px solid var(--br);border-radius:var(--r);margin:16px 24px 0;padding:16px 20px}@media(max-width:780px){.goalPlanSection{margin:12px 14px 0}}.goalPlanTitle{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:12px;display:flex;align-items:center;gap:8px}.goalPlanKR{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:12px}.goalKRCard{background:var(--bg2);border-radius:9px;padding:12px 14px;border:1px solid var(--br)}.goalKRTitle{font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.08em;margin-bottom:6px;text-transform:uppercase}.goalKRVal{font-size:14px;font-weight:600;color:var(--tx)}#mindMapCanvas{width:100%;height:calc(100vh - 180px);min-height:500px;position:relative;overflow:hidden;background:var(--bg2);border-radius:var(--r);cursor:grab;touch-action:none}#mindMapCanvas.grabbing{cursor:grabbing}#mindMapSvg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}.mmNode{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;cursor:pointer;user-select:none;touch-action:none;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:box-shadow .15s;word-break:break-word;-webkit-tap-highlight-color:transparent;border:2px solid rgba(255,255,255,.3)}.mmNode:hover{box-shadow:0 6px 24px rgba(0,0,0,.25)}.mmNode.root{border:3px solid rgba(255,255,255,.5);box-shadow:0 6px 24px rgba(0,0,0,.2)}.mmNode.selected{outline:3px solid var(--ac);outline-offset:3px}.mmAddBtn{position:absolute;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--ac);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:var(--sh-l);touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center}.mmToolbar{position:absolute;top:12px;left:12px;display:flex;gap:8px;z-index:10}.mmTool{padding:6px 12px;border-radius:8px;border:1px solid var(--br);background:var(--card);color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;touch-action:manipulation;font-family:inherit}.mmTool:active{background:var(--bg2)}.mmEditBox{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border:1.5px solid var(--br);border-radius:12px;padding:16px;box-shadow:var(--sh-l);z-index:600;min-width:240px;display:none}.mmEditBox.show{display:block}.mmEditInput{width:100%;padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--tx);font-size:14px;font-family:inherit;outline:none;margin-bottom:10px;box-sizing:border-box}.mmEditInput:focus{border-color:var(--ac)}.mmEditBtns{display:flex;gap:8px;justify-content:flex-end}.mmEditBtn{padding:6px 14px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}.mmEditBtn.ok{background:var(--ac);color:#fff}.mmEditBtn.del{background:var(--hi-bg);color:var(--hi)}.mmColors{display:flex;gap:6px;margin-bottom:10px}.mmColorDot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent}.mmColorDot.on{border-color:var(--tx)}.mmNodeHint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--tx3);pointer-events:none}.mmNodeHint p{margin:4px 0;font-size:13px}.mmNodeHint .mmHintIcon{font-size:36px;margin-bottom:8px}.mHd{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--br);flex-shrink:0}
+
+
+<style>:root{--bg:#FAF8F4;--bg2:#F5F0E8;--bg3:#EDE5D8;--card:#FFF;--sb:#18140F;--sb-t:#F5F0E8;--sb-m:#7A6A55;--sb-h:rgba(201,169,110,.10);--sb-a:rgba(201,169,110,.18);--tx:#1A1612;--tx2:#6B5E4C;--tx3:#A89880;--ac:#C9A96E;--ac2:#A88040;--ac-bg:rgba(201,169,110,.10);--ac-br:rgba(201,169,110,.28);--br:#E8E0D4;--br2:#D8CCBC;--sh-s:0 1px 4px rgba(26,22,18,.07);--sh:0 4px 20px rgba(26,22,18,.09);--sh-l:0 8px 40px rgba(26,22,18,.13);--hi:#B03A2E;--hi-bg:#FEF0EE;--me:#B7770D;--me-bg:#FEF9E8;--lo:#276749;--lo-bg:#EEF6EF;--done:#C0B0A0;--r:12px;--rl:18px;--sw:264px}[data-theme="obsidian"]{--bg:#0E0C09;--bg2:#17140F;--bg3:#201C16;--card:#1E1B15;--sb:#0A0907;--sb-t:#F5F0E8;--sb-m:#5E5040;--sb-h:rgba(201,169,110,.07);--sb-a:rgba(201,169,110,.14);--tx:#F0EBE2;--tx2:#C4B49A;--tx3:#7A6A55;--ac:#C9A96E;--ac2:#E8C870;--ac-bg:rgba(201,169,110,.08);--ac-br:rgba(201,169,110,.2);--br:#2E2820;--br2:#3E3428;--sh-s:0 1px 4px rgba(0,0,0,.35);--sh:0 4px 20px rgba(0,0,0,.45);--sh-l:0 8px 40px rgba(0,0,0,.55);--hi:#E07070;--hi-bg:rgba(224,112,112,.10);--me:#FFBA6B;--me-bg:rgba(255,186,107,.10);--lo:#7CC87C;--lo-bg:rgba(124,200,124,.10);--done:#4A4030}[data-theme="blanc"]{--bg:#FFF;--bg2:#F8F8F6;--bg3:#EFEFEC;--card:#FFF;--sb:#191919;--sb-t:#FFF;--sb-m:#767676;--sb-h:rgba(255,255,255,.07);--sb-a:rgba(255,255,255,.14);--tx:#191919;--tx2:#696969;--tx3:#ADADAD;--ac:#191919;--ac2:#333;--ac-bg:rgba(25,25,25,.06);--ac-br:rgba(25,25,25,.14);--br:#E9E9E7;--br2:#D9D9D7;--sh-s:0 1px 4px rgba(0,0,0,.04);--sh:0 4px 20px rgba(0,0,0,.07);--sh-l:0 8px 40px rgba(0,0,0,.09);--hi:#E53E3E;--hi-bg:#FFF5F5;--me:#C05621;--me-bg:#FFFAF0;--lo:#276749;--lo-bg:#F0FFF4;--done:#C0C0C0}[data-theme="jade"]{--bg:#F4F7F4;--bg2:#EBF0EB;--bg3:#DEE8DE;--card:#FFF;--sb:#182818;--sb-t:#F4F7F4;--sb-m:#6A8A6A;--sb-h:rgba(70,160,70,.10);--sb-a:rgba(70,160,70,.20);--tx:#1A2B1A;--tx2:#4A6A4A;--tx3:#8AAA8A;--ac:#3D7A3D;--ac2:#2D6A2D;--ac-bg:rgba(61,122,61,.09);--ac-br:rgba(61,122,61,.22);--br:#D8E8D8;--br2:#C4D8C4;--sh-s:0 1px 4px rgba(26,43,26,.06);--sh:0 4px 20px rgba(26,43,26,.09);--sh-l:0 8px 40px rgba(26,43,26,.13);--hi:#C62828;--hi-bg:#FFEBEE;--me:#E65100;--me-bg:#FFF3E0;--lo:#1B5E20;--lo-bg:#E8F5E9;--done:#9ABB9A}[data-theme="sapphire"]{--bg:#F0F4F8;--bg2:#E2EAF4;--bg3:#D0DFEE;--card:#FFF;--sb:#0D1B2E;--sb-t:#F0F4F8;--sb-m:#5A7898;--sb-h:rgba(100,160,220,.10);--sb-a:rgba(100,160,220,.20);--tx:#0D1B2E;--tx2:#3A5472;--tx3:#8AA0B8;--ac:#1E4A8A;--ac2:#153A6E;--ac-bg:rgba(30,74,138,.08);--ac-br:rgba(30,74,138,.20);--br:#D0DCE8;--br2:#BCCCE0;--sh-s:0 1px 4px rgba(13,27,46,.06);--sh:0 4px 20px rgba(13,27,46,.09);--sh-l:0 8px 40px rgba(13,27,46,.13);--hi:#B71C1C;--hi-bg:#FFEBEE;--me:#E65100;--me-bg:#FFF3E0;--lo:#1A237E;--lo-bg:#E8EAF6;--done:#8AA0B8}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;overflow:hidden}body{font-family:'Inter','Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;transition:background .15s,color .15s}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--br2);border-radius:4px}button,a{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}input,select,textarea{font-family:inherit}#authScreen{position:fixed;inset:0;display:flex;z-index:200;background:var(--bg)}.aL{width:44%;background:var(--sb);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 48px;position:relative;overflow:hidden;flex-shrink:0}.aL::before{content:'';position:absolute;top:-40%;left:-30%;width:160%;height:160%;background:radial-gradient(ellipse at 55% 40%,rgba(201,169,110,.07) 0%,transparent 65%);pointer-events:none}.aL::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,.3),transparent)}.aMark{width:60px;height:60px;border:1.5px solid rgba(201,169,110,.6);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;background:rgba(201,169,110,.06)}.aMark svg{width:28px;height:28px;stroke:#C9A96E;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.aBrand{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;color:#C9A96E;letter-spacing:.12em;text-align:center;line-height:1.35;margin-bottom:10px}.aSub{font-size:11px;color:var(--sb-m);letter-spacing:.2em;text-transform:uppercase;text-align:center;margin-bottom:52px}.aFeats{list-style:none;width:100%;max-width:260px;display:flex;flex-direction:column;gap:18px}.aFeat{display:flex;align-items:center;gap:14px;font-size:13.5px;color:var(--sb-t);opacity:.72;line-height:1.5}.aDot{width:5px;height:5px;border-radius:50%;background:#C9A96E;flex-shrink:0}.aCopy{position:absolute;bottom:28px;font-size:10px;color:var(--sb-m);letter-spacing:.18em;text-transform:uppercase}.aR{flex:1;display:flex;align-items:center;justify-content:center;padding:48px 56px;background:var(--bg)}.aWrap{width:100%;max-width:360px}.aTitle{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:var(--tx);margin-bottom:8px}.aDesc{font-size:14px;color:var(--tx3);margin-bottom:32px;line-height:1.65}.aTabs{display:flex;border-bottom:1px solid var(--br);margin-bottom:28px}.aTab{padding:10px 22px;font-size:14px;font-weight:500;color:var(--tx3);cursor:pointer;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;transition:all .2s;-webkit-tap-highlight-color:transparent}.aTab.on{color:var(--ac);border-bottom-color:var(--ac)}.fg{margin-bottom:16px}.fl{display:block;font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:7px;letter-spacing:.07em;text-transform:uppercase}.fi{width:100%;padding:13px 16px;background:var(--bg2);border:1px solid var(--br);border-radius:10px;font-size:15px;color:var(--tx);outline:none;transition:border-color .2s,box-shadow .2s}.fi:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-bg)}.fi::placeholder{color:var(--tx3)}.btnAuth{width:100%;padding:14px;background:var(--ac);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;letter-spacing:.03em;margin-top:6px;transition:background .15s,transform .1s;-webkit-tap-highlight-color:transparent}.btnAuth:active{transform:scale(.98)}.aErr{background:#FEF0EE;border:1px solid #FCDDD9;color:#B03A2E;border-radius:8px;padding:11px 14px;font-size:13px;margin-top:14px;display:none}#appScreen{display:none;position:fixed;inset:0}#sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--sb);display:flex;flex-direction:column;z-index:200;overflow:hidden;transition:transform .25s}.sbH{padding:26px 20px 18px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0}.sbBrand{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#C9A96E;letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px}.sbSub{font-size:12px;color:var(--sb-m);letter-spacing:.18em;text-transform:uppercase}.mCal{padding:14px 20px 16px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0}.mcH{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.mcT{font-size:14px;font-weight:600;color:var(--sb-t)}.mcNavs{display:flex;gap:4px}.mcBtn{width:22px;height:22px;border:none;background:rgba(255,255,255,.06);border-radius:5px;color:var(--sb-t);display:flex;align-items:center;justify-content:center;font-size:12px;transition:background .15s;-webkit-tap-highlight-color:transparent}.mcBtn:hover,.mcBtn:active{background:rgba(255,255,255,.14)}.mcGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}.mcDow{font-size:9px;color:var(--sb-m);text-align:center;padding:3px 0;font-weight:700}.mcDay{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--sb-t);border-radius:5px;cursor:pointer;touch-action:manipulation;position:relative;gap:2px;-webkit-tap-highlight-color:transparent}.mcDay:active{background:var(--sb-a)!important}.mcDay.mcToday{background:#C9A96E;color:#fff;font-weight:700}.mcDay.mcSel:not(.mcToday){background:var(--sb-a)}.mcDay.mcOther{color:var(--sb-m);opacity:.35}.mcDot{width:3px;height:3px;border-radius:50%;background:#C9A96E;opacity:.8}.mcDay.mcToday .mcDot{background:#fff}.sbNav{flex:1;padding:10px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;-webkit-overflow-scrolling:touch}.navLbl{font-size:13px;font-weight:700;color:var(--sb-m);letter-spacing:.18em;text-transform:uppercase;padding:10px 8px 5px}.navItem{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:8px;cursor:pointer;touch-action:manipulation;transition:background .1s;color:var(--sb-t);font-size:17px;font-weight:500;opacity:.65;-webkit-tap-highlight-color:transparent;user-select:none}button.navItem{background:none;border:none;text-align:left;width:100%;font-family:inherit;line-height:inherit}.navItem:hover,.navItem:active{background:var(--sb-h)!important;opacity:.9}.navItem.on{background:var(--sb-a);opacity:1}.navIco{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}.navBadge{margin-left:auto;font-size:13px;font-weight:600;color:#C9A96E;background:rgba(201,169,110,.15);padding:2px 7px;border-radius:10px;min-width:20px;text-align:center}.sbBot{padding:14px 20px 20px;border-top:1px solid rgba(255,255,255,.05);flex-shrink:0}.thLbl{font-size:9px;font-weight:700;color:var(--sb-m);letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}.thRow{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}.thSw{width:24px;height:24px;border-radius:50%;cursor:pointer;touch-action:manipulation;border:2px solid transparent;transition:transform .15s,border-color .15s;-webkit-tap-highlight-color:transparent}.thSw:active{transform:scale(1.2)}.thSw.on{border-color:rgba(255,255,255,.7)}.thSw[data-t="signiel"]{background:conic-gradient(#C9A96E 180deg,#FAF8F4 180deg)}.thSw[data-t="obsidian"]{background:conic-gradient(#C9A96E 180deg,#0E0C09 180deg)}.thSw[data-t="blanc"]{background:conic-gradient(#191919 180deg,#FFF 180deg)}.thSw[data-t="jade"]{background:conic-gradient(#3D7A3D 180deg,#F4F7F4 180deg)}.thSw[data-t="sapphire"]{background:conic-gradient(#1E4A8A 180deg,#F0F4F8 180deg)}.sbUser{display:flex;align-items:center;gap:10px}.uAv{width:32px;height:32px;border-radius:50%;background:#C9A96E;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}.uInfo{flex:1;min-width:0}.uName{font-size:12px;font-weight:700;color:var(--sb-t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.uSub{font-size:10px;color:var(--sb-m)}.logBtn{width:28px;height:28px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:transparent;color:var(--sb-m);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;-webkit-tap-highlight-color:transparent}.logBtn:hover,.logBtn:active{background:rgba(255,255,255,.1);color:var(--sb-t)}.logBtn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}#main{margin-left:var(--sw);height:100vh;overflow-y:auto;background:var(--bg);-webkit-overflow-scrolling:touch}.pH{padding:22px 36px 18px;border-bottom:1px solid var(--br);background:var(--card);position:sticky;top:0;z-index:10}.pHR{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}.pDate{font-size:15px;font-weight:600;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}.pTitle{font-family:'Inter',system-ui,sans-serif;font-size:29px;font-weight:700;color:var(--tx);line-height:1.2;letter-spacing:-.03em}.btnAdd{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--ac);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;transition:background .15s;-webkit-tap-highlight-color:transparent;white-space:nowrap}.btnAdd:active{background:var(--ac2)}.btnAdd svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}.statsBar{display:flex;align-items:center;flex-wrap:wrap;gap:0}.statC{padding:0 18px;border-right:1px solid var(--br)}.statC:first-child{padding-left:0}.statV{font-size:26px;font-weight:700;color:var(--tx);line-height:1;margin-bottom:3px}.statL{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em}.progW{display:flex;align-items:center;gap:12px;padding-left:18px;margin-left:auto}.progR{position:relative;width:48px;height:48px;flex-shrink:0}.progR svg{transform:rotate(-90deg)}.progT{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--ac)}.progLbl{font-size:12px;font-weight:600;color:var(--tx);margin-bottom:4px}.streakPill{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--ac);background:var(--ac-bg);border:1px solid var(--ac-br);padding:3px 9px;border-radius:20px;font-weight:500}.cArea{padding:24px 36px 80px}.chipRow{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}.chip{padding:6px 14px;border-radius:20px;font-size:15px;font-weight:500;cursor:pointer;touch-action:manipulation;border:1px solid var(--br);background:var(--card);color:var(--tx2);transition:all .15s;-webkit-tap-highlight-color:transparent}.chip:active,.chip:hover{border-color:var(--ac-br);color:var(--ac)}.chip.on{background:var(--ac);border-color:var(--ac);color:#fff}.secLbl{font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--br)}.divider{display:flex;align-items:center;gap:12px;margin:22px 0 12px}.divL{flex:1;height:1px;background:var(--br)}.divT{font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}.tList{display:flex;flex-direction:column;gap:6px;margin-bottom:24px}.tCard{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--card);border:1px solid var(--br);border-radius:var(--r);transition:border-color .15s,box-shadow .15s;position:relative;overflow:hidden}.tCard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--pc,var(--br))}.tCard:active{border-color:var(--ac-br);box-shadow:var(--sh)}.tCard.done{opacity:.48}.tCard.done .tTxt{text-decoration:line-through;color:var(--done)}.chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--br2);background:var(--bg);cursor:pointer;touch-action:manipulation;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;-webkit-tap-highlight-color:transparent}.chk:active{border-color:var(--ac)}.chk.ck{background:var(--ac);border-color:var(--ac)}.chk.ck::after{content:'';width:10px;height:7px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px);display:block}@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}.chk.pop{animation:pop .2s ease}.tBody{flex:1;min-width:0}.tTxt{font-size:16px;font-weight:500;color:var(--tx);margin-bottom:5px;line-height:1.45;word-break:break-word}.tMeta{display:flex;gap:5px;flex-wrap:wrap;align-items:center}.tTag{display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:500;padding:2px 7px;border-radius:9px}.tHi{color:var(--hi);background:var(--hi-bg)}.tMe{color:var(--me);background:var(--me-bg)}.tLo{color:var(--lo);background:var(--lo-bg)}.tDt{color:var(--tx3);background:var(--bg2)}.tNo{color:var(--tx3);background:var(--bg2)}.tCat-work{color:#1E5AA8;background:#EEF4FF}.tCat-personal{color:#7B3FA6;background:#F5EEFF}.tCat-health{color:#166534;background:#DCFCE7}.tCat-study{color:#92400E;background:#FEF3C7}.tCat-other{color:#64748B;background:#F1F5F9}[data-theme="obsidian"] .tCat-work{color:#7EB8E8;background:rgba(126,184,232,.12)}[data-theme="obsidian"] .tCat-personal{color:#C4A0E8;background:rgba(196,160,232,.12)}[data-theme="obsidian"] .tCat-health{color:#7CC87C;background:rgba(124,200,124,.12)}[data-theme="obsidian"] .tCat-study{color:#FFBA6B;background:rgba(255,186,107,.12)}[data-theme="obsidian"] .tCat-other{color:#9AABB8;background:rgba(154,171,184,.12)}.tType-recurring{color:#C9A96E;background:rgba(201,169,110,.12);font-size:10px}.tType-note{color:var(--tx3);background:var(--bg3);font-size:10px}.tDesc{font-size:14px;color:var(--tx3);margin-top:4px;line-height:1.5;word-break:break-word}.tTime{font-size:13px;color:var(--tx3);margin-top:2px}.tSubList{margin-top:8px;display:flex;flex-direction:column;gap:4px}.tSubItem{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx2)}.tSubCk{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--br2);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:all .15s;-webkit-tap-highlight-color:transparent}.tSubCk.ck{background:var(--ac);border-color:var(--ac)}.tSubCk.ck::after{content:'';width:8px;height:5px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px);display:block}.tSubTxt.ck{text-decoration:line-through;color:var(--tx3)}.tActs{display:flex;gap:4px;opacity:0;transition:opacity .1s;flex-shrink:0}.tCard:hover .tActs{opacity:1}@media(hover:none){.tActs{opacity:1}}.tBtn{width:28px;height:28px;border:1px solid var(--br);border-radius:7px;background:var(--bg);color:var(--tx3);display:flex;align-items:center;justify-content:center;transition:all .15s;-webkit-tap-highlight-color:transparent}.tBtn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tBtn:active{border-color:var(--ac-br);color:var(--ac);background:var(--ac-bg)}.tBtn.del:active{border-color:var(--hi);color:var(--hi);background:var(--hi-bg)}.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 32px;text-align:center}.emIco{font-size:38px;margin-bottom:16px;opacity:.28}.emT{font-size:19px;font-weight:500;color:var(--tx);opacity:.55;margin-bottom:5px}.emS{font-size:15px;color:var(--tx3)}.calHead{display:flex;align-items:center;gap:10px;margin-bottom:20px}.calNav{width:34px;height:34px;border:1px solid var(--br);border-radius:8px;background:var(--card);color:var(--tx2);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;-webkit-tap-highlight-color:transparent}.calNav:active{border-color:var(--ac-br);color:var(--ac)}.calMoT{font-family:'Inter',system-ui,sans-serif;font-size:20px;font-weight:700;color:var(--tx);flex:1;letter-spacing:-.02em}.calTodayBtn{padding:7px 14px;font-size:12px;font-weight:500;border:1px solid var(--br);border-radius:8px;background:var(--card);color:var(--tx2);transition:all .15s;-webkit-tap-highlight-color:transparent}.calTodayBtn:active{border-color:var(--ac-br);color:var(--ac)}.calGrid{background:var(--card);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden}.calDowRow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg2);border-bottom:1px solid var(--br)}.calDow{padding:10px 6px;text-align:center;font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase}.calDays{display:grid;grid-template-columns:repeat(7,1fr)}.calCell{min-height:80px;padding:8px 8px 6px;border-right:1px solid var(--br);border-bottom:1px solid var(--br);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.calCell:nth-child(7n){border-right:none}.calCell:active{background:var(--bg2)}.calCell.cToday .calDN{background:var(--ac);color:#fff;border-radius:50%}.calCell.cSel{background:var(--ac-bg)}.calCell.cOther{opacity:.25}.calDN{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--tx);margin-bottom:5px}.calPills{display:flex;flex-direction:column;gap:2px}.calPill{font-size:10px;padding:2px 5px;border-radius:3px;background:var(--ac-bg);color:var(--ac);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.calPill.cpDone{background:var(--bg3);color:var(--tx3);text-decoration:line-through}.calMore{font-size:9px;color:var(--tx3);margin-top:1px;padding-left:2px}.calDetail{margin-top:28px;display:none}.calDetPanel{background:var(--card);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh-s)}.calDetHeader{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--br);background:var(--bg2)}.calDetDate{font-size:15px;font-weight:700;color:var(--tx);letter-spacing:-.01em}.calDetCount{font-size:12px;color:var(--tx3);margin-top:2px}.calDetAddBtn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;transition:background .15s;flex-shrink:0;-webkit-tap-highlight-color:transparent}.calDetAddBtn:active{background:var(--ac2)}.calDetAddBtn svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round}.calDetBody{padding:14px 18px 18px}.calDetEmpty{display:flex;flex-direction:column;align-items:center;padding:36px 20px;text-align:center}.mOv{position:fixed;inset:0;background:rgba(0,0,0,.4);pointer-events:none;z-index:500;display:none;align-items:flex-end;justify-content:center}.mOv.open{display:flex;pointer-events:auto;animation:fIn .15s ease}@keyframes fIn{from{opacity:0}to{opacity:1}}@media(min-width:600px){.mOv{align-items:center}}.mBox{background:var(--card);border:1px solid var(--br);border-radius:var(--rl) var(--rl) 0 0;padding:0;width:100%;max-width:560px;box-shadow:var(--sh-l);animation:sUp .2s ease;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}@media(min-width:600px){.mBox{border-radius:var(--rl);max-height:88vh}}@keyframes sUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}.mHead{padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between}.mHead-drag{width:40px;height:4px;border-radius:2px;background:var(--br2);margin:0 auto 16px;display:block}@media(min-width:600px){.mHead-drag{display:none}}.mTypeRow{display:flex;gap:6px;margin-bottom:20px;padding:0 24px}.mTypeBtn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);color:var(--tx2);font-size:13px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .15s;-webkit-tap-highlight-color:transparent}.mTypeBtn:active,.mTypeBtn.on{background:var(--ac-bg);border-color:var(--ac-br);color:var(--ac)}.mTitleRow{padding:0 24px 16px;border-bottom:1px solid var(--br)}.mTitleInput{width:100%;font-size:18px;font-weight:600;color:var(--tx);background:transparent;border:none;outline:none;line-height:1.4;resize:none;padding:0}.mTitleInput::placeholder{color:var(--tx3)}.mBody{padding:16px 24px}.mRow{display:flex;align-items:flex-start;gap:14px;padding:10px 0;border-bottom:1px solid var(--br)}.mRow:last-child{border-bottom:none}.mRowLabel{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--tx3);letter-spacing:.04em;width:70px;flex-shrink:0;padding-top:2px}.mRowLabel svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}.mRowVal{flex:1;min-width:0}.priPicker{display:flex;gap:6px;flex-wrap:wrap}.priBtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .15s;color:var(--tx2);-webkit-tap-highlight-color:transparent}.priBtn:active{background:var(--ac-bg)}.priBtn.on[data-p="high"]{background:var(--hi-bg);border-color:var(--hi);color:var(--hi)}.priBtn.on[data-p="medium"]{background:var(--me-bg);border-color:var(--me);color:var(--me)}.priBtn.on[data-p="low"]{background:var(--lo-bg);border-color:var(--lo);color:var(--lo)}.catPicker{display:flex;gap:6px;flex-wrap:wrap}.catBtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:all .15s;color:var(--tx2);-webkit-tap-highlight-color:transparent}.catBtn.on[data-c="work"]{background:#EEF4FF;border-color:#93B4E8;color:#1E5AA8}.catBtn.on[data-c="personal"]{background:#F5EEFF;border-color:#C4A0E8;color:#7B3FA6}.catBtn.on[data-c="health"]{background:#DCFCE7;border-color:#86EFAC;color:#166534}.catBtn.on[data-c="study"]{background:#FEF3C7;border-color:#FDE68A;color:#92400E}.catBtn.on[data-c="other"]{background:#F1F5F9;border-color:#CBD5E1;color:#475569}.dtRow{display:flex;gap:8px;flex-wrap:wrap}.mFiSm{padding:7px 12px;background:var(--bg2);border:1px solid var(--br);border-radius:8px;font-size:13px;color:var(--tx);outline:none;transition:border-color .2s;-webkit-appearance:none}.mFiSm:focus{border-color:var(--ac)}.recurSec{display:none}.recurSec.show{display:block}.recurRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.recurFreq{display:flex;gap:6px;margin-bottom:10px}.freqBtn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation;color:var(--tx2);transition:all .15s;-webkit-tap-highlight-color:transparent}.freqBtn.on{background:var(--ac-bg);border-color:var(--ac-br);color:var(--ac)}.dayBtn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--br);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;touch-action:manipulation;color:var(--tx2);transition:all .15s;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}.dayBtn.on{background:var(--ac);border-color:var(--ac);color:#fff}.mDescArea{width:100%;min-height:72px;background:transparent;border:none;outline:none;font-size:14px;color:var(--tx);line-height:1.6;resize:none;padding:0}.mDescArea::placeholder{color:var(--tx3)}.subTaskSec{margin-top:6px}.subTaskList{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}.subTaskItem{display:flex;align-items:center;gap:8px}.subTaskInput{flex:1;background:var(--bg2);border:1px solid var(--br);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--tx);outline:none}.subTaskInput:focus{border-color:var(--ac)}.subTaskRemove{width:22px;height:22px;border:none;background:transparent;color:var(--tx3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:4px;-webkit-tap-highlight-color:transparent}.subTaskRemove:active{color:var(--hi)}.addSubBtn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ac);background:none;border:none;padding:0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;font-weight:500}.mFoot{display:flex;gap:10px;justify-content:flex-end;padding:14px 24px;border-top:1px solid var(--br);position:sticky;bottom:0;background:var(--card)}.btnCancel{padding:10px 18px;border:1px solid var(--br);border-radius:8px;background:transparent;color:var(--tx2);font-size:14px;font-weight:500;transition:all .15s;-webkit-tap-highlight-color:transparent}.btnCancel:active{border-color:var(--ac-br);color:var(--ac)}.btnSave{padding:10px 24px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;transition:all .15s;-webkit-tap-highlight-color:transparent}.btnSave:active{background:var(--ac2)}.aToast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--ac-br);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh-l);display:flex;align-items:center;gap:12px;z-index:600;max-width:300px;transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1)}.aToast.show{transform:translateY(0);opacity:1}.aIco{font-size:24px}.aTitle{font-size:13px;font-weight:700;color:var(--ac);margin-bottom:2px}.aSub{font-size:11px;color:var(--tx3)}.vPg{display:none}.vPg.va{display:block;animation:vf .12s ease}#vIdeas.va{display:flex!important;flex-direction:column}@keyframes vf{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}.mobBtn{display:none;position:fixed;top:14px;left:14px;z-index:100;width:40px;height:40px;border:1px solid var(--br);border-radius:9px;background:var(--card);color:var(--tx);align-items:center;justify-content:center;font-size:18px;box-shadow:var(--sh-s);-webkit-tap-highlight-color:transparent;touch-action:manipulation}#sbOv{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;pointer-events:none}@media(max-width:780px){:root{--sw:0px}#sidebar{left:-264px;width:264px;transition:left .28s cubic-bezier(.4,0,.2,1);transform:none!important}#sidebar.mOpen{left:0;transform:none!important}.mobBtn{display:flex}#main{margin-left:0}.pH{padding:14px 16px 14px 64px}.pHR{margin-bottom:14px}.pDate{font-size:10px;margin-bottom:2px}.pTitle{font-size:18px}.cArea{padding:16px 16px 80px}.aL{display:none}.aR{padding:32px 24px}.mBox{border-radius:var(--rl) var(--rl) 0 0;max-height:96vh}.calCell{min-height:52px;padding:5px}.calPill{display:none}.statC{padding:0 10px}.progW{padding-left:10px}.statV{font-size:22px}.statsBar{gap:0}.calDetHeader{flex-direction:column;align-items:flex-start;gap:10px}.calDetAddBtn{align-self:stretch;justify-content:center}.mTypeRow{padding:0 16px}.mTitleRow{padding:0 16px 14px}.mBody{padding:12px 16px}.mFoot{padding:12px 16px}}.goalTabs{display:flex;gap:6px;padding:18px 24px 0;flex-wrap:wrap}.goalTab{padding:7px 16px;border-radius:20px;border:1.5px solid var(--br);background:transparent;color:var(--tx2);font-size:12px;font-weight:600;letter-spacing:.06em;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;font-family:inherit}.goalTab.on{background:var(--ac);border-color:var(--ac);color:#fff}.goalTab:active{opacity:.8}.goalHorizon{padding:6px 24px 2px;font-size:11px;color:var(--tx3);font-weight:600;letter-spacing:.12em;text-transform:uppercase}.goalGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:14px 24px 80px}@media(max-width:780px){.goalGrid{grid-template-columns:1fr;padding:12px 14px 80px}}.goalCard{background:var(--card);border:1.5px solid var(--br);border-radius:var(--r);padding:18px;box-shadow:var(--sh-s);transition:box-shadow .15s;position:relative;overflow:hidden}.goalCard:hover{box-shadow:var(--sh)}.goalCard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gc,var(--ac))}.goalCardHead{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}.goalEmoji{font-size:22px;flex-shrink:0;line-height:1}.goalTitle{font-size:17px;font-weight:700;color:var(--tx);flex:1;line-height:1.3}.goalPeriod{font-size:12px;font-weight:600;color:var(--ac);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}.goalDesc{font-size:14px;color:var(--tx2);margin-bottom:12px;line-height:1.5}.goalProgress{margin-bottom:12px}.goalProgBar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:5px}.goalProgFill{height:100%;background:var(--ac);border-radius:3px;transition:width .3s}.goalProgRow{display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);font-weight:600}.goalActions{border-top:1px solid var(--br);padding-top:10px;margin-top:4px}.goalActLbl{font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}.goalActItem{display:flex;align-items:center;gap:8px;padding:5px 0}.goalActCk{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--br2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;touch-action:manipulation}.goalActCk.ck{background:var(--ac);border-color:var(--ac)}.goalActCk.ck::after{content:'✓';font-size:9px;color:#fff;font-weight:700}.goalActTxt{font-size:14px;color:var(--tx2);flex:1}.goalActTxt.ck{text-decoration:line-through;color:var(--tx3)}.goalCardBtns{display:flex;gap:6px;margin-top:12px}.goalActBtn{padding:5px 12px;border-radius:7px;border:1px solid var(--br);background:transparent;color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .12s}.goalActBtn:hover,.goalActBtn:active{background:var(--bg2)}.goalActBtn.del{color:var(--hi);border-color:rgba(176,58,46,.2)}.addGoalBtn{display:flex;align-items:center;justify-content:center;gap:8px;padding:20px;border:2px dashed var(--br2);border-radius:var(--r);color:var(--tx3);font-size:15px;font-weight:600;cursor:pointer;background:transparent;width:100%;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .15s}.addGoalBtn:hover,.addGoalBtn:active{border-color:var(--ac);color:var(--ac);background:var(--ac-bg)}.gmRow{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}.gmLbl{font-size:13px;font-weight:700;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase}.gmInput{padding:9px 12px;border:1.5px solid var(--br);border-radius:9px;background:var(--bg);color:var(--tx);font-size:15px;font-family:inherit;outline:none;transition:border .15s}.gmInput:focus{border-color:var(--ac)}.gmTextarea{min-height:70px;resize:vertical;line-height:1.5}.gmColorRow{display:flex;gap:8px;flex-wrap:wrap}.gmColor{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:transform .12s,border-color .12s;touch-action:manipulation}.gmColor.on{border-color:var(--tx);transform:scale(1.2)}.gmHorizRow{display:flex;gap:6px;flex-wrap:wrap}.gmHorizBtn{padding:6px 14px;border-radius:16px;border:1.5px solid var(--br);background:transparent;color:var(--tx2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;transition:all .12s}.gmHorizBtn.on{background:var(--ac);border-color:var(--ac);color:#fff}.gmActList{display:flex;flex-direction:column;gap:6px;margin-top:6px}.gmActItem{display:flex;gap:6px;align-items:center}.gmActInput{flex:1;padding:7px 10px;border:1.5px solid var(--br);border-radius:7px;background:var(--bg);color:var(--tx);font-size:14px;font-family:inherit;outline:none}.gmActInput:focus{border-color:var(--ac)}.gmActDel{width:24px;height:24px;border:none;background:transparent;color:var(--tx3);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;border-radius:5px;flex-shrink:0}.gmActDel:active{background:var(--bg2)}.gmAddAct{display:flex;align-items:center;gap:6px;padding:7px 10px;border:1.5px dashed var(--br2);border-radius:7px;color:var(--tx3);font-size:12px;font-weight:600;cursor:pointer;background:transparent;font-family:inherit;touch-action:manipulation;transition:all .12s;margin-top:4px}.gmAddAct:hover,.gmAddAct:active{border-color:var(--ac);color:var(--ac)}.ideaToolbar{display:flex;align-items:center;gap:10px;padding:16px 24px 0;flex-wrap:wrap}.ideaSearch{flex:1;min-width:160px;padding:8px 12px;border:1.5px solid var(--br);border-radius:9px;background:var(--bg);color:var(--tx);font-size:13px;font-family:inherit;outline:none}.ideaSearch:focus{border-color:var(--ac)}.addIdeaBtn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--ac);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap}.addIdeaBtn:active{background:var(--ac2)}.ideaGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:16px 24px 80px}@media(max-width:780px){.ideaGrid{grid-template-columns:1fr;padding:12px 14px 80px}}.ideaCard{border-radius:var(--r);padding:16px;box-shadow:var(--sh-s);position:relative;min-height:120px;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s,transform .12s}.ideaCard:hover{box-shadow:var(--sh);transform:translateY(-2px)}.ideaCard:active{transform:translateY(0)}.ideaCardTitle{font-size:16px;font-weight:700;color:rgba(0,0,0,.75);margin-bottom:8px;line-height:1.3}.ideaCardBody{font-size:14px;color:rgba(0,0,0,.6);flex:1;line-height:1.6;white-space:pre-wrap;word-break:break-word}.ideaCardDate{font-size:10px;color:rgba(0,0,0,.4);margin-top:10px;font-weight:500}.ideaCardDel{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.12);border:none;color:rgba(0,0,0,.5);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;touch-action:manipulation}.ideaCard:hover .ideaCardDel{opacity:1}@media(hover:none){.ideaCardDel{opacity:1}}.imColorRow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.imColor{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .12s,border-color .12s;touch-action:manipulation}.imColor.on{border-color:rgba(0,0,0,.4);transform:scale(1.15)}.motivBar{display:flex;align-items:center;gap:20px;padding:12px 0 4px;flex-wrap:wrap}.motivProgress{flex:1;min-width:200px}.motivProgRow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}.motivProgLbl{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase}.motivPct{font-size:22px;font-weight:700;color:var(--ac);line-height:1}.motivProgTrack{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}.motivProgFill{height:100%;background:var(--ac);border-radius:3px;transition:width .4s ease}.motivMeta{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:5px}.motivGoal{display:flex;align-items:center;gap:10px;background:var(--ac-bg);border:1px solid var(--ac-br);border-radius:10px;padding:10px 14px;flex-shrink:0;max-width:260px}.motivGoalIcon{font-size:20px;flex-shrink:0}.motivGoalLbl{font-size:9px;font-weight:700;color:var(--ac);letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}.motivGoalTitle{font-size:12px;font-weight:600;color:var(--tx);line-height:1.3;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:780px){.motivBar{gap:12px}.motivGoal{max-width:100%;width:100%}}.goalPlanSection{background:var(--card);border:1px solid var(--br);border-radius:var(--r);margin:16px 24px 0;padding:16px 20px}@media(max-width:780px){.goalPlanSection{margin:12px 14px 0}}.goalPlanTitle{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:12px;display:flex;align-items:center;gap:8px}.goalPlanKR{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:12px}.goalKRCard{background:var(--bg2);border-radius:9px;padding:12px 14px;border:1px solid var(--br)}.goalKRTitle{font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.08em;margin-bottom:6px;text-transform:uppercase}.goalKRVal{font-size:14px;font-weight:600;color:var(--tx)}#mindMapCanvas{width:100%;height:calc(100vh - 180px);min-height:500px;position:relative;overflow:hidden;background:var(--bg2);border-radius:var(--r);cursor:grab;touch-action:none}#mindMapCanvas.grabbing{cursor:grabbing}#mindMapSvg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}.mmNode{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;cursor:pointer;user-select:none;touch-action:none;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:box-shadow .15s;word-break:break-word;-webkit-tap-highlight-color:transparent;border:2px solid rgba(255,255,255,.3)}.mmNode:hover{box-shadow:0 6px 24px rgba(0,0,0,.25)}.mmNode.root{border:3px solid rgba(255,255,255,.5);box-shadow:0 6px 24px rgba(0,0,0,.2)}.mmNode.selected{outline:3px solid var(--ac);outline-offset:3px}.mmAddBtn{position:absolute;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--ac);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:var(--sh-l);touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center}.mmToolbar{position:absolute;top:12px;left:12px;display:flex;gap:8px;z-index:10}.mmTool{padding:6px 12px;border-radius:8px;border:1px solid var(--br);background:var(--card);color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;touch-action:manipulation;font-family:inherit}.mmTool:active{background:var(--bg2)}.mmEditBox{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border:1.5px solid var(--br);border-radius:12px;padding:16px;box-shadow:var(--sh-l);z-index:600;min-width:240px;display:none}.mmEditBox.show{display:block}.mmEditInput{width:100%;padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--tx);font-size:14px;font-family:inherit;outline:none;margin-bottom:10px;box-sizing:border-box}.mmEditInput:focus{border-color:var(--ac)}.mmEditBtns{display:flex;gap:8px;justify-content:flex-end}.mmEditBtn{padding:6px 14px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}.mmEditBtn.ok{background:var(--ac);color:#fff}.mmEditBtn.del{background:var(--hi-bg);color:var(--hi)}.mmColors{display:flex;gap:6px;margin-bottom:10px}.mmColorDot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent}.mmColorDot.on{border-color:var(--tx)}.mmNodeHint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--tx3);pointer-events:none}.mmNodeHint p{margin:4px 0;font-size:13px}.mmNodeHint .mmHintIcon{font-size:36px;margin-bottom:8px}.mHd{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--br);flex-shrink:0}
+
+
 
 .mTtl{font-family:inherit;font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.01em}
 
+
+
 .mCls{width:34px;height:34px;border:1.5px solid var(--br);border-radius:9px;background:transparent;color:var(--tx3);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:inherit;line-height:1;-webkit-tap-highlight-color:transparent}
+
+
 
 .mCls:hover,.mCls:active{background:var(--hi-bg);border-color:var(--hi);color:var(--hi)}
 
+
+
 .mBd{padding:20px 24px;overflow-y:auto;flex:1}
+
+
 
 .mFt{display:flex;gap:10px;justify-content:flex-end;padding:14px 24px;border-top:1px solid var(--br);position:sticky;bottom:0;background:var(--card);flex-shrink:0}
 
+
+
 .mBtn{padding:11px 22px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent;letter-spacing:.02em;border:1.5px solid transparent}
+
+
 
 .mBtn.sec{background:transparent;border-color:var(--br);color:var(--tx2)}
 
+
+
 .mBtn.sec:hover,.mBtn.sec:active{border-color:var(--ac-br);color:var(--ac);background:var(--ac-bg)}
+
+
 
 .mBtn.pri{background:var(--ac);border-color:var(--ac);color:#fff}
 
+
+
 .mBtn.pri:hover,.mBtn.pri:active{background:var(--ac2);border-color:var(--ac2)}
+
+
 
 .motivGoal.primary{max-width:100%;flex:1;padding:14px 20px}
 
+
+
 .motivGoalPctRow{display:flex;justify-content:space-between;font-size:12px;color:var(--ac);margin-top:6px;font-weight:600}
+
+
 
 #goalModal .mBox{overflow:hidden!important;height:min(88vh,640px)!important;max-height:none!important}@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}@keyframes noteIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.ideaToolbar{padding:18px 24px 14px;border-bottom:1px solid var(--br);background:var(--bg2);display:flex;flex-direction:column;gap:12px}.ideaHRow{display:flex;align-items:center;gap:12px}.ideaHTitle{font-family:"Playfair Display",serif;font-size:20px;font-weight:600;color:var(--tx);flex:1;letter-spacing:.02em}.ideaHintText{font-size:13px;color:var(--tx3);margin-left:auto}.ideaInputRow{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}.ideaQuickInput{flex:1;padding:10px 14px;border:1.5px solid var(--br);border-radius:10px;background:var(--card);color:var(--tx);font-size:14px;font-family:inherit;outline:none;transition:border .15s;min-width:0}.ideaQuickInput:focus{border-color:var(--ac)}.ideaAddBtn2{padding:10px 18px;background:var(--ac);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;touch-action:manipulation;transition:background .12s;flex-shrink:0}.ideaAddBtn2:active{background:var(--ac2)}.ideaColorPicker{display:flex;gap:6px;align-items:center;flex-shrink:0}.ideaColorDot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:all .15s;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.12)}.ideaColorDot.on{border-color:var(--ac);transform:scale(1.25);box-shadow:0 2px 8px rgba(0,0,0,.18)}.ideaNoteGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;padding:20px 24px 80px;align-content:start}@media(max-width:780px){.ideaNoteGrid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));padding:14px 14px 80px}}.ideaNoteCard{border-radius:14px;padding:14px 14px 10px;position:relative;min-height:130px;display:flex;flex-direction:column;box-shadow:0 2px 10px rgba(0,0,0,.09);transition:box-shadow .15s,transform .15s;background:var(--nc,#FFF8DC);animation:noteIn .2s ease;cursor:default}.ideaNoteCard:hover{box-shadow:0 5px 22px rgba(0,0,0,.14);transform:translateY(-2px)}.ideaNoteDelBtn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,.13);color:#444;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;opacity:0;transition:all .15s;touch-action:manipulation;font-family:inherit;line-height:1;flex-shrink:0;padding:0}.ideaNoteCard:hover .ideaNoteDelBtn,.ideaNoteCard:focus-within .ideaNoteDelBtn{opacity:.8}.ideaNoteDelBtn:hover,.ideaNoteDelBtn:active{opacity:1!important;background:rgba(176,58,46,.85)!important;color:#fff!important;transform:scale(1.1)}.ideaNoteText{flex:1;border:none;background:transparent;color:#333;font-size:14px;font-family:inherit;resize:none;outline:none;line-height:1.6;padding-right:28px;min-height:80px}.ideaNoteDate{font-size:11px;color:rgba(0,0,0,.38);margin-top:8px;letter-spacing:.02em}.ideaEmpty{text-align:center;padding:60px 20px;color:var(--tx3);grid-column:1/-1}.ideaEmptyIcon{font-size:48px;margin-bottom:14px}.ideaEmpty p{font-size:14px;line-height:1.8}.motivBar{display:flex;align-items:center;gap:0;padding:10px 0 6px}.motivPctBlock{display:flex;flex-direction:column;align-items:center;min-width:62px;padding-right:14px;border-right:1px solid var(--br);flex-shrink:0}.motivPctNum{font-size:22px;font-weight:800;color:var(--ac);line-height:1;letter-spacing:-.02em}.motivPctLbl{font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}.motivPctTrack{width:44px;height:3px;background:var(--bg3);border-radius:2px;margin-top:5px;overflow:hidden}.motivPctFill{height:100%;background:var(--ac);border-radius:2px;transition:width .4s ease}.motivFocusBlock{flex:1;min-width:0;padding:0 16px}.motivFocusTag{font-size:10px;font-weight:700;color:var(--ac);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}.motivFocusTitle{font-size:15px;font-weight:700;color:var(--tx);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.motivFocusSub{font-size:12px;color:var(--tx3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.motivStreakBlock{display:flex;flex-direction:column;align-items:center;min-width:52px;padding-left:14px;border-left:1px solid var(--br);flex-shrink:0}.motivStreakFire{font-size:20px;line-height:1}.motivStreakNum{font-size:18px;font-weight:800;color:var(--tx);line-height:1;margin-top:2px}.motivStreakUnit{font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase}.motivPendBadge{font-size:10px;color:var(--hi);font-weight:700;margin-top:3px}.motivProgress{display:none!important}.motivGoal:not(#motivGoalBox){display:none!important}.ibToolbar{padding:12px 20px 10px;border-bottom:1px solid var(--br);background:var(--card);display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0;z-index:5}.ibTitle{font-family:"Playfair Display",serif;font-size:17px;font-weight:600;color:var(--tx);margin-right:4px;flex-shrink:0}.ibTool{padding:7px 13px;border-radius:8px;border:1.5px solid var(--br);background:var(--bg);color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;touch-action:manipulation;font-family:inherit;transition:all .12s;white-space:nowrap;flex-shrink:0}.ibTool:hover,.ibTool:active{border-color:var(--ac);color:var(--ac);background:var(--ac-bg)}.ibTool.primary{background:var(--ac);color:#fff;border-color:var(--ac)}.ibTool.primary:hover,.ibTool.primary:active{background:var(--ac2);border-color:var(--ac2)}.ibTool.on{background:var(--ac-bg);border-color:var(--ac);color:var(--ac)}.ibColorPicker{display:flex;gap:5px;align-items:center}.ibColorDot{width:19px;height:19px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:all .13s;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.13)}.ibColorDot.on{border-color:rgba(255,255,255,.7);transform:scale(1.25);box-shadow:0 2px 8px rgba(0,0,0,.2)}.ibHint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--tx3);pointer-events:none;user-select:none;display:none;flex-direction:column;align-items:center;justify-content:center}.ibHint p{font-size:13px;line-height:1.9}.mmNode{position:absolute;border-radius:14px!important;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;cursor:pointer;user-select:none;touch-action:none;box-shadow:0 4px 20px rgba(0,0,0,.18);transition:box-shadow .15s,transform .1s;overflow:visible;-webkit-tap-highlight-color:transparent}.mmNode:hover{box-shadow:0 6px 28px rgba(0,0,0,.25);transform:translateY(-1px)}.mmNode.selected{box-shadow:0 0 0 3px var(--ac),0 4px 20px rgba(0,0,0,.2)!important}.mmNodeText{padding:8px 10px;font-size:12px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.22);line-height:1.3;word-break:break-word;pointer-events:none}.mmNodeDel{position:absolute;top:-9px;right:-9px;width:22px;height:22px;border-radius:50%;background:rgba(30,20,10,.45);color:#fff;border:none;cursor:pointer;font-size:12px;display:none;align-items:center;justify-content:center;z-index:20;touch-action:manipulation;line-height:1;padding:0;flex-shrink:0;transition:background .12s}.mmNode:hover .mmNodeDel{display:flex}.mmNodeDel:hover{background:rgba(176,58,46,.92)!important}.mmNode.ibSrc{box-shadow:0 0 0 3px #C9A96E,0 4px 20px rgba(0,0,0,.22)!important}.mmNode.ibTarget:hover{box-shadow:0 0 0 3px #E74C3C,0 4px 20px rgba(0,0,0,.2)!important;cursor:crosshair}</style>
 
+
+
 </head>
+
+
 
 <body>
 
+
+
 <!-- AUTH -->
+
+
 
 <div id="authScreen">
 
+
+
   <div class="aL">
+
+
 
     <div class="aMark"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
 
+
+
     <div class="aBrand">HILLIARD<br>BUFFSHIRE</div>
+
+
 
     <div class="aSub">Task Planner · 태스크 플래너</div>
 
+
+
     <ul class="aFeats">
+
+
 
       <li class="aFeat"><span class="aDot"></span>모든 기기에서 실시간 동기화</li>
 
+
+
       <li class="aFeat"><span class="aDot"></span>캘린더 통합 일정 관리</li>
+
+
 
       <li class="aFeat"><span class="aDot"></span>우선순위 기반 Tracker system</li>
 
+
+
       <li class="aFeat"><span class="aDot"></span>반복 일정 및 체크리스트 지원</li>
+
+
 
     </ul>
 
+
+
     <div class="aCopy">© 2026 HILLIARD BUFFSHIRE</div>
 
+
+
   </div>
+
+
 
   <div class="aR">
 
+
+
     <div class="aWrap">
+
+
 
       <div class="aTitle">환영합니다</div>
 
+
+
       <div class="aDesc">로그인하거나 새 계정을 만들어 시작하세요.<br>어느 기기에서나 동일하게 이용하실 수 있습니다.</div>
+
+
 
       <div class="aTabs">
 
+
+
         <button class="aTab on" onclick="switchTab('login')">로그인</button>
+
+
 
         <button class="aTab" onclick="switchTab('signup')">회원가입</button>
 
+
+
       </div>
+
+
 
       <div id="loginForm">
 
+
+
         <div class="fg"><label class="fl">아이디</label><input class="fi" id="loginId" type="text" placeholder="아이디 입력" autocomplete="username"/></div>
+
+
 
         <div class="fg"><label class="fl">비밀번호</label><input class="fi" id="loginPw" type="password" placeholder="비밀번호 입력" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
 
+
+
         <button class="btnAuth" onclick="doLogin()" id="loginBtn">로그인</button>
 
+
+
       </div>
+
+
 
       <div id="signupForm" style="display:none">
 
+
+
         <div class="fg"><label class="fl">아이디</label><input class="fi" id="signupId" type="text" placeholder="사용할 아이디 입력" autocomplete="username"/></div>
+
+
 
         <div class="fg"><label class="fl">비밀번호</label><input class="fi" id="signupPw" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="new-password"/></div>
 
+
+
         <div class="fg"><label class="fl">비밀번호 확인</label><input class="fi" id="signupPw2" type="password" placeholder="비밀번호 재입력" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()"/></div>
+
+
 
         <button class="btnAuth" onclick="doSignup()" id="signupBtn">계정 만들기</button>
 
+
+
       </div>
+
+
 
       <div class="aErr" id="aErr"></div>
 
+
+
     </div>
+
+
 
   </div>
 
+
+
 </div>
+
+
 
 <button class="mobBtn" id="mobBtn" onclick="toggleSb()">☰</button>
 
+
+
 <div id="sbOv"></div>
+
+
 
 <!-- APP -->
 
+
+
 <div id="appScreen">
+
+
 
   <aside id="sidebar">
 
+
+
     <div class="sbH">
+
+
 
       <div class="sbBrand">HILLIARD BUFFSHIRE</div>
 
+
+
       <div class="sbSub">Task Planner</div>
 
+
+
     </div>
+
+
 
     <div class="mCal">
 
+
+
       <div class="mcH">
+
+
 
         <div class="mcT" id="mcTitle"></div>
 
+
+
         <div class="mcNavs">
+
+
 
           <button class="mcBtn" onclick="mcPrev()">&#8249;</button>
 
+
+
           <button class="mcBtn" onclick="mcNext()">&#8250;</button>
+
+
 
         </div>
 
+
+
       </div>
+
+
 
       <div class="mcGrid" id="mcGrid"></div>
 
+
+
     </div>
+
+
 
     <div class="sbNav">
 
+
+
       <div class="navLbl">메뉴</div>
+
+
 
       <button type="button" class="navItem on" id="nv-today" onclick="setView('today')"><span class="navIco">☀️</span>오늘의 할 일<span class="navBadge" id="b-today">0</span></button>
 
+
+
       <button type="button" class="navItem" id="nv-all" onclick="setView('all')"><span class="navIco">📋</span>전체 목록<span class="navBadge" id="b-all">0</span></button>
+
+
 
       <button type="button" class="navItem" id="nv-calendar" onclick="setView('calendar')"><span class="navIco">📅</span>캘린더</button>
 
+
+
       <button type="button" class="navItem" id="nv-done" onclick="setView('done')"><span class="navIco">✅</span>완료된 항목<span class="navBadge" id="b-done">0</span></button>
+
+
 
       <button type="button" class="navItem" id="nv-recurring" onclick="setView('recurring')"><span class="navIco">🔁</span>반복 일정<span class="navBadge" id="b-rec">0</span></button>
 
+
+
       <div class="navLbl" style="margin-top:8px">우선순위</div>
+
+
 
       <button type="button" class="navItem" id="nv-high" onclick="filterP('high')"><span class="navIco">🔴</span>높음<span class="navBadge" id="b-hi">0</span></button>
 
+
+
       <button type="button" class="navItem" id="nv-medium" onclick="filterP('medium')"><span class="navIco">🟡</span>보통<span class="navBadge" id="b-me">0</span></button>
+
+
 
       <button type="button" class="navItem" id="nv-low" onclick="filterP('low')"><span class="navIco">🟢</span>낮음<span class="navBadge" id="b-lo">0</span></button>
 
+
+
       <div class="navLbl" style="margin-top:8px">플래닝</div>
+
+
 
       <button type="button" class="navItem" id="nv-goals" onclick="setView('goals')"><span class="navIco">🎯</span>목표 관리</button>
 
+
+
       <button type="button" class="navItem" id="nv-ideas" onclick="setView('ideas')"><span class="navIco">💡</span>아이디어 노트</button>
+
+
 
       <div class="navLbl" style="margin-top:8px">카테고리</div>
 
+
+
       <button type="button" class="navItem" id="nv-work" onclick="filterCat('work')"><span class="navIco">💼</span>업무</button>
+
+
 
       <button type="button" class="navItem" id="nv-personal" onclick="filterCat('personal')"><span class="navIco">👤</span>개인</button>
 
+
+
       <button type="button" class="navItem" id="nv-health" onclick="filterCat('health')"><span class="navIco">💪</span>건강</button>
+
+
 
       <button type="button" class="navItem" id="nv-study" onclick="filterCat('study')"><span class="navIco">📚</span>학습</button>
 
+
+
     </div>
+
+
 
     <div class="sbBot">
 
+
+
       <div class="thLbl">테마 선택</div>
+
+
 
       <div class="thRow">
 
+
+
         <div class="thSw on" data-t="signiel" title="Signiel" onclick="setTheme('signiel')"></div>
+
+
 
         <div class="thSw" data-t="obsidian" title="Obsidian" onclick="setTheme('obsidian')"></div>
 
+
+
         <div class="thSw" data-t="blanc" title="Blanc" onclick="setTheme('blanc')"></div>
+
+
 
         <div class="thSw" data-t="jade" title="Jade" onclick="setTheme('jade')"></div>
 
+
+
         <div class="thSw" data-t="sapphire" title="Sapphire" onclick="setTheme('sapphire')"></div>
 
+
+
       </div>
+
+
 
       <div class="sbUser">
 
+
+
         <div class="uAv" id="uAv">H</div>
+
+
 
         <div class="uInfo"><div class="uName" id="uName">—</div><div class="uSub">HILLIARD BUFFSHIRE</div></div>
 
+
+
         <button class="logBtn" onclick="doLogout()" title="로그아웃">
+
+
 
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
 
+
+
         </button>
+
+
 
       </div>
 
+
+
     </div>
+
+
 
   </aside>
 
+
+
   <div id="main">
+
+
 
     <div class="pH">
 
+
+
       <div class="pHR">
+
+
 
         <div><div class="pDate" id="pDate"></div><div class="pTitle" id="pTitle">오늘의 할 일</div></div>
 
+
+
         <button class="btnAdd" onclick="openModal()">
+
+
 
           <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>추가
 
+
+
         </button>
 
+
+
       </div>
+
+
 
       <!-- 동기부여 헤더: 오늘 달성률 + 활성 목표 리마인더 -->
 
+
+
       <div class="motivBar" id="motivBar">
+
         <!-- 달성률 뱃지 (왼쪽 작게) -->
+
         <div class="motivPctBlock">
+
           <div class="motivPctNum" id="progPct">0%</div>
+
           <div class="motivPctLbl">달성</div>
+
           <div class="motivPctTrack"><div class="motivPctFill" id="progFill" style="width:0%"></div></div>
+
         </div>
+
         <!-- 포커스 / 목표 (중앙 메인) -->
+
         <div class="motivFocusBlock" id="motivGoalBox">
+
           <div class="motivFocusTag" id="motivGoalTag">TODAY'S FOCUS</div>
+
           <div class="motivFocusTitle" id="motivGoalTitle">오늘도 최선을 다해봐요</div>
+
           <div class="motivFocusSub" id="motivGoalSub">작은 실천이 큰 변화를 만든다</div>
+
           <span id="motivGoalPct" style="display:none">0%</span>
+
         </div>
+
         <!-- 스트릭 (오른쪽) -->
+
         <div class="motivStreakBlock">
+
           <span class="motivStreakFire">🔥</span>
+
           <span class="motivStreakNum" id="streakN">0</span>
+
           <span class="motivStreakUnit">일</span>
+
           <div class="motivPendBadge" id="motivPendTxt"></div>
+
         </div>
+
       </div>
+
+
 
       <!-- hidden refs for old JS compat -->
 
+
+
       <span id="sTotal" style="display:none">0</span>
+
+
 
       <span id="sDone" style="display:none">0</span>
 
+
+
       <span id="sPend" style="display:none">0</span>
+
+
 
       <span id="sHigh" style="display:none">0</span>
 
+
+
       <svg style="display:none"><circle id="progCircle"/></svg>
 
+
+
     </div>
+
+
 
     <div class="cArea">
 
+
+
       <!-- TODAY -->
+
+
 
       <div class="vPg va" id="vToday">
 
+
+
         <div class="chipRow" id="crToday">
+
+
 
           <div class="chip on" onclick="chipT(this,'all')">전체</div>
 
+
+
           <div class="chip" onclick="chipT(this,'high')">🔴 높음</div>
+
+
 
           <div class="chip" onclick="chipT(this,'medium')">🟡 보통</div>
 
+
+
           <div class="chip" onclick="chipT(this,'low')">🟢 낮음</div>
+
+
 
           <div class="chip" onclick="chipT(this,'recurring')">🔁 반복</div>
 
+
+
         </div>
+
+
 
         <div id="todaySec"></div>
 
+
+
       </div>
+
+
 
       <!-- ALL -->
 
+
+
       <div class="vPg" id="vAll">
+
+
 
         <div class="chipRow" id="crAll">
 
+
+
           <div class="chip on" onclick="chipA(this,'all')">전체</div>
+
+
 
           <div class="chip" onclick="chipA(this,'high')">🔴 높음</div>
 
+
+
           <div class="chip" onclick="chipA(this,'medium')">🟡 보통</div>
+
+
 
           <div class="chip" onclick="chipA(this,'low')">🟢 낮음</div>
 
+
+
         </div>
+
+
 
         <div id="allSec"></div>
 
+
+
       </div>
+
+
 
       <!-- CALENDAR -->
 
+
+
       <div class="vPg" id="vCalendar">
+
+
 
         <div class="calHead">
 
+
+
           <button class="calNav" onclick="calPrev()">&#8249;</button>
+
+
 
           <div class="calMoT" id="calMoT"></div>
 
+
+
           <button class="calNav" onclick="calNext()">&#8250;</button>
+
+
 
           <button class="calTodayBtn" onclick="calToday()">오늘</button>
 
+
+
         </div>
+
+
 
         <div class="calGrid">
 
+
+
           <div class="calDowRow">
+
+
 
             <div class="calDow">일</div><div class="calDow">월</div><div class="calDow">화</div>
 
+
+
             <div class="calDow">수</div><div class="calDow">목</div><div class="calDow">금</div><div class="calDow">토</div>
 
+
+
           </div>
+
+
 
           <div class="calDays" id="calDays"></div>
 
+
+
         </div>
+
+
 
         <div class="calDetail" id="calDetail">
 
+
+
           <div class="calDetPanel">
+
+
 
             <div class="calDetHeader">
 
+
+
               <div><div class="calDetDate" id="calDetTitle">날짜 선택</div><div class="calDetCount" id="calDetCount"></div></div>
+
+
 
               <button class="calDetAddBtn" onclick="openModalForDate()">
 
+
+
                 <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>이 날 추가
+
+
 
               </button>
 
+
+
             </div>
+
+
 
             <div class="calDetBody"><div id="calDetTasks"></div></div>
 
+
+
           </div>
+
+
 
         </div>
 
+
+
       </div>
+
+
 
       <!-- DONE -->
 
+
+
       <div class="vPg" id="vDone"><div id="doneSec"></div></div>
+
+
 
       <!-- RECURRING -->
 
+
+
       <div class="vPg" id="vRecurring"><div id="recurringSec"></div></div>
+
+
 
       <!-- ── GOALS VIEW ── -->
 
+
+
       <div class="vPg" id="vGoals">
+
+
 
         <div class="goalTabs">
 
+
+
           <button type="button" class="goalTab on" data-hz="yearly" onclick="setGoalHz(this,'yearly')">YEARLY</button>
+
+
 
           <button type="button" class="goalTab" data-hz="quarterly" onclick="setGoalHz(this,'quarterly')">QUARTERLY</button>
 
+
+
           <button type="button" class="goalTab" data-hz="monthly" onclick="setGoalHz(this,'monthly')">MONTHLY</button>
+
+
 
           <button type="button" class="goalTab" data-hz="weekly" onclick="setGoalHz(this,'weekly')">WEEKLY</button>
 
+
+
           <button type="button" class="goalTab" data-hz="daily" onclick="setGoalHz(this,'daily')">DAILY</button>
 
+
+
         </div>
+
+
 
         <div class="goalHorizon" id="goalHorizonLabel">장기 목표 · 연간 계획</div>
 
+
+
         <div class="goalGrid" id="goalGrid"></div>
 
+
+
       </div>
+
+
 
       <!-- ── IDEAS / IDEA BANK VIEW ── -->
 
-      <div class="vPg" id="vIdeas" style="padding:0;display:flex;flex-direction:column">
+
+
+      <div class="vPg" id="vIdeas" style="padding:0">
+
+
 
         <div class="ibToolbar">
+
           <span class="ibTitle">💡 아이디어 뱅크</span>
+
           <button type="button" class="ibTool primary" onclick="mmAddNode()">+ 새 아이디어</button>
+
           <button type="button" class="ibTool" id="ibLinkBtn" onclick="ibToggleLink()" title="두 아이디어를 선으로 연결합니다">🔗 연결하기</button>
+
           <div class="ibColorPicker" id="ibColorPicker"></div>
+
           <button type="button" class="ibTool" onclick="mmReset()">⊙ 중앙 정렬</button>
+
         </div>
+
+
 
         <div id="mindMapCanvas" style="flex:1;position:relative;overflow:hidden;min-height:300px">
+
           <svg id="mindMapSvg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible"></svg>
+
           <div class="ibHint" id="mmHint">
+
             <div style="font-size:44px;margin-bottom:14px">💡</div>
+
             <p style="font-size:15px;font-weight:700;color:var(--tx2);margin-bottom:8px">아이디어 뱅크</p>
+
             <p>+ 새 아이디어 버튼 또는 빈 공간 더블클릭으로 시작<br>드래그로 이동 · 더블클릭으로 편집 · 연결하기로 연결</p>
+
           </div>
+
         </div>
 
+
+
         <!-- 노드 편집 팝업 -->
+
         <div class="mmEditBox" id="mmEditBox">
+
           <div class="mmColors" id="mmColorRow"></div>
+
           <input class="mmEditInput" id="mmEditInput" placeholder="아이디어 내용 입력…"/>
+
           <div class="mmEditBtns">
+
             <button type="button" class="mmEditBtn del" onclick="mmDeleteNode()">삭제</button>
+
             <button type="button" class="mmEditBtn ok" onclick="mmConfirmEdit()">확인</button>
+
           </div>
+
         </div>
+
+
 
       </div>
 
+
+
     </div>
+
+
 
   </div>
 
+
+
 </div>
+
+
 
 <!-- NOTION-STYLE MODAL -->
 
+
+
 <div class="mOv" id="taskModal" onclick="if(event.target===this)closeModal()">
+
+
 
   <div class="mBox" onclick="event.stopPropagation()">
 
+
+
     <div class="mHead">
+
+
 
       <span class="mHead-drag"></span>
 
+
+
     </div>
+
+
 
     <!-- Type selector -->
 
+
+
     <div class="mTypeRow">
+
+
 
       <button class="mTypeBtn on" data-type="todo" onclick="setMType('todo')">☑️ 할 일</button>
 
+
+
       <button class="mTypeBtn" data-type="recurring" onclick="setMType('recurring')">🔁 반복</button>
+
+
 
       <button class="mTypeBtn" data-type="note" onclick="setMType('note')">📝 메모</button>
 
+
+
     </div>
+
+
 
     <!-- Title -->
 
+
+
     <div class="mTitleRow">
+
+
 
       <textarea class="mTitleInput" id="mText" placeholder="제목을 입력하세요..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();saveTodo()}"></textarea>
 
+
+
     </div>
+
+
 
     <!-- Body properties (Notion-style rows) -->
 
+
+
     <div class="mBody">
+
+
 
       <input type="hidden" id="editId"/>
 
+
+
       <!-- Priority -->
+
+
 
       <div class="mRow">
 
+
+
         <div class="mRowLabel">
+
+
 
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>우선순위
 
+
+
         </div>
 
+
+
         <div class="mRowVal">
+
+
 
           <div class="priPicker">
 
+
+
             <button class="priBtn" data-p="high" onclick="setPri('high')">🔴 높음</button>
+
+
 
             <button class="priBtn on" data-p="medium" onclick="setPri('medium')">🟡 보통</button>
 
+
+
             <button class="priBtn" data-p="low" onclick="setPri('low')">🟢 낮음</button>
+
+
 
           </div>
 
+
+
         </div>
 
+
+
       </div>
+
+
 
       <!-- Category -->
 
+
+
       <div class="mRow">
 
+
+
         <div class="mRowLabel">
+
+
 
           <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>카테고리
 
+
+
         </div>
 
+
+
         <div class="mRowVal">
+
+
 
           <div class="catPicker">
 
+
+
             <button class="catBtn" data-c="work" onclick="setCat('work')">💼 업무</button>
+
+
 
             <button class="catBtn" data-c="personal" onclick="setCat('personal')">👤 개인</button>
 
+
+
             <button class="catBtn" data-c="health" onclick="setCat('health')">💪 건강</button>
+
+
 
             <button class="catBtn" data-c="study" onclick="setCat('study')">📚 학습</button>
 
+
+
             <button class="catBtn" data-c="other" onclick="setCat('other')">⭐ 기타</button>
+
+
 
           </div>
 
+
+
         </div>
 
+
+
       </div>
+
+
 
       <!-- Date + Time -->
 
+
+
       <div class="mRow">
 
+
+
         <div class="mRowLabel">
+
+
 
           <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>날짜
 
+
+
         </div>
 
+
+
         <div class="mRowVal">
+
+
 
           <div class="dtRow">
 
+
+
             <input class="mFiSm" id="mDate" type="date"/>
+
+
 
             <input class="mFiSm" id="mTime" type="time" placeholder="시간 (선택)"/>
 
+
+
           </div>
+
+
 
         </div>
 
+
+
       </div>
+
+
 
       <!-- Recurring section (shown when type=recurring) -->
 
+
+
       <div class="mRow recurSec" id="recurSec">
 
+
+
         <div class="mRowLabel">
+
+
 
           <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>반복
 
+
+
         </div>
 
+
+
         <div class="mRowVal">
+
+
 
           <div class="recurFreq">
 
+
+
             <button class="freqBtn on" data-f="daily" onclick="setFreq('daily')">매일</button>
+
+
 
             <button class="freqBtn" data-f="weekly" onclick="setFreq('weekly')">매주</button>
 
+
+
             <button class="freqBtn" data-f="monthly" onclick="setFreq('monthly')">매월</button>
 
+
+
           </div>
+
+
 
           <div class="recurRow" id="weekDayRow" style="display:none">
 
+
+
             <button class="dayBtn" data-d="0" onclick="toggleDay(this)">일</button>
+
+
 
             <button class="dayBtn on" data-d="1" onclick="toggleDay(this)">월</button>
 
+
+
             <button class="dayBtn on" data-d="2" onclick="toggleDay(this)">화</button>
+
+
 
             <button class="dayBtn on" data-d="3" onclick="toggleDay(this)">수</button>
 
+
+
             <button class="dayBtn on" data-d="4" onclick="toggleDay(this)">목</button>
+
+
 
             <button class="dayBtn on" data-d="5" onclick="toggleDay(this)">금</button>
 
+
+
             <button class="dayBtn" data-d="6" onclick="toggleDay(this)">토</button>
+
+
 
           </div>
 
+
+
         </div>
 
+
+
       </div>
+
+
 
       <!-- Description -->
 
+
+
       <div class="mRow">
 
+
+
         <div class="mRowLabel">
+
+
 
           <svg viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>설명
 
+
+
         </div>
 
+
+
         <div class="mRowVal">
+
+
 
           <textarea class="mDescArea" id="mDesc" placeholder="설명 또는 메모를 입력하세요..." rows="3"></textarea>
 
+
+
         </div>
 
+
+
       </div>
+
+
 
       <!-- Sub-tasks (shown for todo/recurring) -->
 
+
+
       <div class="mRow" id="subTaskRow">
+
+
 
         <div class="mRowLabel">
 
+
+
           <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>체크리스트
 
+
+
         </div>
+
+
 
         <div class="mRowVal">
 
+
+
           <div class="subTaskSec">
+
+
 
             <div class="subTaskList" id="subTaskList"></div>
 
+
+
             <button class="addSubBtn" onclick="addSubTask()">+ 항목 추가</button>
+
+
 
           </div>
 
+
+
         </div>
+
+
 
       </div>
 
+
+
     </div>
+
+
 
     <div class="mFoot">
 
+
+
       <button class="btnCancel" onclick="closeModal()">취소</button>
+
+
 
       <button class="btnSave" onclick="saveTodo()">저장</button>
 
+
+
     </div>
+
+
 
   </div>
 
+
+
 </div>
+
+
 
 <!-- Toast -->
 
+
+
 <div class="aToast" id="aToast">
+
+
 
   <div class="aIco" id="aIco">🎉</div>
 
+
+
   <div><div class="aTitle" id="aTitle2">달성!</div><div class="aSub" id="aSub2">훌륭합니다</div></div>
 
+
+
 </div>
+
+
 
 <!-- ── GOAL MODAL ── -->
 
+
+
 <div class="mOv" id="goalModal">
+
+
 
   <div class="mBox" style="max-width:520px;display:flex;flex-direction:column">
 
+
+
     <div class="mHd">
+
+
 
       <div class="mTtl" id="goalModalTitle">새 목표 추가</div>
 
+
+
       <button type="button" class="mCls" onclick="closeGoalModal()">✕</button>
 
+
+
     </div>
+
+
 
     <div class="mBd">
 
+
+
       <input type="hidden" id="goalEditId"/>
 
+
+
       <div class="gmRow">
+
+
 
         <div class="gmLbl">기간 (시간 범위)</div>
 
+
+
         <div class="gmHorizRow">
+
+
 
           <button type="button" class="gmHorizBtn on" data-hz="yearly" onclick="setGHz(this,'yearly')">YEARLY</button>
 
+
+
           <button type="button" class="gmHorizBtn" data-hz="quarterly" onclick="setGHz(this,'quarterly')">QUARTERLY</button>
+
+
 
           <button type="button" class="gmHorizBtn" data-hz="monthly" onclick="setGHz(this,'monthly')">MONTHLY</button>
 
+
+
           <button type="button" class="gmHorizBtn" data-hz="weekly" onclick="setGHz(this,'weekly')">WEEKLY</button>
+
+
 
           <button type="button" class="gmHorizBtn" data-hz="daily" onclick="setGHz(this,'daily')">DAILY</button>
 
+
+
         </div>
+
+
 
       </div>
 
+
+
       <div class="gmRow">
+
+
 
         <div class="gmLbl">목표 제목</div>
 
+
+
         <input class="gmInput" id="gTitle" type="text" placeholder="달성하고 싶은 목표를 입력하세요"/>
+
+
 
       </div>
 
+
+
       <div class="gmRow">
+
+
 
         <div class="gmLbl">설명 (선택)</div>
 
+
+
         <textarea class="gmInput gmTextarea" id="gDesc" placeholder="목표에 대한 설명이나 동기를 적어보세요"></textarea>
+
+
 
       </div>
 
+
+
       <div class="gmRow">
+
+
 
         <div class="gmLbl">목표 색상</div>
 
+
+
         <div class="gmColorRow">
+
+
 
           <div class="gmColor on" data-gc="#C9A96E" style="background:#C9A96E" onclick="setGColor(this,'#C9A96E')"></div>
 
+
+
           <div class="gmColor" data-gc="#3D7A3D" style="background:#3D7A3D" onclick="setGColor(this,'#3D7A3D')"></div>
+
+
 
           <div class="gmColor" data-gc="#1E4A8A" style="background:#1E4A8A" onclick="setGColor(this,'#1E4A8A')"></div>
 
+
+
           <div class="gmColor" data-gc="#8B2FC9" style="background:#8B2FC9" onclick="setGColor(this,'#8B2FC9')"></div>
+
+
 
           <div class="gmColor" data-gc="#B03A2E" style="background:#B03A2E" onclick="setGColor(this,'#B03A2E')"></div>
 
+
+
           <div class="gmColor" data-gc="#1A8A6E" style="background:#1A8A6E" onclick="setGColor(this,'#1A8A6E')"></div>
+
+
 
         </div>
 
+
+
       </div>
+
+
 
       <div class="gmRow">
 
+
+
         <div class="gmLbl">실행 계획 / 액션 아이템</div>
+
+
 
         <div class="gmActList" id="gActList"></div>
 
+
+
         <button type="button" class="gmAddAct" onclick="addGAct()">+ 계획 추가</button>
+
+
 
       </div>
 
+
+
     </div>
+
+
 
     <div class="mFt">
 
+
+
       <button type="button" class="mBtn sec" onclick="closeGoalModal()">취소</button>
+
+
 
       <button type="button" class="mBtn pri" onclick="saveGoal()">저장</button>
 
+
+
     </div>
+
+
 
   </div>
 
-</div>
+
 
 </div>
+
+
+
+</div>
+
+
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 
+
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+
+
 <script>firebase.initializeApp({apiKey:"AIzaSyDEPq3SqOCiltpmesT3vP9Jp7a_ujFou1k",authDomain:"daily-task-planner-9187f.firebaseapp.com",projectId:"daily-task-planner-9187f",storageBucket:"daily-task-planner-9187f.firebasestorage.app",messagingSenderId:"309757618979",appId:"1:309757618979:web:79fbdc11fbfbcdffa9ba96"});var auth=firebase.auth(),db=firebase.firestore();var DOMAIN="@hilliard.buffshire.internal";var todos=[],curUser=null,unsubFn=null;var curView='today',chipTF='all',chipAF='all',priF=null,catF=null;var calY,calM,mcY,mcM,selDate=null;var streak=parseInt(localStorage.getItem('hb-s')||'0');var lastAct=localStorage.getItem('hb-la')||'';var curTheme=localStorage.getItem('hb-t')||'signiel';var mType='todo',mPri='medium',mCat=null,mFreq='daily',mDays=[1,2,3,4,5],mSubTasks=[];var goals=[],ideas=[],unsubGoals=null,unsubIdeas=null;var curGoalHz='yearly',gColor='#C9A96E',gActs=[],iColor='#FFF9E6';function pad(n){return String(n).padStart(2,'0')}
+
+
 
 function todayStr(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
 
+
+
 function isRecurringToday(t){if(t.type!=='recurring')return false;var today=new Date();var dow=today.getDay();var dom=today.getDate();if(t.recurring==='daily')return true;if(t.recurring==='weekly')return(t.recurringDays||[]).indexOf(dow)>=0;if(t.recurring==='monthly')return(t.recurringDay||1)===dom;return false;}
+
+
 
 function applyTheme(t){curTheme=t;document.documentElement.setAttribute('data-theme',t);localStorage.setItem('hb-t',t);document.querySelectorAll('.thSw').forEach(function(el){el.classList.toggle('on',el.dataset.t===t)});}
 
+
+
 function setTheme(t){applyTheme(t)}
+
+
 
 applyTheme(curTheme);function switchTab(tab){var login=(tab==='login');document.getElementById('loginForm').style.display=login?'block':'none';document.getElementById('signupForm').style.display=login?'none':'block';document.querySelectorAll('.aTab').forEach(function(el,i){el.classList.toggle('on',(login&&i===0)||(!login&&i===1))});document.getElementById('aErr').style.display='none';}
 
+
+
 function showErr(m){var e=document.getElementById('aErr');e.textContent=m;e.style.display='block'}
+
+
 
 function doLogin(){var id=document.getElementById('loginId').value.trim();var pw=document.getElementById('loginPw').value;if(!id||!pw){showErr('아이디와 비밀번호를 입력해주세요.');return}
 
+
+
 var btn=document.getElementById('loginBtn');btn.textContent='로그인 중…';btn.disabled=true;document.getElementById('aErr').style.display='none';auth.signInWithEmailAndPassword(id.toLowerCase().trim()+DOMAIN,pw).catch(function(e){var m='로그인 실패. 아이디 또는 비밀번호를 확인하세요.';if(e.code==='auth/user-not-found')m='등록되지 않은 아이디입니다.';if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')m='비밀번호가 올바르지 않습니다.';showErr(m);}).finally(function(){btn.textContent='로그인';btn.disabled=false});}
+
+
 
 function doSignup(){var id=document.getElementById('signupId').value.trim();var pw=document.getElementById('signupPw').value;var pw2=document.getElementById('signupPw2').value;if(!id||!pw){showErr('모든 항목을 입력해주세요.');return}
 
+
+
 if(pw.length<6){showErr('비밀번호는 6자 이상이어야 합니다.');return}
+
+
 
 if(pw!==pw2){showErr('비밀번호가 일치하지 않습니다.');return}
 
+
+
 var btn=document.getElementById('signupBtn');btn.textContent='처리 중…';btn.disabled=true;document.getElementById('aErr').style.display='none';auth.createUserWithEmailAndPassword(id.toLowerCase().trim()+DOMAIN,pw).catch(function(e){var m='회원가입 실패.';if(e.code==='auth/email-already-in-use')m='이미 사용중인 아이디입니다.';if(e.code==='auth/weak-password')m='비밀번호가 너무 약합니다.';showErr(m);}).finally(function(){btn.textContent='계정 만들기';btn.disabled=false});}
+
+
 
 function doLogout(){if(unsubFn){unsubFn();unsubFn=null}if(unsubGoals){unsubGoals();unsubGoals=null}if(unsubIdeas){unsubIdeas();unsubIdeas=null}auth.signOut()}
 
+
+
 auth.onAuthStateChanged(function(u){if(u){curUser=u;document.getElementById('authScreen').style.display='none';document.getElementById('appScreen').style.display='block';document.getElementById('mobBtn').style.display='';var id=(u.email||'').replace(DOMAIN,'');document.getElementById('uName').textContent=id.toUpperCase();document.getElementById('uAv').textContent=(id[0]||'H').toUpperCase();initUI();updateStreak();if(unsubGoals)unsubGoals();unsubGoals=db.collection('goals').where('uid','==',u.uid).onSnapshot(function(snap){goals=[];snap.forEach(function(d){goals.push(Object.assign({id:d.id},d.data()))});if(curView==='goals')renderGoals();});if(unsubIdeas)unsubIdeas();unsubIdeas=db.collection('ideas').where('uid','==',u.uid).onSnapshot(function(snap){ideas=[];snap.forEach(function(d){ideas.push(Object.assign({id:d.id},d.data()))});ideas.sort(function(a,b){var ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;var tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});if(curView==='ideas')renderIdeas();});if(unsubFn)unsubFn();unsubFn=db.collection('todos').where('uid','==',u.uid).onSnapshot(function(snap){todos=[];snap.forEach(function(d){todos.push(Object.assign({id:d.id},d.data()))});todos.sort(function(a,b){var ta=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate().getTime():0;var tb=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate().getTime():0;return tb-ta;});scheduleRender();},function(err){console.error('Firestore:',err);scheduleRender()});}else{curUser=null;document.getElementById('authScreen').style.display='flex';document.getElementById('appScreen').style.display='none';document.getElementById('mobBtn').style.display='none';}});function updateStreak(){var today=todayStr();if(lastAct&&lastAct!==today){if(Math.round((new Date(today)-new Date(lastAct))/86400000)>1){streak=0;localStorage.setItem('hb-s','0')}}
+
+
 
 if(lastAct!==today){lastAct=today;localStorage.setItem('hb-la',today)}
 
+
+
 document.getElementById('streakN').textContent=streak;}
+
+
 
 function bumpStreak(){streak++;localStorage.setItem('hb-s',streak);document.getElementById('streakN').textContent=streak;if(streak%7===0)toast('🏆',''+streak+'일 연속!','연속 달성 기록을 갱신했습니다');}
 
+
+
 function initUI(){var now=new Date();calY=now.getFullYear();calM=now.getMonth();mcY=calY;mcM=calM;selDate=todayStr();var days=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];document.getElementById('pDate').textContent=now.getFullYear()+'년 '+pad(now.getMonth()+1)+'월 '+pad(now.getDate())+'일 '+days[now.getDay()];document.getElementById('mDate').value=todayStr();renderMiniCal();}
+
+
 
 var CAT_LABELS={'work':'💼 업무','personal':'👤 개인','health':'💪 건강','study':'📚 학습','other':'⭐ 기타'};var _today=todayStr();setInterval(function(){_today=todayStr();},60000);var _rafId=null;function scheduleRender(){if(_rafId)return;_rafId=requestAnimationFrame(function(){_rafId=null;renderAll();});}
 
+
+
 function computeCounts(){var today=_today,c={tPend:0,tDone:0,all:0,done:0,rec:0,hi:0,me:0,lo:0,pend:0,hiPend:0};for(var i=0;i<todos.length;i++){var t=todos[i];var isT=(t.date===today)||(t.type==='recurring'&&isRecurringToday(t));if(t.done){c.done++;if(isT)c.tDone++;}
+
+
 
 else{c.pend++;if(isT)c.tPend++;if(t.type!=='recurring')c.all++;if(t.priority==='high'){c.hi++;c.hiPend++;}
 
+
+
 else if(t.priority==='medium')c.me++;else c.lo++;}
+
+
 
 if(t.type==='recurring')c.rec++;}
 
+
+
 return c;}
+
+
 
 function renderAll(){var c=computeCounts();document.getElementById('b-today').textContent=c.tPend;document.getElementById('b-all').textContent=c.all;document.getElementById('b-done').textContent=c.done;document.getElementById('b-rec').textContent=c.rec;document.getElementById('b-hi').textContent=c.hi;document.getElementById('b-me').textContent=c.me;document.getElementById('b-lo').textContent=c.lo;document.getElementById('sTotal').textContent=todos.length;document.getElementById('sDone').textContent=c.done;document.getElementById('sPend').textContent=c.pend;document.getElementById('sHigh').textContent=c.hiPend;var todayAll=c.tPend+c.tDone;var pct=todayAll>0?Math.round(c.tDone/todayAll*100):0;document.getElementById('progPct').textContent=pct+'%';document.getElementById('progCircle').style.strokeDashoffset=113.1-(pct/100)*113.1;if(curView==='today')renderToday();else if(curView==='all')renderAll2();else if(curView==='done')renderDone();else if(curView==='recurring')renderRecurring();else if(curView==='calendar')renderCal();renderMiniCal();if(typeof updateMotivBar==='function')updateMotivBar();}
 
+
+
 function updateBadges(){}
+
+
 
 function updateStats(){}
 
+
+
 function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+
 
 function mkCard(t){var pc=t.priority==='high'?'var(--hi)':t.priority==='medium'?'var(--me)':'var(--lo)';var pl={high:'높음',medium:'보통',low:'낮음'},pe={high:'🔴',medium:'🟡',low:'🟢'},pri=t.priority||'low';var priCls=t.priority==='high'?'tHi':t.priority==='medium'?'tMe':'tLo';var metaH='<span class="tTag '+priCls+'">'+pe[pri]+' '+(pl[pri]||pri)+'</span>';if(t.type==='recurring')metaH+='<span class="tTag tType-recurring">🔁 반복</span>';if(t.type==='note')metaH+='<span class="tTag tType-note">📝 메모</span>';if(t.category&&CAT_LABELS[t.category])metaH+='<span class="tTag tCat-'+t.category+'">'+CAT_LABELS[t.category]+'</span>';if(t.date&&t.type!=='recurring')metaH+='<span class="tTag tDt">📅 '+_esc(t.date)+'</span>';var subH='';if(t.subTasks&&t.subTasks.length){subH='<div class="tSubList">';for(var si=0;si<t.subTasks.length;si++){var sub=t.subTasks[si];subH+='<div class="tSubItem"><div class="tSubCk'+(sub.done?' ck':'')+'" data-act="sub" data-sid="'+si+'"></div><span class="tSubTxt'+(sub.done?' ck':'')+'">'+_esc(sub.text)+'</span></div>';}
 
+
+
 subH+='</div>';}
+
+
 
 var card=document.createElement('div');card.className='tCard'+(t.done?' done':'');card.style.setProperty('--pc',pc);card.innerHTML='<div class="chk'+(t.done?' ck':'')+'" data-act="chk"></div>'+'<div class="tBody">'+'<div class="tTxt">'+_esc(t.text)+'</div>'+
 
+
+
 (t.note&&t.note.trim()?'<div class="tDesc">'+_esc(t.note.length>60?t.note.substring(0,60)+'…':t.note)+'</div>':'')+
+
+
 
 (t.time?'<div class="tTime">⏰ '+_esc(t.time)+'</div>':'')+'<div class="tMeta">'+metaH+'</div>'+subH+'</div>'+'<div class="tActs">'+'<button type="button" class="tBtn" data-act="edit"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>'+'<button type="button" class="tBtn del" data-act="del"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>'+'</div>';card.addEventListener('click',function(e){var el=e.target.closest('[data-act]');if(!el)return;e.stopPropagation();var a=el.dataset.act;if(a==='chk'){toggleDone(t.id,t.done);el.classList.add('pop');setTimeout(function(){el.classList.remove('pop')},180);}
 
+
+
 else if(a==='edit')openModal(t);else if(a==='del')deleteTodo(t.id);else if(a==='sub'){var sid=parseInt(el.dataset.sid);if(!isNaN(sid)&&t.subTasks[sid])toggleSubTask(t.id,sid,t.subTasks[sid].done);}});return card;}
+
+
 
 function mkList(tasks){var l=document.createElement('div');l.className='tList';for(var i=0;i<tasks.length;i++)l.appendChild(mkCard(tasks[i]));return l}
 
+
+
 function mkEmpty(ico,t,s){return'<div class="empty"><div class="emIco">'+ico+'</div><div class="emT">'+t+'</div><div class="emS">'+s+'</div></div>'}
+
+
 
 function renderToday(){var today=todayStr();var tasks=todos.filter(function(t){return t.date===today||isRecurringToday(t)});if(chipTF==='recurring')tasks=tasks.filter(function(t){return t.type==='recurring'});else if(chipTF!=='all')tasks=tasks.filter(function(t){return t.priority===chipTF});var pend=tasks.filter(function(t){return!t.done}),done=tasks.filter(function(t){return t.done});var sec=document.getElementById('todaySec');sec.innerHTML='';if(!pend.length&&!done.length){sec.innerHTML=mkEmpty('☀️','오늘의 할 일이 없습니다','새 할 일을 추가하여 하루를 계획해보세요');return}
 
+
+
 if(pend.length){var l=document.createElement('div');l.className='secLbl';l.textContent='진행중 · '+pend.length+'개';sec.appendChild(l);sec.appendChild(mkList(pend))}
+
+
 
 if(done.length){var d=document.createElement('div');d.className='divider';d.style.marginTop='20px';d.innerHTML='<div class="divL"></div><div class="divT">완료 · '+done.length+'개</div><div class="divL"></div>';sec.appendChild(d);sec.appendChild(mkList(done));}}
 
+
+
 function renderAll2(){var tasks=todos.filter(function(t){return!t.done&&t.type!=='recurring'});if(chipAF!=='all')tasks=tasks.filter(function(t){return t.priority===chipAF});if(priF)tasks=tasks.filter(function(t){return t.priority===priF});if(catF)tasks=tasks.filter(function(t){return t.category===catF});var grp={};tasks.forEach(function(t){var d=t.date||'날짜 없음';if(!grp[d])grp[d]=[];grp[d].push(t)});var sec=document.getElementById('allSec');sec.innerHTML='';var dates=Object.keys(grp).sort().reverse();var today=todayStr();if(!dates.length){sec.innerHTML=mkEmpty('📋','할 일이 없습니다','새로운 할 일을 추가해보세요');return}
+
+
 
 dates.forEach(function(d){var l=document.createElement('div');l.className='secLbl';l.textContent=(d===today?'오늘':d)+' · '+grp[d].length+'개';sec.appendChild(l);sec.appendChild(mkList(grp[d]));});}
 
+
+
 function renderDone(){var done=todos.filter(function(t){return t.done});var sec=document.getElementById('doneSec');sec.innerHTML='';if(!done.length){sec.innerHTML=mkEmpty('✅','완료된 항목이 없습니다','할 일을 완료하면 여기에 나타납니다');return}
+
+
 
 sec.appendChild(mkList(done));}
 
+
+
 function renderRecurring(){var rec=todos.filter(function(t){return t.type==='recurring'});var sec=document.getElementById('recurringSec');sec.innerHTML='';if(!rec.length){sec.innerHTML=mkEmpty('🔁','반복 일정이 없습니다','반복 할 일을 추가해보세요');return}
+
+
 
 var lbl=document.createElement('div');lbl.className='secLbl';lbl.textContent='반복 일정 · '+rec.length+'개';sec.appendChild(lbl);sec.appendChild(mkList(rec));}
 
+
+
 function renderMiniCal(){var MO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];document.getElementById('mcTitle').textContent=mcY+'년 '+MO[mcM];var grid=document.getElementById('mcGrid');grid.innerHTML='';['일','월','화','수','목','금','토'].forEach(function(d){var el=document.createElement('div');el.className='mcDow';el.textContent=d;grid.appendChild(el)});var first=new Date(mcY,mcM,1).getDay(),dim=new Date(mcY,mcM+1,0).getDate(),prev=new Date(mcY,mcM,0).getDate();var today=todayStr(),tdMap={};todos.forEach(function(t){if(t.date)tdMap[t.date]=(tdMap[t.date]||0)+1});for(var i=first-1;i>=0;i--){var el=document.createElement('div');el.className='mcDay mcOther';el.textContent=prev-i;grid.appendChild(el)}
+
+
 
 for(var d=1;d<=dim;d++){var ds=mcY+'-'+pad(mcM+1)+'-'+pad(d);var el=document.createElement('div');el.className='mcDay';if(ds===today)el.classList.add('mcToday');else if(ds===selDate)el.classList.add('mcSel');el.textContent=d;if(tdMap[ds]){var dot=document.createElement('div');dot.className='mcDot';el.appendChild(dot)}
 
+
+
 (function(s){el.onclick=function(){var dd=new Date(s);selDate=s;calY=dd.getFullYear();calM=dd.getMonth();mcY=calY;mcM=calM;setView('calendar');setTimeout(function(){showCalDet(s);scrollToDetail()},60)}})(ds);grid.appendChild(el);}
+
+
 
 var rem=(7-(first+dim)%7)%7;for(var i=1;i<=rem;i++){var el=document.createElement('div');el.className='mcDay mcOther';el.textContent=i;grid.appendChild(el)}}
 
+
+
 function mcPrev(){mcM--;if(mcM<0){mcM=11;mcY--}renderMiniCal()}
+
+
 
 function mcNext(){mcM++;if(mcM>11){mcM=0;mcY++}renderMiniCal()}
 
+
+
 function renderCal(){var MO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];document.getElementById('calMoT').textContent=calY+'년 '+MO[calM];var first=new Date(calY,calM,1).getDay(),dim=new Date(calY,calM+1,0).getDate();var prevDim=new Date(calY,calM,0).getDate(),today=todayStr();var tdMap={};todos.forEach(function(t){if(t.date){if(!tdMap[t.date])tdMap[t.date]=[];tdMap[t.date].push(t)}});var days=document.getElementById('calDays');days.innerHTML='';var total=Math.ceil((first+dim)/7)*7;for(var i=0;i<total;i++){var cell=document.createElement('div');cell.className='calCell';var dn,ds,other=false;if(i<first){dn=prevDim-(first-1-i);var pm=calM-1<0?11:calM-1,py=calM-1<0?calY-1:calY;ds=py+'-'+pad(pm+1)+'-'+pad(dn);other=true}
+
+
 
 else if(i>=first+dim){dn=i-first-dim+1;var nm=calM+1>11?0:calM+1,ny=calM+1>11?calY+1:calY;ds=ny+'-'+pad(nm+1)+'-'+pad(dn);other=true}
 
+
+
 else{dn=i-first+1;ds=calY+'-'+pad(calM+1)+'-'+pad(dn)}
+
+
 
 if(other)cell.classList.add('cOther');if(ds===today)cell.classList.add('cToday');if(ds===selDate)cell.classList.add('cSel');var dnel=document.createElement('div');dnel.className='calDN';dnel.textContent=dn;cell.appendChild(dnel);var pills=document.createElement('div');pills.className='calPills';var dt=tdMap[ds]||[];dt.slice(0,2).forEach(function(t){var p=document.createElement('div');p.className='calPill'+(t.done?' cpDone':'');p.textContent=t.text;pills.appendChild(p)});if(dt.length>2){var mp=document.createElement('div');mp.className='calMore';mp.textContent='+'+(dt.length-2)+'개';pills.appendChild(mp)}
 
+
+
 cell.appendChild(pills);(function(s){cell.onclick=function(){selDate=s;renderCal();showCalDet(s);renderMiniCal();setTimeout(scrollToDetail,60)}})(ds);days.appendChild(cell);}
+
+
 
 if(selDate)showCalDet(selDate);}
 
+
+
 function showCalDet(ds){var det=document.getElementById('calDetail');det.style.display='block';var d=new Date(ds+'T00:00:00');var days=['일','월','화','수','목','금','토'];var label=d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+days[d.getDay()]+')';if(ds===todayStr())label='오늘 · '+label;document.getElementById('calDetTitle').textContent=label;var dt=todos.filter(function(t){return t.date===ds});var countEl=document.getElementById('calDetCount');if(!dt.length)countEl.textContent='등록된 할 일이 없습니다';else countEl.textContent='총 '+dt.length+'개 (완료 '+dt.filter(function(t){return t.done}).length+'개)';var container=document.getElementById('calDetTasks');container.innerHTML='';if(!dt.length){container.innerHTML='<div class="calDetEmpty"><div class="emIco">📅</div><div class="emT">이 날짜에 할 일이 없습니다</div><div class="emS">위 버튼으로 추가해보세요</div></div>';return}
+
+
 
 var list=document.createElement('div');list.className='tList';dt.forEach(function(t){list.appendChild(mkCard(t))});container.appendChild(list);}
 
+
+
 function openModalForDate(){openModal();setTimeout(function(){document.getElementById('mDate').value=selDate||todayStr()},50)}
+
+
 
 function scrollToDetail(){var det=document.getElementById('calDetail');if(det&&det.style.display!=='none')det.scrollIntoView({behavior:'smooth',block:'nearest'})}
 
+
+
 function calPrev(){calM--;if(calM<0){calM=11;calY--}mcM=calM;mcY=calY;renderCal();renderMiniCal()}
+
+
 
 function calNext(){calM++;if(calM>11){calM=0;calY++}mcM=calM;mcY=calY;renderCal();renderMiniCal()}
 
+
+
 function calToday(){var now=new Date();calY=now.getFullYear();calM=now.getMonth();mcY=calY;mcM=calM;selDate=todayStr();renderCal();renderMiniCal()}
+
+
 
 function setView(v){curView=v;priF=null;catF=null;document.querySelectorAll('.vPg').forEach(function(el){el.classList.remove('va')});document.querySelectorAll('.navItem').forEach(function(el){el.classList.remove('on')});var vm={today:'vToday',all:'vAll',calendar:'vCalendar',done:'vDone',recurring:'vRecurring',goals:'vGoals',ideas:'vIdeas'};if(vm[v]){document.getElementById(vm[v]).classList.add('va')}
 
+
+
 if(document.getElementById('nv-'+v))document.getElementById('nv-'+v).classList.add('on');var titles={today:'오늘의 할 일',all:'전체 할 일 목록',calendar:'캘린더',done:'완료된 항목',recurring:'반복 일정',goals:'🎯 목표 관리',ideas:'💡 아이디어 노트'};document.getElementById('pTitle').textContent=titles[v]||v;if(v==='calendar'){renderCal();if(selDate)setTimeout(function(){showCalDet(selDate)},80)}
+
+
 
 else if(v==='goals')renderGoals();else if(v==='ideas')renderIdeas();else if(v==='today')renderToday();else if(v==='all')renderAll2();else if(v==='done')renderDone();else if(v==='recurring')renderRecurring();if(window.innerWidth<=780)toggleSb(false);}
 
+
+
 function filterP(p){priF=p;catF=null;curView='all';document.querySelectorAll('.vPg').forEach(function(el){el.classList.remove('va')});document.querySelectorAll('.navItem').forEach(function(el){el.classList.remove('on')});document.getElementById('vAll').classList.add('va');if(document.getElementById('nv-'+p))document.getElementById('nv-'+p).classList.add('on');var lbl={high:'높음 우선순위',medium:'보통 우선순위',low:'낮음 우선순위'};document.getElementById('pTitle').textContent=lbl[p];renderAll2();if(window.innerWidth<=780)toggleSb(false);}
+
+
 
 function filterCat(c){catF=c;priF=null;curView='all';document.querySelectorAll('.vPg').forEach(function(el){el.classList.remove('va')});document.querySelectorAll('.navItem').forEach(function(el){el.classList.remove('on')});document.getElementById('vAll').classList.add('va');if(document.getElementById('nv-'+c))document.getElementById('nv-'+c).classList.add('on');var lbl={work:'💼 업무',personal:'👤 개인',health:'💪 건강',study:'📚 학습'};document.getElementById('pTitle').textContent=lbl[c]||c;renderAll2();if(window.innerWidth<=780)toggleSb(false);}
 
+
+
 function chipT(el,f){chipTF=f;document.querySelectorAll('#crToday .chip').forEach(function(c){c.classList.remove('on')});el.classList.add('on');renderToday()}
+
+
 
 function chipA(el,f){chipAF=f;document.querySelectorAll('#crAll .chip').forEach(function(c){c.classList.remove('on')});el.classList.add('on');renderAll2()}
 
+
+
 function setMType(t){mType=t;document.querySelectorAll('.mTypeBtn').forEach(function(el){el.classList.toggle('on',el.dataset.type===t)});document.getElementById('recurSec').classList.toggle('show',t==='recurring');document.getElementById('subTaskRow').style.display=(t==='note'?'none':'');}
+
+
 
 function setPri(p){mPri=p;document.querySelectorAll('.priBtn').forEach(function(el){el.classList.toggle('on',el.dataset.p===p)});}
 
+
+
 function setCat(c){mCat=(mCat===c?null:c);document.querySelectorAll('.catBtn').forEach(function(el){el.classList.toggle('on',el.dataset.c===mCat)});}
+
+
 
 function setFreq(f){mFreq=f;document.querySelectorAll('.freqBtn').forEach(function(el){el.classList.toggle('on',el.dataset.f===f)});document.getElementById('weekDayRow').style.display=(f==='weekly'?'flex':'none');}
 
+
+
 function toggleDay(btn){btn.classList.toggle('on');var d=parseInt(btn.dataset.d);var idx=mDays.indexOf(d);if(idx>=0)mDays.splice(idx,1);else mDays.push(d);}
+
+
 
 function addSubTask(text){mSubTasks.push({text:text||'',done:false});renderSubTasks();var inputs=document.querySelectorAll('.subTaskInput');if(inputs.length)inputs[inputs.length-1].focus();}
 
+
+
 function renderSubTasks(){var list=document.getElementById('subTaskList');list.innerHTML='';mSubTasks.forEach(function(sub,i){var item=document.createElement('div');item.className='subTaskItem';var inp=document.createElement('input');inp.className='subTaskInput';inp.type='text';inp.value=sub.text;inp.placeholder='체크리스트 항목';inp.oninput=function(){mSubTasks[i].text=this.value};inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();addSubTask()}};var rmv=document.createElement('button');rmv.className='subTaskRemove';rmv.textContent='×';rmv.onclick=function(){mSubTasks.splice(i,1);renderSubTasks()};item.appendChild(inp);item.appendChild(rmv);list.appendChild(item);});}
+
+
 
 function openModal(t){mType='todo';mPri='medium';mCat=null;mFreq='daily';mDays=[1,2,3,4,5];mSubTasks=[];document.querySelectorAll('.mTypeBtn').forEach(function(el){el.classList.toggle('on',el.dataset.type==='todo')});document.querySelectorAll('.priBtn').forEach(function(el){el.classList.toggle('on',el.dataset.p==='medium')});document.querySelectorAll('.catBtn').forEach(function(el){el.classList.remove('on')});document.querySelectorAll('.freqBtn').forEach(function(el){el.classList.toggle('on',el.dataset.f==='daily')});document.querySelectorAll('.dayBtn').forEach(function(el){var d=parseInt(el.dataset.d);el.classList.toggle('on',d>=1&&d<=5)});document.getElementById('recurSec').classList.remove('show');document.getElementById('weekDayRow').style.display='none';document.getElementById('subTaskRow').style.display='';document.getElementById('editId').value='';document.getElementById('mText').value='';document.getElementById('mDesc').value='';document.getElementById('mDate').value=selDate||todayStr();document.getElementById('mTime').value='';renderSubTasks();if(t){document.getElementById('editId').value=t.id;document.getElementById('mText').value=t.text||'';document.getElementById('mDesc').value=t.note||'';document.getElementById('mDate').value=t.date||todayStr();document.getElementById('mTime').value=t.time||'';if(t.type)setMType(t.type);if(t.priority)setPri(t.priority);if(t.category)setCat(t.category);if(t.recurring)setFreq(t.recurring);if(t.recurringDays){mDays=t.recurringDays.slice();document.querySelectorAll('.dayBtn').forEach(function(el){el.classList.toggle('on',mDays.indexOf(parseInt(el.dataset.d))>=0)})}
 
+
+
 if(t.subTasks)mSubTasks=t.subTasks.map(function(s){return{text:s.text,done:s.done||false}});renderSubTasks();}
+
+
 
 document.getElementById('taskModal').classList.add('open');setTimeout(function(){document.getElementById('mText').focus()},100);}
 
+
+
 function closeModal(){document.getElementById('taskModal').classList.remove('open')}
+
+
 
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});function saveTodo(){var text=document.getElementById('mText').value.trim();if(!text){document.getElementById('mText').focus();return}
 
+
+
 if(!curUser)return;var subs=mSubTasks.filter(function(s){return s.text.trim()}).map(function(s){return{text:s.text.trim(),done:s.done}});var data={uid:curUser.uid,text:text,priority:mPri,date:document.getElementById('mDate').value||todayStr(),note:document.getElementById('mDesc').value.trim(),time:document.getElementById('mTime').value||null,type:mType,category:mCat||null,done:false,subTasks:subs};if(mType==='recurring'){data.recurring=mFreq;if(mFreq==='weekly')data.recurringDays=mDays.slice();if(mFreq==='monthly')data.recurringDay=new Date(data.date+'T00:00:00').getDate();}else{data.recurring=null;data.recurringDays=null;data.recurringDay=null;}
+
+
 
 var eid=document.getElementById('editId').value;if(eid){db.collection('todos').doc(eid).update(data).then(function(){closeModal()})}
 
+
+
 else{data.createdAt=firebase.firestore.FieldValue.serverTimestamp();db.collection('todos').add(data).then(function(){closeModal();toast('✦','추가되었습니다','성공적으로 저장되었습니다')});}}
+
+
 
 function toggleDone(id,wasDone){db.collection('todos').doc(id).update({done:!wasDone,completedAt:!wasDone?firebase.firestore.FieldValue.serverTimestamp():null}).then(function(){if(!wasDone){var today=todayStr();var tA=todos.filter(function(t){return t.date===today||isRecurringToday(t)});var tD=tA.filter(function(t){return t.done||t.id===id});if(tA.length>0&&tD.length===tA.length){bumpStreak();toast('🎉','오늘 목표 달성!','모든 할 일을 완료했습니다!')}
 
+
+
 else toast('✅','완료!','할 일을 완료했습니다');}});}
+
+
 
 function toggleSubTask(tid,idx,wasDone){var t=todos.find(function(x){return x.id===tid});if(!t||!t.subTasks)return;var subs=t.subTasks.map(function(s,i){return i===idx?{text:s.text,done:!wasDone}:s});db.collection('todos').doc(tid).update({subTasks:subs});}
 
+
+
 function deleteTodo(id){if(confirm('정말 삭제하시겠습니까?'))db.collection('todos').doc(id).delete()}
+
+
 
 var toastTmr=null;function toast(ico,title,sub){clearTimeout(toastTmr);document.getElementById('aIco').textContent=ico;document.getElementById('aTitle2').textContent=title;document.getElementById('aSub2').textContent=sub;var el=document.getElementById('aToast');el.classList.add('show');toastTmr=setTimeout(function(){el.classList.remove('show')},3000);}
 
+
+
 function toggleSb(force){var sb=document.getElementById('sidebar'),ov=document.getElementById('sbOv');var open=sb.classList.contains('mOpen');if(force===false||open){sb.classList.remove('mOpen');ov.style.display='none';ov.style.pointerEvents='none';}else{sb.classList.add('mOpen');ov.style.display='block';ov.style.left='264px';ov.style.right='0';ov.style.top='0';ov.style.bottom='0';ov.style.pointerEvents='auto';}}
+
+
 
 document.addEventListener('DOMContentLoaded',function(){var ov=document.getElementById('sbOv');if(ov)ov.addEventListener('click',function(){toggleSb(false);});});var HZ_LABELS={yearly:'장기 목표 · 연간 계획',quarterly:'중기 목표 · 분기 계획',monthly:'월간 목표',weekly:'주간 목표',daily:'일간 목표 · 습관'};var HZ_KR={yearly:'연간',quarterly:'분기',monthly:'월간',weekly:'주간',daily:'일간'};var IB_QUOTES=['오늘의 작은 실천이 미래를 바꾼다','완벽하지 않아도 시작이 중요하다','집중과 실행, 성공의 두 가지 열쇠','한 번에 하나씩, 꾸준함이 실력이 된다','목표를 적으면 꿈이 현실이 된다','오늘 할 일을 내일로 미루지 말자','성공은 매일의 작은 결정들이 모인다','지금 이 순간이 가장 중요하다','당신의 노력은 반드시 결실을 맺는다','실천하는 사람이 목표를 이룬다','어제보다 나은 오늘을 만들어가는 중','작은 습관이 큰 성공을 만든다'];function updateMotivBar(){var c=computeCounts();var todayAll=c.tPend+c.tDone;var pct=todayAll>0?Math.round(c.tDone/todayAll*100):0;var fill=document.getElementById('progFill');var pctEl=document.getElementById('progPct');if(fill)fill.style.width=pct+'%';if(pctEl)pctEl.textContent=pct+'%';var pendEl=document.getElementById('motivPendTxt');if(pendEl)pendEl.textContent=c.tPend>0?c.tPend+'개 남음':'';var tagEl=document.getElementById('motivGoalTag');var titleEl=document.getElementById('motivGoalTitle');var subEl=document.getElementById('motivGoalSub');var topGoal=goals.find(function(g){return g.horizon==='yearly'||g.horizon==='quarterly'});if(topGoal){if(tagEl)tagEl.textContent='🎯 장기 목표 활성';if(titleEl)titleEl.textContent=topGoal.title;if(subEl)subEl.textContent='목표를 향해 한 걸음씩 나아가는 중';}else{var dayIdx=(new Date().getDate()+new Date().getMonth())%IB_QUOTES.length;if(tagEl)tagEl.textContent='💭 오늘의 포커스';if(titleEl)titleEl.textContent=IB_QUOTES[dayIdx];if(subEl)subEl.textContent=pct>0?'오늘 '+pct+'% 달성 · 계속 나아가세요':'오늘도 시작이 반이에요';}}
 
+
+
 function setGoalHz(btn,hz){curGoalHz=hz;document.querySelectorAll('.goalTab').forEach(function(el){el.classList.toggle('on',el.dataset.hz===hz)});document.getElementById('goalHorizonLabel').textContent=HZ_LABELS[hz]||hz;renderGoals();}
+
+
 
 function renderGoals(){var grid=document.getElementById('goalGrid');if(!grid)return;var filtered=goals.filter(function(g){return g.horizon===curGoalHz});grid.innerHTML='';filtered.forEach(function(g){grid.appendChild(mkGoalCard(g))});var addBtn=document.createElement('button');addBtn.type='button';addBtn.className='addGoalBtn';addBtn.innerHTML='<span style="font-size:18px">+</span> 새 '+HZ_KR[curGoalHz]+' 목표 추가';addBtn.onclick=function(){openGoalModal()};grid.appendChild(addBtn);updateMotivBar();}
 
+
+
 function mkGoalCard(g){var acts=g.actions||[];var done=acts.filter(function(a){return a.done}).length;var pct=acts.length>0?Math.round(done/acts.length*100):0;var card=document.createElement('div');card.className='goalCard';card.style.setProperty('--gc',g.color||'var(--ac)');var actsHTML='';acts.forEach(function(a,i){actsHTML+='<div class="goalActItem">'+'<div class="goalActCk'+(a.done?' ck':'')+'" data-act="ck" data-idx="'+i+'"></div>'+'<span class="goalActTxt'+(a.done?' ck':'')+'">'+_esc(a.text)+'</span>'+'</div>';});card.innerHTML='<div class="goalCardHead">'+'<div class="goalEmoji">🎯</div>'+'<div>'+'<div class="goalTitle">'+_esc(g.title)+'</div>'+'<div class="goalPeriod">'+HZ_KR[g.horizon||'yearly']+'</div>'+'</div>'+'</div>'+
+
+
 
 (g.desc?'<div class="goalDesc">'+_esc(g.desc)+'</div>':'')+
 
+
+
 (acts.length?'<div class="goalProgress">'+'<div class="goalProgRow"><span>진행률</span><span>'+pct+'% ('+done+'/'+acts.length+')</span></div>'+'<div class="goalProgBar"><div class="goalProgFill" style="width:'+pct+'%"></div></div>'+'</div>'+'<div class="goalActions"><div class="goalActLbl">실행 계획</div>'+actsHTML+'</div>':'')+'<div class="goalCardBtns">'+'<button type="button" class="goalActBtn" data-act="edit">✏️ 수정</button>'+'<button type="button" class="goalActBtn del" data-act="del">삭제</button>'+'</div>';card.addEventListener('click',function(e){var el=e.target.closest('[data-act]');if(!el)return;var a=el.dataset.act;if(a==='ck'){var idx=parseInt(el.dataset.idx);if(!isNaN(idx)&&acts[idx])toggleGoalAct(g.id,idx,acts[idx].done);}
+
+
 
 else if(a==='edit'){var gObj=goals.find(function(x){return x.id===g.id});if(gObj)openGoalModal(gObj);}
 
+
+
 else if(a==='del'){deleteGoal(g.id);}});return card;}
+
+
 
 function toggleGoalAct(gid,idx,wasDone){var g=goals.find(function(x){return x.id===gid});if(!g)return;var acts=(g.actions||[]).map(function(a,i){return i===idx?{text:a.text,done:!wasDone}:a});db.collection('goals').doc(gid).update({actions:acts});}
 
+
+
 function deleteGoal(id){if(confirm('목표를 삭제하시겠습니까?'))db.collection('goals').doc(id).delete()}
+
+
 
 var _gHz='yearly',gColor='#C9A96E',gActs=[];function openGoalModal(g){_gHz=curGoalHz;gColor='#C9A96E';gActs=[];document.getElementById('goalEditId').value='';document.getElementById('gTitle').value='';document.getElementById('gDesc').value='';document.getElementById('goalModalTitle').textContent='새 목표 추가';document.querySelectorAll('.gmHorizBtn').forEach(function(el){el.classList.toggle('on',el.dataset.hz===_gHz)});document.querySelectorAll('.gmColor').forEach(function(el){el.classList.toggle('on',el.dataset.gc==='#C9A96E')});if(g){document.getElementById('goalEditId').value=g.id;document.getElementById('gTitle').value=g.title||'';document.getElementById('gDesc').value=g.desc||'';document.getElementById('goalModalTitle').textContent='목표 수정';_gHz=g.horizon||'yearly';gColor=g.color||'#C9A96E';gActs=(g.actions||[]).map(function(a){return{text:a.text,done:a.done||false}});document.querySelectorAll('.gmHorizBtn').forEach(function(el){el.classList.toggle('on',el.dataset.hz===_gHz)});document.querySelectorAll('.gmColor').forEach(function(el){el.classList.toggle('on',el.dataset.gc===gColor)});}
 
+
+
 renderGActs();var _gm=document.getElementById('goalModal');_gm.style.cssText='display:flex!important;pointer-events:auto';setTimeout(function(){document.getElementById('gTitle').focus()},80);}
+
+
 
 function closeGoalModal(){var _gm=document.getElementById('goalModal');_gm.style.cssText='display:none;pointer-events:none';}
 
+
+
 function setGHz(btn,hz){_gHz=hz;document.querySelectorAll('.gmHorizBtn').forEach(function(el){el.classList.toggle('on',el.dataset.hz===hz)});}
+
+
 
 function setGColor(el,color){gColor=color;document.querySelectorAll('.gmColor').forEach(function(e){e.classList.remove('on')});if(el)el.classList.add('on');}
 
+
+
 function addGAct(txt){gActs.push({text:txt||'',done:false});renderGActs();setTimeout(function(){var inp=document.querySelectorAll('.gmActInput');if(inp.length)inp[inp.length-1].focus();},40);}
+
+
 
 function renderGActs(){var list=document.getElementById('gActList');list.innerHTML='';gActs.forEach(function(a,i){var row=document.createElement('div');row.className='gmActItem';var inp=document.createElement('input');inp.className='gmActInput';inp.type='text';inp.value=a.text;inp.placeholder='실행 계획 입력…';inp.oninput=function(){gActs[i].text=this.value};inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();addGAct()}};var del=document.createElement('button');del.type='button';del.className='gmActDel';del.textContent='×';del.onclick=function(){gActs.splice(i,1);renderGActs()};row.appendChild(inp);row.appendChild(del);list.appendChild(row);});}
 
+
+
 function saveGoal(){var title=document.getElementById('gTitle').value.trim();if(!title){var _gi=document.getElementById('gTitle');_gi.focus();_gi.style.borderColor='var(--hi)';_gi.style.animation='shake .35s';setTimeout(function(){_gi.style.animation='';_gi.style.borderColor='';},1600);return;}
+
+
 
 if(!curUser)return;var acts=gActs.filter(function(a){return a.text.trim()}).map(function(a){return{text:a.text.trim(),done:a.done}});var data={uid:curUser.uid,title:title,desc:document.getElementById('gDesc').value.trim(),horizon:_gHz,color:gColor,actions:acts};var eid=document.getElementById('goalEditId').value;var _sb=document.querySelector('#goalModal .mBtn.pri');if(_sb){_sb.disabled=true;_sb.textContent='저장 중…';}var _done=function(){closeGoalModal();if(_sb){_sb.disabled=false;_sb.textContent='저장';}};var _fail=function(e){if(_sb){_sb.disabled=false;_sb.textContent='저장';}alert('저장 실패: '+(e&&e.message?e.message:'네트워크 오류'));};if(eid){db.collection('goals').doc(eid).update(data).then(_done).catch(_fail);}else{data.createdAt=firebase.firestore.FieldValue.serverTimestamp();db.collection('goals').add(data).then(_done).catch(_fail);}}
 
+
+
 var MM_COLORS=['#C9A96E','#4CAF50','#2196F3','#9C27B0','#F44336','#FF9800','#00BCD4','#E91E63'];var mmNodes=[],mmEdges=[],mmSel=null,mmEditId=null;var mmPan={x:0,y:0},mmDrag=null,mmPanStart=null;var mmNextId=1;function mmInit(){var canvas=document.getElementById('mindMapCanvas');if(!canvas)return;var cr=document.getElementById('mmColorRow');if(cr){cr.innerHTML='';MM_COLORS.forEach(function(c){var d=document.createElement('div');d.className='mmColorDot';d.style.background=c;d.dataset.c=c;d.onclick=function(){document.querySelectorAll('.mmColorDot').forEach(function(x){x.classList.remove('on')});d.classList.add('on');};cr.appendChild(d);});cr.children[0].classList.add('on');}
+
+
 
 try{var saved=JSON.parse(localStorage.getItem('hb-mm-'+curUser.uid)||'null');if(saved&&saved.nodes){mmNodes=saved.nodes;mmEdges=saved.edges||[];mmNextId=saved.nextId||mmNodes.length+1;}}catch(e){}
 
+
+
 mmRender();canvas.addEventListener('dblclick',function(e){if(e.target===canvas||e.target===document.getElementById('mindMapSvg')||e.target.classList.contains('mmNodeHint')){var r=canvas.getBoundingClientRect();mmAddNode(e.clientX-r.left-mmPan.x,e.clientY-r.top-mmPan.y);}});canvas.addEventListener('mousedown',function(e){if(e.target===canvas||e.target===document.getElementById('mindMapSvg')){mmPanStart={x:e.clientX-mmPan.x,y:e.clientY-mmPan.y};canvas.classList.add('grabbing');}});window.addEventListener('mousemove',function(e){if(mmPanStart){mmPan.x=e.clientX-mmPanStart.x;mmPan.y=e.clientY-mmPanStart.y;mmRender();}
+
+
 
 if(mmDrag){var r=document.getElementById('mindMapCanvas').getBoundingClientRect();mmDrag.node.x=e.clientX-r.left-mmPan.x-mmDrag.ox;mmDrag.node.y=e.clientY-r.top-mmPan.y-mmDrag.oy;mmRender();}});window.addEventListener('mouseup',function(){mmPanStart=null;mmDrag=null;document.getElementById('mindMapCanvas').classList.remove('grabbing');});canvas.addEventListener('touchstart',function(e){if(e.touches.length===1&&(e.target===canvas||e.target.id==='mindMapSvg')){var t=e.touches[0];mmPanStart={x:t.clientX-mmPan.x,y:t.clientY-mmPan.y};}},{passive:true});canvas.addEventListener('touchmove',function(e){if(mmPanStart&&e.touches.length===1&&!mmDrag){var t=e.touches[0];mmPan.x=t.clientX-mmPanStart.x;mmPan.y=t.clientY-mmPanStart.y;mmRender();e.preventDefault();}},{passive:false});canvas.addEventListener('touchend',function(){mmPanStart=null;mmDrag=null;});}
 
+
+
 var ibLinkMode=false,ibLinkFrom=null;function ibToggleLink(){ibLinkMode=!ibLinkMode;ibLinkFrom=null;var btn=document.getElementById('ibLinkBtn');if(btn)btn.classList.toggle('on',ibLinkMode);mmRender();}function ibInitColorPicker(){var cp=document.getElementById('ibColorPicker');if(!cp)return;cp.innerHTML='';var activeDot=document.querySelector('.mmColorDot.on');var activeC=activeDot?activeDot.dataset.c:MM_COLORS[0];MM_COLORS.forEach(function(c){var dot=document.createElement('div');dot.className='ibColorDot'+(c===activeC?' on':'');dot.style.background=c;dot.dataset.c=c;dot.addEventListener('click',function(){document.querySelectorAll('.ibColorDot').forEach(function(x){x.classList.remove('on')});document.querySelectorAll('.mmColorDot').forEach(function(x){x.classList.toggle('on',x.dataset.c===c)});dot.classList.add('on');});cp.appendChild(dot);});}function mmRender(){var canvas=document.getElementById('mindMapCanvas');if(!canvas)return;var hint=document.getElementById('mmHint');if(hint)hint.style.display=mmNodes.length?'none':'flex';var svg=document.getElementById('mindMapSvg');if(!svg)return;svg.innerHTML='';mmEdges.forEach(function(e){var a=mmNodes.find(function(n){return n.id===e[0]});var b=mmNodes.find(function(n){return n.id===e[1]});if(!a||!b)return;var aw=a.root?150:140,ah=a.root?65:58;var bw=b.root?150:140,bh=b.root?65:58;var ax=a.x+mmPan.x+aw/2,ay=a.y+mmPan.y+ah/2;var bx=b.x+mmPan.x+bw/2,by=b.y+mmPan.y+bh/2;var dx=(bx-ax)*0.45;var path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M'+ax+','+ay+' C'+(ax+dx)+','+ay+' '+(bx-dx)+','+by+' '+bx+','+by);path.setAttribute('stroke',a.color||'#C9A96E');path.setAttribute('stroke-width','2.5');path.setAttribute('stroke-opacity','0.5');path.setAttribute('fill','none');path.setAttribute('stroke-linecap','round');svg.appendChild(path);});canvas.querySelectorAll('.mmNode').forEach(function(el){el.remove()});mmNodes.forEach(function(node){var isRoot=node.root;var nw=isRoot?150:140,nh=isRoot?65:58;var isLinkSrc=ibLinkFrom===node.id;var el=document.createElement('div');el.className='mmNode'+(isRoot?' root':'')+(mmSel===node.id?' selected':'')+(isLinkSrc?' ibSrc':'')+(ibLinkMode&&!isLinkSrc?' ibTarget':'');el.style.cssText='left:'+(node.x+mmPan.x)+'px;top:'+(node.y+mmPan.y)+'px;width:'+nw+'px;height:'+nh+'px;background:'+(node.color||'#C9A96E')+';border-radius:14px;';var txt=document.createElement('div');txt.className='mmNodeText';txt.textContent=node.text||'아이디어';el.appendChild(txt);var del=document.createElement('button');del.type='button';del.className='mmNodeDel';del.innerHTML='&#x2715;';del.title='삭제';(function(nid){del.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();mmNodes=mmNodes.filter(function(n){return n.id!==nid});mmEdges=mmEdges.filter(function(x){return x[0]!==nid&&x[1]!==nid});if(mmSel===nid)mmSel=null;if(ibLinkFrom===nid)ibLinkFrom=null;mmRender();mmSave();});})(node.id);el.appendChild(del);(function(nd){el.addEventListener('mousedown',function(e){e.stopPropagation();if(e.target.classList.contains('mmNodeDel'))return;if(ibLinkMode){if(ibLinkFrom===null){ibLinkFrom=nd.id;mmRender();}else if(ibLinkFrom!==nd.id){var ex=mmEdges.some(function(x){return (x[0]===ibLinkFrom&&x[1]===nd.id)||(x[0]===nd.id&&x[1]===ibLinkFrom)});if(!ex)mmEdges.push([ibLinkFrom,nd.id]);ibLinkFrom=null;ibLinkMode=false;var lb=document.getElementById('ibLinkBtn');if(lb)lb.classList.remove('on');mmRender();mmSave();}return;}mmSel=nd.id;var r=canvas.getBoundingClientRect();mmDrag={node:nd,ox:e.clientX-r.left-mmPan.x-nd.x,oy:e.clientY-r.top-mmPan.y-nd.y};mmRender();});el.addEventListener('touchstart',function(e){e.stopPropagation();if(ibLinkMode){if(ibLinkFrom===null){ibLinkFrom=nd.id;mmRender();}else if(ibLinkFrom!==nd.id){var ex=mmEdges.some(function(x){return (x[0]===ibLinkFrom&&x[1]===nd.id)||(x[0]===nd.id&&x[1]===ibLinkFrom)});if(!ex)mmEdges.push([ibLinkFrom,nd.id]);ibLinkFrom=null;ibLinkMode=false;var lb=document.getElementById('ibLinkBtn');if(lb)lb.classList.remove('on');mmRender();mmSave();}return;}mmSel=nd.id;mmPanStart=null;var t=e.touches[0];var r=canvas.getBoundingClientRect();mmDrag={node:nd,ox:t.clientX-r.left-mmPan.x-nd.x,oy:t.clientY-r.top-mmPan.y-nd.y};mmRender();},{passive:true});el.addEventListener('touchmove',function(e){if(mmDrag){var t=e.touches[0];var r=canvas.getBoundingClientRect();mmDrag.node.x=t.clientX-r.left-mmPan.x-mmDrag.ox;mmDrag.node.y=t.clientY-r.top-mmPan.y-mmDrag.oy;mmRender();e.preventDefault();}},{passive:false});el.addEventListener('touchend',function(){mmDrag=null;mmSave();});el.addEventListener('dblclick',function(e){e.stopPropagation();mmOpenEdit(nd.id);});el.addEventListener('click',function(e){e.stopPropagation();if(!ibLinkMode){mmSel=nd.id;mmRender();}});})(node);canvas.appendChild(el);});}
+
+
 
 function mmAddNode(x,y){var canvas=document.getElementById('mindMapCanvas');var w=canvas.offsetWidth||400,h=canvas.offsetHeight||500;var cx=w/2-mmPan.x,cy=h/2-mmPan.y;if(x===undefined){cx+=(Math.random()-.5)*200;cy+=(Math.random()-.5)*150;}
 
+
+
 else{cx=x;cy=y;}
+
+
 
 var col=MM_COLORS[mmNodes.length%MM_COLORS.length];var isRoot=mmNodes.length===0;var node={id:mmNextId++,text:isRoot?'핵심 아이디어':'아이디어',x:cx-40,y:cy-30,color:col,root:isRoot};mmNodes.push(node);if(!isRoot&&mmNodes.length>1)mmEdges.push([mmNodes[0].id,node.id]);mmSel=node.id;mmRender();mmOpenEdit(node.id);}
 
+
+
 function mmOpenEdit(id){var node=mmNodes.find(function(n){return n.id===id});if(!node)return;mmEditId=id;var box=document.getElementById('mmEditBox');var inp=document.getElementById('mmEditInput');if(!box||!inp)return;inp.value=node.text||'';document.querySelectorAll('.mmColorDot').forEach(function(d){d.classList.toggle('on',d.dataset.c===node.color)});box.classList.add('show');inp.focus();inp.select();}
+
+
 
 function mmConfirmEdit(){var node=mmNodes.find(function(n){return n.id===mmEditId});if(node){node.text=document.getElementById('mmEditInput').value.trim()||'...';var selColor=document.querySelector('.mmColorDot.on');if(selColor)node.color=selColor.dataset.c;}
 
+
+
 document.getElementById('mmEditBox').classList.remove('show');mmEditId=null;mmRender();mmSave();}
+
+
 
 function mmDeleteNode(){mmNodes=mmNodes.filter(function(n){return n.id!==mmEditId});mmEdges=mmEdges.filter(function(e){return e[0]!==mmEditId&&e[1]!==mmEditId});document.getElementById('mmEditBox').classList.remove('show');mmEditId=null;mmSel=null;mmRender();mmSave();}
 
+
+
 function mmReset(){mmPan={x:0,y:0};mmRender();}
+
+
 
 function mmSave(){if(!curUser)return;try{localStorage.setItem('hb-mm-'+curUser.uid,JSON.stringify({nodes:mmNodes,edges:mmEdges,nextId:mmNextId}));}catch(e){}}
 
+
+
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeGoalModal();var b=document.getElementById('mmEditBox');if(b)b.classList.remove('show');}
+
+
 
 if(e.key==='Enter'&&document.getElementById('mmEditBox')&&document.getElementById('mmEditBox').classList.contains('show')&&document.activeElement===document.getElementById('mmEditInput')){e.preventDefault();mmConfirmEdit();}});var _mmInited=false;var IDEA_COLORS=['#FFF3CD','#D6EAF8','#D5F5E3','#FDEBD0','#E8DAEF','#FDEDEC','#D1F2EB','#FDFEFE'];
 
+
+
 var ideaNotes=[],ideaCurColor=IDEA_COLORS[0],ideaNextId=1,_ideaInited=false;
+
+
 
 function ideaLoad(){try{var s=JSON.parse(localStorage.getItem('hb-notes-'+(curUser?curUser.uid:'x'))||'null');if(s&&s.notes){ideaNotes=s.notes;ideaNextId=s.nextId||ideaNotes.length+1;}}catch(e){}}
 
+
+
 function ideaSaveLocal(){try{localStorage.setItem('hb-notes-'+(curUser?curUser.uid:'x'),JSON.stringify({notes:ideaNotes,nextId:ideaNextId}));}catch(e){}}
+
+
 
 function ideaQuickAdd(){var inp=document.getElementById('ideaQuickInput');var text=inp?inp.value.trim():'';var note={id:ideaNextId++,text:text,color:ideaCurColor,createdAt:Date.now()};ideaNotes.unshift(note);ideaSaveLocal();if(inp)inp.value='';renderIdeaNotes();setTimeout(function(){var ta=document.querySelector('.ideaNoteText');if(ta){ta.focus();ta.select();}},60);}
 
+
+
 function deleteIdea(id){ideaNotes=ideaNotes.filter(function(n){return n.id!==id});ideaSaveLocal();renderIdeaNotes();}
+
+
 
 function updateIdeaText(id,text){var n=ideaNotes.find(function(n){return n.id===id});if(n){n.text=text;ideaSaveLocal();}}
 
+
+
 function setIdeaColor(color){ideaCurColor=color;document.querySelectorAll('.ideaColorDot').forEach(function(el){el.classList.toggle('on',el.dataset.ic===color);});}
+
+
 
 function renderIdeaColorPicker(){var cp=document.getElementById('ideaColorPicker');if(!cp)return;cp.innerHTML='';IDEA_COLORS.forEach(function(c){var dot=document.createElement('div');dot.className='ideaColorDot'+(c===ideaCurColor?' on':'');dot.dataset.ic=c;dot.style.background=c;dot.title='색상 선택';dot.addEventListener('click',function(){setIdeaColor(c);});cp.appendChild(dot);});}
 
+
+
 function renderIdeaNotes(){var grid=document.getElementById('ideaNoteGrid');if(!grid)return;renderIdeaColorPicker();if(!ideaNotes.length){grid.innerHTML='<div class="ideaEmpty"><div class="ideaEmptyIcon">💡</div><p>아이디어를 자유롭게 기록해보세요<br><span style="color:var(--ac);font-weight:600">위 입력창에 입력 후 Enter</span>로 추가하거나<br>+ 추가 버튼을 눌러 노트를 만들어보세요</p></div>';return;}grid.innerHTML='';ideaNotes.forEach(function(note){var card=document.createElement('div');card.className='ideaNoteCard';card.style.setProperty('--nc',note.color||IDEA_COLORS[0]);var d=new Date(note.createdAt);var dateStr=d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일';var delBtn=document.createElement('button');delBtn.type='button';delBtn.className='ideaNoteDelBtn';delBtn.title='삭제';delBtn.innerHTML='✕';delBtn.addEventListener('click',function(){deleteIdea(note.id);});var ta=document.createElement('textarea');ta.className='ideaNoteText';ta.value=note.text;ta.placeholder='아이디어를 입력하세요...';ta.rows=5;ta.addEventListener('input',function(){ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';});ta.addEventListener('blur',function(){updateIdeaText(note.id,ta.value);});var dateEl=document.createElement('div');dateEl.className='ideaNoteDate';dateEl.textContent=dateStr;card.appendChild(delBtn);card.appendChild(ta);card.appendChild(dateEl);grid.appendChild(card);setTimeout(function(){ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';},0);});}
+
+
 
 function renderIdeas(){if(!_mmInited){_mmInited=true;mmInit();}ibInitColorPicker();mmRender();}
 
+
+
 function openIdeaModal(){}
+
+
 
 function closeIdeaModal(){}
 
+
+
 function saveIdea(){}
+
+
 
 function setIColor(){}
 
+
+
 function mkIdeaCard(){return document.createElement('div')}</script>
+
+
 
 </body>
 
+
+
 </html>
+
+
 
