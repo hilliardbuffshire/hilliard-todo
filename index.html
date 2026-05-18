@@ -187,8 +187,11 @@
       <button type="button" class="navItem" id="nv-goals" onclick="setView('goals')"><span class="navIco">🎯</span>목표 관리</button>
 
       <button type="button" class="navItem" id="nv-ideas" onclick="setView('ideas')"><span class="navIco">💡</span>아이디어 노트</button>
+
       <div class="navLbl" style="margin-top:10px">건강 관리</div>
+
       <button type="button" class="navItem" id="nv-meal" onclick="setView('meal')"><span class="navIco">🥗</span>식단 관리</button>
+
       <button type="button" class="navItem" id="nv-workout" onclick="setView('workout')"><span class="navIco">💪</span>운동 루틴</button>
 
       <div class="navLbl" style="margin-top:8px">카테고리</div>
@@ -1162,348 +1165,306 @@ function setIColor(){}
 function mkIdeaCard(){return document.createElement('div')}
 
 /* ─── Health view CSS ─── */
+
 var _healthCSS='.mealTabBtn{padding:6px 14px;border:1.5px solid var(--br);border-radius:20px;background:var(--bg2);color:var(--txt);font-size:12px;cursor:pointer;font-weight:600;transition:.15s}.mealTabBtn.on{background:var(--ac);color:var(--ac-txt);border-color:var(--ac)}.nutrCard{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;padding:12px;text-align:center}.nutrCard .val{font-size:20px;font-weight:800;color:var(--ac)}.nutrCard .lbl{font-size:11px;color:var(--txt2);margin-top:2px}.mealGroup{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;margin-bottom:10px;overflow:hidden}.mealGroupHd{padding:10px 14px;font-size:13px;font-weight:700;color:var(--txt);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}.mealItem{display:flex;align-items:center;padding:8px 14px;border-bottom:1px solid var(--br);gap:10px}.mealItem:last-child{border-bottom:none}.mealItemName{flex:1;font-size:13px;color:var(--txt);font-weight:600}.mealItemNutr{font-size:11px;color:var(--txt2);display:flex;gap:8px;flex-wrap:wrap}.wrkCard{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;margin-bottom:10px;overflow:hidden}.wrkCardHd{padding:10px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--br)}.wrkItem{display:flex;align-items:center;padding:8px 14px;border-bottom:1px solid var(--br);gap:10px}.wrkItem:last-child{border-bottom:none}.wrkItemName{flex:1;font-size:13px;font-weight:600;color:var(--txt)}.wrkBadge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}.wrkStreakDay{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--br)}.delBtn{background:none;border:none;color:var(--txt2);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:4px;transition:.15s}.delBtn:hover{color:#ef4444;background:#fee2e2}';
 if(!document.getElementById('_hcss')){var _s=document.createElement('style');_s.id='_hcss';_s.textContent=_healthCSS;document.head.appendChild(_s);}
-
-/* ─── Health state ─── */
 var curMealTab='all';
 function setMealTab(t){curMealTab=t;document.querySelectorAll('.mealTabBtn').forEach(function(b){b.classList.remove('on')});var btn=document.getElementById('mTab-'+t);if(btn)btn.classList.add('on');renderMeal();}
-
-/* ─── Gemini helpers ─── */
-function saveGemKey(){gemKey=(document.getElementById('gemKeyInput').value||'').trim();localStorage.setItem('hb-gem-key',gemKey);document.getElementById('gemKeyStatus').textContent=gemKey?'✅ 저장됨':'키가 비어있습니다';setTimeout(function(){closeGemModal();},900);}
+function saveGemKey(){gemKey=(document.getElementById('gemKeyInput').value||'').trim();localStorage.setItem('hb-gem-key',gemKey);document.getElementById('gemKeyStatus').textContent=gemKey?'저장됨':'키 없음';setTimeout(function(){closeGemModal();},900);}
 function showGemSettings(){var m=document.getElementById('gemModal');m.style.cssText='display:flex!important;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;align-items:center;justify-content:center';document.getElementById('gemKeyInput').value=gemKey||'';document.getElementById('gemKeyStatus').textContent='';}
 function closeGemModal(){document.getElementById('gemModal').style.display='none';}
 function openShoppingModal(){var m=document.getElementById('shopModal');m.style.cssText='display:flex!important;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;align-items:center;justify-content:center';document.getElementById('shopResult').textContent='';}
 function closeShopModal(){document.getElementById('shopModal').style.display='none';}
 function aiWorkoutPlan(){var m=document.getElementById('wrkAiModal');m.style.cssText='display:flex!important;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;align-items:center;justify-content:center';document.getElementById('wrkAiResult').textContent='';}
 function closeWrkAiModal(){document.getElementById('wrkAiModal').style.display='none';}
-
-async function geminiAsk(prompt,targetEl,loadMsg){
-  if(!gemKey){if(targetEl)targetEl.textContent='⚠️ Gemini API 키를 먼저 설정하세요 (식단 헤더의 🤖 Gemini 설정 버튼)';return null;}
-  if(targetEl)targetEl.textContent=loadMsg||'🤖 AI 분석 중...';
-  try{
-    var model=localStorage.getItem('hb-gem-model')||'gemini-2.5-flash-lite';
-    var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+gemKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:1200}})});
-    var d=await r.json();
-    if(d.error)throw new Error(d.error.message);
-    var txt=(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text)||'응답 없음';
-    if(targetEl)targetEl.textContent=txt;
-    return txt;
-  }catch(e){if(targetEl)targetEl.textContent='❌ 오류: '+e.message;return null;}
-}
-
-/* ─── Nutrition AI ─── */
-async function aiNutrition(){
-  var name=(document.getElementById('mFoodName').value||'').trim();
-  var amt=(document.getElementById('mFoodAmt').value||'').trim();
-  if(!name){alert('음식 이름을 입력하세요');return;}
-  var st=document.getElementById('aiNutrStatus');
-  st.style.display='block';
-  var prompt='다음 음식의 영양정보를 알려주세요. JSON 형식으로만 답변하세요(다른 텍스트 없이):
-음식: '+name+(amt?' '+amt+'g':'')+'\n\n형식: {"kcal":숫자,"protein":숫자,"carbs":숫자,"fat":숫자}\n\n100g 기준이면 양에 맞게 계산해주세요.';
-  st.textContent='🤖 영양소 계산 중...';
-  try{
-    var model=localStorage.getItem('hb-gem-model')||'gemini-2.5-flash-lite';
-    var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+gemKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.1,maxOutputTokens:200}})});
-    var d=await r.json();
-    if(d.error)throw new Error(d.error.message);
-    var txt=(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text)||'{}';
-    var match=txt.match(/\{[\s\S]*\}/);
-    if(match){
-      var obj=JSON.parse(match[0]);
-      if(obj.kcal!=null)document.getElementById('mFoodKcal').value=Math.round(obj.kcal);
-      if(obj.protein!=null)document.getElementById('mFoodProt').value=Math.round(obj.protein*10)/10;
-      if(obj.carbs!=null)document.getElementById('mFoodCarb').value=Math.round(obj.carbs*10)/10;
-      if(obj.fat!=null)document.getElementById('mFoodFat').value=Math.round(obj.fat*10)/10;
-      st.textContent='✅ 영양소 자동 입력 완료!';
-    }else{st.textContent='⚠️ JSON 파싱 실패 — 직접 입력하세요';}
-  }catch(e){st.textContent='❌ 오류: '+(!gemKey?'API 키 미설정':e.message);}
-  setTimeout(function(){st.style.display='none';},3000);
-}
-
-/* ─── Shopping & Recipe ─── */
-async function getShoppingList(){
-  var today=todayStr();
-  var weekMeals=meals.filter(function(m){return m.date>=today.slice(0,8)+'01'&&m.date<=today;});
-  var foods=weekMeals.map(function(m){return m.name;}).filter(function(x,i,a){return a.indexOf(x)===i;}).slice(0,20);
-  var prompt='나는 Dallas Texas에 살고 있어. 주로 두 곳에서 장을 봐:
-- 채소/식품: 2534 Royal Ln, Dallas TX 75229 (Kroger/Tom Thumb)
-- 고기: Walmart at 4122 LBJ Fwy, Dallas TX 75244
-
-이번 주에 먹은 음식들: '+(foods.length?foods.join(', '):'다양한 건강식')+'\n\n건강한 한 주 식단을 위한 장보기 리스트를 만들어줘. 각 식품마다 예상 가격(USD)과 어느 매장에서 살지 표시해줘. 총 예산도 알려줘. 건강하고 균형 잡힌 식단 기준으로.';
-  await geminiAsk(prompt,document.getElementById('shopResult'),'🛒 장보기 리스트 생성 중...');
-}
-async function getRecipeSuggestion(){
-  var today=todayStr();
-  var recentFoods=meals.filter(function(m){return m.date>=today.slice(0,8)+'01';}).map(function(m){return m.name;}).filter(function(x,i,a){return a.indexOf(x)===i;}).slice(0,15);
-  var prompt='건강한 식단 레시피 3가지를 추천해줘. 각 레시피마다:
-1. 재료와 양
-2. 조리 방법 (간단히)
-3. 영양정보 (칼로리, 단백질, 탄수화물, 지방)
-4. 재료를 살 수 있는 곳 (Dallas TX 기준: 2534 Royal Ln 또는 Walmart 4122 LBJ Fwy)
-
-'+(recentFoods.length?'최근 먹은 음식: '+recentFoods.join(', ')+'와 다른 메뉴로 추천해줘.':'고단백 저칼로리 기준으로 추천해줘.');
-  await geminiAsk(prompt,document.getElementById('shopResult'),'👨‍🍳 레시피 생성 중...');
-}
-async function getAiWorkout(type){
-  var typeMap={upper:'상체 (가슴, 등, 어깨, 팔)',lower:'하체 (스쿼트, 런지, 햄스트링)',full:'전신 복합 운동',cardio:'유산소 (조깅, HIIT, 사이클)'};
-  var recent=workouts.slice(0,10).map(function(w){return w.exercises&&w.exercises.map(function(e){return e.name;}).join(', ');}).join(' / ');
-  var prompt=typeMap[type]+'에 대한 오늘 운동 루틴을 추천해줘.
-각 운동마다: 이름, 세트, 횟수/시간, 권장 무게(초급/중급/고급), 주의사항.
-'+(recent?'최근 운동: '+recent+'와 다양하게 구성해줘.':'초중급자 기준으로 구성해줘.')+'
-마지막에 총 예상 운동 시간과 소모 칼로리도 알려줘.';
-  await geminiAsk(prompt,document.getElementById('wrkAiResult'),'💪 루틴 생성 중...');
-}
-
-/* ─── Meal CRUD ─── */
+async function geminiAsk(prompt,targetEl,loadMsg){if(!gemKey){if(targetEl)targetEl.textContent='Gemini API 키를 설정하세요';return null;}if(targetEl)targetEl.textContent=loadMsg||'AI 분석 중...';try{var model=localStorage.getItem('hb-gem-model')||'gemini-2.5-flash-lite';var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+gemKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:1200}})});var d=await r.json();if(d.error)throw new Error(d.error.message);var txt=(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text)||'응답 없음';if(targetEl)targetEl.textContent=txt;return txt;}catch(e){if(targetEl)targetEl.textContent='오류: '+e.message;return null;}}
+async function aiNutrition(){var name=(document.getElementById('mFoodName').value||'').trim();var amt=(document.getElementById('mFoodAmt').value||'').trim();if(!name){alert('음식 이름을 입력하세요');return;}var st=document.getElementById('aiNutrStatus');st.style.display='block';var prompt='음식 영양정보를 JSON으로만 답하세요. 음식: '+name+(amt?' '+amt+'g':'')+'. 형식: {"kcal":숫자,"protein":숫자,"carbs":숫자,"fat":숫자}';st.textContent='AI 영양소 계산 중...';try{var model=localStorage.getItem('hb-gem-model')||'gemini-2.5-flash-lite';var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+gemKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.1,maxOutputTokens:200}})});var d=await r.json();if(d.error)throw new Error(d.error.message);var txt=(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text)||'{}';var match=txt.match(/\{[\s\S]*\}/);if(match){var obj=JSON.parse(match[0]);if(obj.kcal!=null)document.getElementById('mFoodKcal').value=Math.round(obj.kcal);if(obj.protein!=null)document.getElementById('mFoodProt').value=Math.round(obj.protein*10)/10;if(obj.carbs!=null)document.getElementById('mFoodCarb').value=Math.round(obj.carbs*10)/10;if(obj.fat!=null)document.getElementById('mFoodFat').value=Math.round(obj.fat*10)/10;st.textContent='영양소 자동 입력 완료!';}else{st.textContent='파싱 실패 - 직접 입력하세요';}}catch(e){st.textContent='오류: '+(!gemKey?'API 키 미설정':e.message);}setTimeout(function(){st.style.display='none';},3000);}
+async function getShoppingList(){var today=todayStr();var weekMeals=meals.filter(function(m){return m.date>=today.slice(0,8)+'01'&&m.date<=today;});var foods=weekMeals.map(function(m){return m.name;}).filter(function(x,i,a){return a.indexOf(x)===i;}).slice(0,20);var prompt='나는 Dallas Texas에 살고 있어. 장보는 곳: 채소/식품은 2534 Royal Ln Dallas TX 75229(Kroger/Tom Thumb), 고기는 Walmart 4122 LBJ Fwy Dallas TX 75244. 이번 주 먹은 음식: '+(foods.length?foods.join(', '):'다양한 건강식')+'. 건강한 한 주 식단 장보기 리스트 만들어줘. 각 식품마다 예상 가격(USD)과 어느 매장에서 살지 표시해줘. 총 예산도 알려줘.';await geminiAsk(prompt,document.getElementById('shopResult'),'장보기 리스트 생성 중...');}
+async function getRecipeSuggestion(){var today=todayStr();var recentFoods=meals.filter(function(m){return m.date>=today.slice(0,8)+'01';}).map(function(m){return m.name;}).filter(function(x,i,a){return a.indexOf(x)===i;}).slice(0,15);var prompt='건강한 식단 레시피 3가지 추천해줘. 각 레시피마다 재료와 양, 조리 방법, 영양정보(칼로리/단백질/탄수화물/지방), 재료 구입처(Dallas TX: 2534 Royal Ln 또는 Walmart 4122 LBJ Fwy) 알려줘. '+(recentFoods.length?'최근 먹은 음식: '+recentFoods.join(', ')+'와 다른 메뉴로 추천해줘.':'고단백 저칼로리 기준으로 추천해줘.');await geminiAsk(prompt,document.getElementById('shopResult'),'레시피 생성 중...');}
+async function getAiWorkout(type){var typeMap={upper:'상체(가슴/등/어깨/팔)',lower:'하체(스쿼트/런지/햄스트링)',full:'전신 복합 운동',cardio:'유산소(조깅/HIIT/사이클)'};var recent=workouts.slice(0,10).map(function(w){return w.exercises&&w.exercises.map(function(e){return e.name;}).join(',');}).join('/');var prompt=typeMap[type]+'에 대한 오늘 운동 루틴 추천해줘. 각 운동마다 이름, 세트, 횟수/시간, 권장 무게(초급/중급/고급), 주의사항 알려줘. '+(recent?'최근 운동: '+recent+'와 다양하게 구성해줘.':'초중급자 기준으로 구성해줘.')+' 총 예상 운동 시간과 소모 칼로리도 알려줘.';await geminiAsk(prompt,document.getElementById('wrkAiResult'),'루틴 생성 중...');}
 function getMealDate(){var d=document.getElementById('mealDate');return d&&d.value?d.value:todayStr();}
-function addMealEntry(){
-  if(!curUser){alert('로그인이 필요합니다');return;}
-  var name=(document.getElementById('mFoodName').value||'').trim();
-  if(!name){alert('음식 이름을 입력하세요');return;}
-  var entry={uid:curUser.uid,date:getMealDate(),mealType:document.getElementById('mFoodMealType').value,name:name,amount:parseFloat(document.getElementById('mFoodAmt').value)||0,kcal:parseFloat(document.getElementById('mFoodKcal').value)||0,protein:parseFloat(document.getElementById('mFoodProt').value)||0,carbs:parseFloat(document.getElementById('mFoodCarb').value)||0,fat:parseFloat(document.getElementById('mFoodFat').value)||0,createdAt:firebase.firestore.FieldValue.serverTimestamp()};
-  db.collection('hb_meals').add(entry).then(function(){document.getElementById('mFoodName').value='';document.getElementById('mFoodAmt').value='';document.getElementById('mFoodKcal').value='';document.getElementById('mFoodProt').value='';document.getElementById('mFoodCarb').value='';document.getElementById('mFoodFat').value='';}).catch(function(e){alert('저장 실패: '+e.message);});
-}
+function addMealEntry(){if(!curUser){alert('로그인이 필요합니다');return;}var name=(document.getElementById('mFoodName').value||'').trim();if(!name){alert('음식 이름을 입력하세요');return;}var entry={uid:curUser.uid,date:getMealDate(),mealType:document.getElementById('mFoodMealType').value,name:name,amount:parseFloat(document.getElementById('mFoodAmt').value)||0,kcal:parseFloat(document.getElementById('mFoodKcal').value)||0,protein:parseFloat(document.getElementById('mFoodProt').value)||0,carbs:parseFloat(document.getElementById('mFoodCarb').value)||0,fat:parseFloat(document.getElementById('mFoodFat').value)||0,createdAt:firebase.firestore.FieldValue.serverTimestamp()};db.collection('hb_meals').add(entry).then(function(){document.getElementById('mFoodName').value='';document.getElementById('mFoodAmt').value='';document.getElementById('mFoodKcal').value='';document.getElementById('mFoodProt').value='';document.getElementById('mFoodCarb').value='';document.getElementById('mFoodFat').value='';}).catch(function(e){alert('저장 실패: '+e.message);});}
 function deleteMealEntry(id){if(!confirm('삭제하시겠습니까?'))return;db.collection('hb_meals').doc(id).delete().catch(function(e){alert('삭제 실패: '+e.message);});}
-
-/* ─── Meal Render ─── */
-function renderMeal(){
-  var mealDateEl=document.getElementById('mealDate');
-  if(mealDateEl&&!mealDateEl.value)mealDateEl.value=todayStr();
-  var selD=getMealDate();
-  var dayMeals=meals.filter(function(m){return m.date===selD&&(curMealTab==='all'||m.mealType===curMealTab);});
-  var tKcal=0,tProt=0,tCarb=0,tFat=0;
-  dayMeals.forEach(function(m){tKcal+=m.kcal||0;tProt+=m.protein||0;tCarb+=m.carbs||0;tFat+=m.fat||0;});
-  var sum=document.getElementById('mealNutrSummary');
-  if(sum){sum.innerHTML='<div class="nutrCard"><div class="val">'+Math.round(tKcal)+'</div><div class="lbl">🔥 칼로리 (kcal)</div></div><div class="nutrCard"><div class="val">'+Math.round(tProt*10)/10+'g</div><div class="lbl">💪 단백질</div></div><div class="nutrCard"><div class="val">'+Math.round(tCarb*10)/10+'g</div><div class="lbl">🌾 탄수화물</div></div><div class="nutrCard"><div class="val">'+Math.round(tFat*10)/10+'g</div><div class="lbl">🫒 지방</div></div>';}
-  var mealTypes=[{key:'breakfast',lbl:'🌅 아침'},{key:'lunch',lbl:'☀️ 점심'},{key:'dinner',lbl:'🌙 저녁'},{key:'snack',lbl:'🍎 간식'}];
-  var list=document.getElementById('mealLogList');
-  if(!list)return;
-  if(dayMeals.length===0){list.innerHTML='<div style="text-align:center;padding:40px;color:var(--txt2);font-size:14px">이 날 기록된 식단이 없습니다.<br>위의 폼에서 음식을 추가해보세요 🥗</div>';return;}
-  var grouped={};
-  dayMeals.forEach(function(m){if(!grouped[m.mealType])grouped[m.mealType]=[];grouped[m.mealType].push(m);});
-  var html='';
-  (curMealTab==='all'?mealTypes:[{key:curMealTab,lbl:mealTypes.find(function(t){return t.key===curMealTab;})||{lbl:curMealTab}}]).forEach(function(t){
-    var items=grouped[t.key];if(!items||!items.length)return;
-    var gKcal=items.reduce(function(s,m){return s+(m.kcal||0);},0);
-    html+='<div class="mealGroup"><div class="mealGroupHd"><span>'+t.lbl+'</span><span style="font-size:12px;color:var(--txt2)">'+Math.round(gKcal)+' kcal</span></div>';
-    items.forEach(function(m){html+='<div class="mealItem"><div><div class="mealItemName">'+esc(m.name)+(m.amount?'<span style="font-size:11px;color:var(--txt2);margin-left:6px">'+m.amount+'g</span>':'')+'</div><div class="mealItemNutr">'+[m.kcal?'🔥'+Math.round(m.kcal)+'kcal':'',m.protein?'💪'+Math.round(m.protein*10)/10+'g':'',m.carbs?'🌾'+Math.round(m.carbs*10)/10+'g':'',m.fat?'🫒'+Math.round(m.fat*10)/10+'g':''].filter(Boolean).join(' · ')+'</div></div><button class="delBtn" data-mid="'+m.id+'" onclick="deleteMealEntry(''+m.id+'')">🗑</button></div>';});
-    html+='</div>';
-  });
-  list.innerHTML=html;
-}
-
-/* ─── Workout CRUD ─── */
+function renderMeal(){var mealDateEl=document.getElementById('mealDate');if(mealDateEl&&!mealDateEl.value)mealDateEl.value=todayStr();var selD=getMealDate();var dayMeals=meals.filter(function(m){return m.date===selD&&(curMealTab==='all'||m.mealType===curMealTab);});var tKcal=0,tProt=0,tCarb=0,tFat=0;dayMeals.forEach(function(m){tKcal+=m.kcal||0;tProt+=m.protein||0;tCarb+=m.carbs||0;tFat+=m.fat||0;});var sum=document.getElementById('mealNutrSummary');if(sum){sum.innerHTML='<div class="nutrCard"><div class="val">'+Math.round(tKcal)+'</div><div class="lbl">칼로리 (kcal)</div></div><div class="nutrCard"><div class="val">'+Math.round(tProt*10)/10+'g</div><div class="lbl">단백질</div></div><div class="nutrCard"><div class="val">'+Math.round(tCarb*10)/10+'g</div><div class="lbl">탄수화물</div></div><div class="nutrCard"><div class="val">'+Math.round(tFat*10)/10+'g</div><div class="lbl">지방</div></div>';}var mealTypes=[{key:'breakfast',lbl:'아침'},{key:'lunch',lbl:'점심'},{key:'dinner',lbl:'저녁'},{key:'snack',lbl:'간식'}];var list=document.getElementById('mealLogList');if(!list)return;if(dayMeals.length===0){list.innerHTML='<div style="text-align:center;padding:40px;color:var(--txt2)">이 날 기록된 식단이 없습니다. 위의 폼에서 음식을 추가해보세요</div>';return;}var grouped={};dayMeals.forEach(function(m){if(!grouped[m.mealType])grouped[m.mealType]=[];grouped[m.mealType].push(m);});var out='';(curMealTab==='all'?mealTypes:[{key:curMealTab,lbl:(mealTypes.find(function(t){return t.key===curMealTab;})||{lbl:curMealTab}).lbl}]).forEach(function(t){var items=grouped[t.key];if(!items||!items.length)return;var gKcal=items.reduce(function(s,m){return s+(m.kcal||0);},0);out+='<div class="mealGroup"><div class="mealGroupHd"><span>'+t.lbl+'</span><span style="font-size:12px;color:var(--txt2)">'+Math.round(gKcal)+' kcal</span></div>';items.forEach(function(m){out+='<div class="mealItem"><div style="flex:1"><div class="mealItemName">'+esc(m.name)+(m.amount?'<span style="font-size:11px;color:var(--txt2);margin-left:6px">'+m.amount+'g</span>':'')+'</div><div class="mealItemNutr">'+[m.kcal?Math.round(m.kcal)+'kcal':'',m.protein?Math.round(m.protein*10)/10+'g 단백질':'',m.carbs?Math.round(m.carbs*10)/10+'g 탄수':'',m.fat?Math.round(m.fat*10)/10+'g 지방':''].filter(Boolean).join(' · ')+'</div></div><button class="delBtn" onclick="deleteMealEntry(''+m.id+'')">X</button></div>';});out+='</div>';});list.innerHTML=out;}
 function getWrkDate(){var d=document.getElementById('wrkDate');return d&&d.value?d.value:todayStr();}
-function addWorkoutEntry(){
-  if(!curUser){alert('로그인이 필요합니다');return;}
-  var name=(document.getElementById('wrkExName').value||'').trim();
-  if(!name){alert('운동 이름을 입력하세요');return;}
-  var today=getWrkDate();
-  var existing=workouts.find(function(w){return w.date===today&&w.uid===curUser.uid;});
-  var newEx={name:name,category:document.getElementById('wrkExCat').value,sets:parseInt(document.getElementById('wrkSets').value)||0,reps:parseInt(document.getElementById('wrkReps').value)||0,weight:parseFloat(document.getElementById('wrkWeight').value)||0};
-  var doSave=function(docId,exArr){
-    var updated=exArr.concat([newEx]);
-    var ref=docId?db.collection('hb_workouts').doc(docId):db.collection('hb_workouts').doc();
-    var data=docId?{exercises:updated,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}:{uid:curUser.uid,date:today,exercises:[newEx],createdAt:firebase.firestore.FieldValue.serverTimestamp()};
-    ref.set(data,{merge:true}).then(function(){document.getElementById('wrkExName').value='';document.getElementById('wrkSets').value='';document.getElementById('wrkReps').value='';document.getElementById('wrkWeight').value='';}).catch(function(e){alert('저장 실패: '+e.message);});
-  };
-  if(existing){doSave(existing.id,existing.exercises||[]);}else{doSave(null,[]);}
-}
-function deleteWorkoutEx(docId,exIdx){
-  if(!confirm('삭제하시겠습니까?'))return;
-  var w=workouts.find(function(w){return w.id===docId;});
-  if(!w)return;
-  var updated=(w.exercises||[]).filter(function(_,i){return i!==exIdx;});
-  if(updated.length===0){db.collection('hb_workouts').doc(docId).delete();}
-  else{db.collection('hb_workouts').doc(docId).update({exercises:updated});}
-}
-
-/* ─── Workout Render ─── */
-function renderWorkout(){
-  var wrkDateEl=document.getElementById('wrkDate');
-  if(wrkDateEl&&!wrkDateEl.value)wrkDateEl.value=todayStr();
-  var selD=getWrkDate();
-  var catLbl={strength:'🏋️ 근력',cardio:'🏃 유산소',flexibility:'🧘 유연성'};
-  var catClr={strength:'#6366f1',cardio:'#10b981',flexibility:'#f59e0b'};
-  var streak=document.getElementById('wrkWeekStreak');
-  if(streak){
-    var days=['일','월','화','수','목','금','토'];
-    var today=new Date();var html='';
-    for(var i=6;i>=0;i--){var d=new Date(today);d.setDate(today.getDate()-i);var ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());var hasWrk=workouts.some(function(w){return w.date===ds;});html+='<div class="wrkStreakDay" style="background:'+(hasWrk?'var(--ac)':'var(--bg2)')+';color:'+(hasWrk?'var(--ac-txt)':'var(--txt2)')+';border-color:'+(hasWrk?'var(--ac)':'var(--br)')+'"><div style="font-size:10px">'+days[d.getDay()]+'</div><div>'+pad(d.getDate())+'</div></div>';}
-    streak.innerHTML=html;
-  }
-  var dayWrks=workouts.filter(function(w){return w.date===selD;});
-  var list=document.getElementById('wrkLogList');
-  if(!list)return;
-  if(dayWrks.length===0){list.innerHTML='<div style="text-align:center;padding:40px;color:var(--txt2);font-size:14px">이 날 기록된 운동이 없습니다.<br>위의 폼에서 운동을 추가하거나 AI 루틴을 사용해보세요 💪</div>';return;}
-  var html='';
-  dayWrks.forEach(function(w){
-    var exArr=w.exercises||[];
-    var totalSets=exArr.reduce(function(s,e){return s+(e.sets||0);},0);
-    html+='<div class="wrkCard"><div class="wrkCardHd"><span>운동 기록 · '+exArr.length+'개 종목 · 총 '+totalSets+'세트</span></div>';
-    exArr.forEach(function(e,i){
-      html+='<div class="wrkItem"><span class="wrkBadge" style="background:'+(catClr[e.category]||'#6366f1')+'22;color:'+(catClr[e.category]||'#6366f1')+'">'+( catLbl[e.category]||e.category)+'</span><div class="wrkItemName">'+esc(e.name)+'</div><span style="font-size:12px;color:var(--txt2)">'+(e.sets?e.sets+'세트':'')+(e.reps?' × '+e.reps+'회':'')+(e.weight?' · '+e.weight+'kg':'')+'</span><button class="delBtn" onclick="deleteWorkoutEx(''+w.id+'','+i+')">🗑</button></div>';
-    });
-    html+='</div>';
-  });
-  list.innerHTML=html;
-}
-
-/* ─── esc helper (if not already defined) ─── */
+function addWorkoutEntry(){if(!curUser){alert('로그인이 필요합니다');return;}var name=(document.getElementById('wrkExName').value||'').trim();if(!name){alert('운동 이름을 입력하세요');return;}var today=getWrkDate();var existing=workouts.find(function(w){return w.date===today&&w.uid===curUser.uid;});var newEx={name:name,category:document.getElementById('wrkExCat').value,sets:parseInt(document.getElementById('wrkSets').value)||0,reps:parseInt(document.getElementById('wrkReps').value)||0,weight:parseFloat(document.getElementById('wrkWeight').value)||0};var doSave=function(docId,exArr){var updated=exArr.concat([newEx]);var ref=docId?db.collection('hb_workouts').doc(docId):db.collection('hb_workouts').doc();var data=docId?{exercises:updated,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}:{uid:curUser.uid,date:today,exercises:[newEx],createdAt:firebase.firestore.FieldValue.serverTimestamp()};ref.set(data,{merge:true}).then(function(){document.getElementById('wrkExName').value='';document.getElementById('wrkSets').value='';document.getElementById('wrkReps').value='';document.getElementById('wrkWeight').value='';}).catch(function(e){alert('저장 실패: '+e.message);});};if(existing){doSave(existing.id,existing.exercises||[]);}else{doSave(null,[]);}}
+function deleteWorkoutEx(docId,exIdx){if(!confirm('삭제하시겠습니까?'))return;var w=workouts.find(function(w){return w.id===docId;});if(!w)return;var updated=(w.exercises||[]).filter(function(_,i){return i!==exIdx;});if(updated.length===0){db.collection('hb_workouts').doc(docId).delete();}else{db.collection('hb_workouts').doc(docId).update({exercises:updated});}}
+function renderWorkout(){var wrkDateEl=document.getElementById('wrkDate');if(wrkDateEl&&!wrkDateEl.value)wrkDateEl.value=todayStr();var selD=getWrkDate();var catLbl={strength:'근력',cardio:'유산소',flexibility:'유연성'};var catClr={strength:'#6366f1',cardio:'#10b981',flexibility:'#f59e0b'};var streakEl=document.getElementById('wrkWeekStreak');if(streakEl){var days=['일','월','화','수','목','금','토'];var today=new Date();var shtml='';for(var i=6;i>=0;i--){var dd=new Date(today);dd.setDate(today.getDate()-i);var ds=dd.getFullYear()+'-'+pad(dd.getMonth()+1)+'-'+pad(dd.getDate());var hasWrk=workouts.some(function(w){return w.date===ds;});shtml+='<div class="wrkStreakDay" style="background:'+(hasWrk?'var(--ac)':'var(--bg2)')+';color:'+(hasWrk?'var(--ac-txt)':'var(--txt2)')+';border-color:'+(hasWrk?'var(--ac)':'var(--br)')+'"><div style="font-size:10px">'+days[dd.getDay()]+'</div><div>'+pad(dd.getDate())+'</div></div>';}streakEl.innerHTML=shtml;}var dayWrks=workouts.filter(function(w){return w.date===selD;});var list=document.getElementById('wrkLogList');if(!list)return;if(dayWrks.length===0){list.innerHTML='<div style="text-align:center;padding:40px;color:var(--txt2)">이 날 기록된 운동이 없습니다. 위의 폼에서 운동을 추가하거나 AI 루틴을 사용해보세요</div>';return;}var out='';dayWrks.forEach(function(w){var exArr=w.exercises||[];var totalSets=exArr.reduce(function(s,e){return s+(e.sets||0);},0);out+='<div class="wrkCard"><div class="wrkCardHd"><span>'+exArr.length+'개 종목 · 총 '+totalSets+'세트</span></div>';exArr.forEach(function(e,i){out+='<div class="wrkItem"><span class="wrkBadge" style="background:'+(catClr[e.category]||'#6366f1')+'22;color:'+(catClr[e.category]||'#6366f1')+'">'+( catLbl[e.category]||e.category)+'</span><div class="wrkItemName">'+esc(e.name)+'</div><span style="font-size:12px;color:var(--txt2)">'+(e.sets?e.sets+'세트':'')+(e.reps?' x '+e.reps+'회':'')+(e.weight?' · '+e.weight+'kg':'')+'</span><button class="delBtn" onclick="deleteWorkoutEx(''+w.id+'','+i+')">X</button></div>';});out+='</div>';});list.innerHTML=out;}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
 </script>
 
 <!-- ══════════════ MEAL VIEW ══════════════ -->
+
 <div class="vPg" id="vMeal">
+
 <div style="max-width:900px;margin:0 auto;padding:16px">
 
 <!-- Header -->
+
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+
   <div style="display:flex;align-items:center;gap:10px">
+
     <span style="font-size:22px">🥗</span>
+
     <h2 style="margin:0;font-size:18px;font-weight:700;color:var(--txt)">식단 관리</h2>
+
   </div>
+
   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+
     <input type="date" id="mealDate" style="padding:6px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg2);color:var(--txt);font-size:13px" onchange="renderMeal()">
+
     <button type="button" onclick="showGemSettings()" style="padding:6px 12px;background:var(--ac);color:var(--ac-txt);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600">🤖 Gemini 설정</button>
+
     <button type="button" onclick="openShoppingModal()" style="padding:6px 12px;background:var(--ac);color:var(--ac-txt);border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600">🛒 장보기/레시피</button>
+
   </div>
+
 </div>
 
 <!-- Daily nutrition summary -->
+
 <div id="mealNutrSummary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"></div>
 
 <!-- Meal type tabs -->
+
 <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+
   <button type="button" id="mTab-all" class="mealTabBtn on" onclick="setMealTab('all')">전체</button>
+
   <button type="button" id="mTab-breakfast" class="mealTabBtn" onclick="setMealTab('breakfast')">🌅 아침</button>
+
   <button type="button" id="mTab-lunch" class="mealTabBtn" onclick="setMealTab('lunch')">☀️ 점심</button>
+
   <button type="button" id="mTab-dinner" class="mealTabBtn" onclick="setMealTab('dinner')">🌙 저녁</button>
+
   <button type="button" id="mTab-snack" class="mealTabBtn" onclick="setMealTab('snack')">🍎 간식</button>
+
 </div>
 
 <!-- Add food form -->
+
 <div id="mealAddForm" style="background:var(--bg2);border:1.5px solid var(--br);border-radius:12px;padding:14px;margin-bottom:16px">
+
   <div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:10px">+ 음식 추가</div>
+
   <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+
     <input type="text" id="mFoodName" placeholder="음식 이름 (예: 닭가슴살)" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px">
+
     <input type="number" id="mFoodAmt" placeholder="양 (g/개)" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px" min="0">
+
     <select id="mFoodMealType" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px">
+
       <option value="breakfast">🌅 아침</option>
+
       <option value="lunch">☀️ 점심</option>
+
       <option value="dinner">🌙 저녁</option>
+
       <option value="snack">🍎 간식</option>
+
     </select>
+
   </div>
+
   <div style="display:grid;grid-template-columns:repeat(4,1fr) auto auto;gap:8px;align-items:center">
+
     <input type="number" id="mFoodKcal" placeholder="Kcal" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px" min="0">
+
     <input type="number" id="mFoodProt" placeholder="단백질(g)" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px" min="0">
+
     <input type="number" id="mFoodCarb" placeholder="탄수화물(g)" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px" min="0">
+
     <input type="number" id="mFoodFat" placeholder="지방(g)" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px" min="0">
+
     <button type="button" onclick="aiNutrition()" id="aiNutrBtn" style="padding:8px 12px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600;white-space:nowrap">🤖 AI 계산</button>
+
     <button type="button" onclick="addMealEntry()" style="padding:8px 16px;background:var(--ac);color:var(--ac-txt);border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:700">추가</button>
+
   </div>
+
   <div id="aiNutrStatus" style="font-size:11px;color:#6366f1;margin-top:6px;display:none"></div>
+
 </div>
 
 <!-- Meal log list -->
+
 <div id="mealLogList"></div>
+
 </div>
+
 </div>
 
 <!-- ══════════════ WORKOUT VIEW ══════════════ -->
+
 <div class="vPg" id="vWorkout">
+
 <div style="max-width:900px;margin:0 auto;padding:16px">
 
 <!-- Header -->
+
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+
   <div style="display:flex;align-items:center;gap:10px">
+
     <span style="font-size:22px">💪</span>
+
     <h2 style="margin:0;font-size:18px;font-weight:700;color:var(--txt)">운동 루틴</h2>
+
   </div>
+
   <div style="display:flex;align-items:center;gap:8px">
+
     <input type="date" id="wrkDate" style="padding:6px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg2);color:var(--txt);font-size:13px" onchange="renderWorkout()">
+
     <button type="button" onclick="aiWorkoutPlan()" style="padding:6px 12px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600">🤖 AI 루틴 추천</button>
+
   </div>
+
 </div>
 
 <!-- Weekly streak -->
+
 <div id="wrkWeekStreak" style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap"></div>
 
 <!-- Add exercise form -->
+
 <div style="background:var(--bg2);border:1.5px solid var(--br);border-radius:12px;padding:14px;margin-bottom:16px">
+
   <div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:10px">+ 운동 추가</div>
+
   <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:8px;align-items:center;flex-wrap:wrap">
+
     <input type="text" id="wrkExName" placeholder="운동 이름 (예: 스쿼트)" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px">
+
     <select id="wrkExCat" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px">
+
       <option value="strength">🏋️ 근력</option>
+
       <option value="cardio">🏃 유산소</option>
+
       <option value="flexibility">🧘 유연성</option>
+
     </select>
+
     <input type="number" id="wrkSets" placeholder="세트" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px" min="1">
+
     <input type="number" id="wrkReps" placeholder="횟수/분" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px" min="1">
+
     <input type="number" id="wrkWeight" placeholder="kg" style="padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px" min="0" step="0.5">
+
     <button type="button" onclick="addWorkoutEntry()" style="padding:8px 16px;background:var(--ac);color:var(--ac-txt);border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:700">추가</button>
+
   </div>
+
 </div>
 
 <!-- Workout log -->
+
 <div id="wrkLogList"></div>
+
 </div>
+
 </div>
 
 <!-- ══════════════ GEMINI SETTINGS MODAL ══════════════ -->
+
 <div id="gemModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;align-items:center;justify-content:center">
+
   <div style="background:var(--bg);border-radius:16px;padding:24px;width:min(440px,92vw);max-height:85vh;overflow-y:auto">
+
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+
       <span style="font-size:16px;font-weight:700;color:var(--txt)">🤖 Gemini API 설정</span>
+
       <button type="button" onclick="closeGemModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--txt2)">×</button>
+
     </div>
+
     <div style="font-size:12px;color:var(--txt2);margin-bottom:12px">Google AI Studio에서 무료 API 키를 발급받으세요:<br><a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:#6366f1">aistudio.google.com/app/apikey</a></div>
+
     <input type="text" id="gemKeyInput" placeholder="AIza..." style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg2);color:var(--txt);font-size:13px;margin-bottom:12px">
+
     <button type="button" onclick="saveGemKey()" style="width:100%;padding:10px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-weight:700">저장</button>
+
     <div id="gemKeyStatus" style="margin-top:8px;font-size:12px;color:#10b981;text-align:center"></div>
+
   </div>
+
 </div>
 
 <!-- ══════════════ SHOPPING/RECIPE MODAL ══════════════ -->
+
 <div id="shopModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;align-items:center;justify-content:center">
+
   <div style="background:var(--bg);border-radius:16px;padding:24px;width:min(560px,92vw);max-height:88vh;overflow-y:auto">
+
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+
       <span style="font-size:16px;font-weight:700;color:var(--txt)">🛒 장보기 & 레시피</span>
+
       <button type="button" onclick="closeShopModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--txt2)">×</button>
+
     </div>
+
     <div style="font-size:12px;color:var(--txt2);margin-bottom:12px;padding:10px;background:var(--bg2);border-radius:8px">
+
       📍 <b>주요 장보기 위치</b><br>
+
       🥦 채소/식품: <b>2534 Royal Ln, Dallas TX 75229</b><br>
+
       🥩 고기류: <b>Walmart – 4122 LBJ Fwy, Dallas TX 75244</b>
+
     </div>
+
     <div style="display:flex;gap:8px;margin-bottom:12px">
+
       <button type="button" onclick="getShoppingList()" style="flex:1;padding:9px;background:#10b981;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600">🛒 이번 주 장보기 리스트</button>
+
       <button type="button" onclick="getRecipeSuggestion()" style="flex:1;padding:9px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600">👨‍🍳 레시피 추천</button>
+
     </div>
+
     <div id="shopResult" style="font-size:13px;color:var(--txt);line-height:1.6;white-space:pre-wrap;min-height:60px"></div>
+
   </div>
+
 </div>
 
 <!-- ══════════════ AI WORKOUT PLAN MODAL ══════════════ -->
+
 <div id="wrkAiModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;align-items:center;justify-content:center">
+
   <div style="background:var(--bg);border-radius:16px;padding:24px;width:min(560px,92vw);max-height:88vh;overflow-y:auto">
+
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+
       <span style="font-size:16px;font-weight:700;color:var(--txt)">💪 AI 운동 루틴 추천</span>
+
       <button type="button" onclick="closeWrkAiModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--txt2)">×</button>
+
     </div>
+
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+
       <button type="button" onclick="getAiWorkout('upper')" style="padding:8px 14px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600">상체 루틴</button>
+
       <button type="button" onclick="getAiWorkout('lower')" style="padding:8px 14px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600">하체 루틴</button>
+
       <button type="button" onclick="getAiWorkout('full')" style="padding:8px 14px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600">전신 루틴</button>
+
       <button type="button" onclick="getAiWorkout('cardio')" style="padding:8px 14px;background:#10b981;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600">유산소 루틴</button>
+
     </div>
+
     <div id="wrkAiResult" style="font-size:13px;color:var(--txt);line-height:1.6;white-space:pre-wrap;min-height:60px"></div>
+
   </div>
+
 </div>
+
 </body>
 
 </html>
