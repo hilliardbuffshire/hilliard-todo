@@ -1486,61 +1486,6 @@ function renderWorkout(){
 
 function setupRecurringRoutine(){if(!curUser){alert('login required');return;}var hasEx=todos.some(function(t){return t.type==='recurring'&&t.uid===curUser.uid;});var msg=hasEx?'주간 반복 루틴을 초기화하고 다시 설정하겠습니까? (출승근 항목 삭제 포함)':'밖시 Amazon 직장인 주간 루틴을 반복 일정으로 설정하겠습니까? (출승근 항목 자동 삭제)';if(!confirm(msg))return;var toDel=todos.filter(function(t){return t.uid===curUser.uid&&(t.type==='recurring'||(t.text&&(t.text.indexOf('출근')>=0||t.text.indexOf('퇴근')>=0)));});var ROUTINE=[{text:'기상 · 물 500ml',time:'05:30',priority:'high',category:'health',recurringDays:[1,2,3,4,5]},{text:'아침 식사 — 오버나이트오트 + 달걀 2개 (밀프렙)',time:'05:45',priority:'medium',category:'meal',recurringDays:[1,2,3,4,5],note:'550kcal · 단백질 35g / 냉장고에서 바로'},{text:'점심 도시락 챙기기 (밀프렙)',time:'12:00',priority:'medium',category:'meal',recurringDays:[1,2,3,4,5],note:'닭가슴살 150g + 현미밥 200g + 구운채소 / 550kcal · 단백질 45g'},{text:'[등 A] 데드리프트·바벨로우·풀업·케이블로우·페이스풀',time:'06:00',priority:'high',category:'workout',recurringDays:[1],note:'데드리프트 4x5 → 바벨로우 4x8 → 풀업 3xmax → 케이블로우 3x12 → 페이스풀 3x15 / 70분'},{text:'[가슴·어깨] 벤치프레스·인클라인·숄더프레스·레터럴레이즈',time:'06:00',priority:'high',category:'workout',recurringDays:[2],note:'벤치프레스 4x8 → 인클라인덤벨 4x10 → 숄더프레스 3x12 → 레터럴레이즈 3x15 / 55분'},{text:'[유산소·코어] 트레드밀 인터벌+플랭크+레그레이즈',time:'06:00',priority:'medium',category:'workout',recurringDays:[3],note:'트레드밀 20분 → 플랭크 3x60초 → 레그레이즈 3x15 / 45분'},{text:'[등 B] 랫풀다운·시티드로우·T바로우·원암로우·리버스플라이',time:'06:00',priority:'high',category:'workout',recurringDays:[4],note:'랫풀다운 4x12 → 시티드케이블로우 4x12 → T바로우 3x12 → 원암덜벨로우 3x15 / 65분'},{text:'[하체] 스쿼트·레그프레스·RDL·레그컬·카프레이즈',time:'06:00',priority:'high',category:'workout',recurringDays:[5],note:'스쿼트 4x8 → 레그프레스 4x12 → RDL 3x10 → 레그컬 3x12 → 카프레이즈 4x20 / 65분'},{text:'[밀프렙] 월·화·수 3일치 시작',time:'19:00',priority:'high',category:'meal_prep',recurringDays:[0],note:'닭가슴살 900g 오븐(200도 25분) · 현미밥 6컵 · 구운채소 · 달걀 9개 · 오트병 3개 / 약 2시간'},{text:'[밀프렙] 목·금 2일치',time:'19:00',priority:'high',category:'meal_prep',recurringDays:[3],note:'연어 400g 팬구이(10분) · 현미밥 4컵 · 고구마 전자레인지 · 오트병 2개 / 약 40분'},];var batch=db.batch();toDel.forEach(function(t){batch.delete(db.collection('todos').doc(t.id));});var now=firebase.firestore.FieldValue.serverTimestamp();ROUTINE.forEach(function(r){var ref=db.collection('todos').doc();batch.set(ref,Object.assign({},r,{uid:curUser.uid,type:'recurring',recurring:'weekly',done:false,createdAt:now}));});batch.commit().then(function(){renderCal();alert('루틴이 설정되었습니다! 캘린더에서 매주 반복 일정을 확인하세요.');}).catch(function(e){alert('Error: '+e.message);});}
 
-function loadAmazonRoutine(){
-
-  if(!curUser){alert('로그인 후 사용하세요');return;}
-
-  if(!confirm('이번 주 Amazon 직장인 루틴을 캘린더에 추가하시겠습니까? 기존 일정과 중복되지 않게 추가됩니다.'))return;
-
-  var today=new Date();today.setHours(0,0,0,0);
-
-  var uid=curUser.uid;
-
-  var batch=db.batch();
-
-  var weekdays=[1,2,3,4,5];
-
-  var workoutPlan={1:{name:'등 집중 A',exercises:[{name:'데드리프트',sets:4,reps:6,weight:0,category:'strength'},{name:'바벨 로우',sets:4,reps:8,weight:0,category:'strength'},{name:'풀업',sets:3,reps:8,weight:0,category:'strength'},{name:'케이블 로우',sets:3,reps:12,weight:0,category:'strength'},{name:'페이스 풀',sets:3,reps:15,weight:0,category:'strength'}]},2:{name:'가슴/어깨',exercises:[{name:'벤치프레스',sets:4,reps:8,weight:0,category:'strength'},{name:'인클라인 덤벨',sets:3,reps:10,weight:0,category:'strength'},{name:'오버헤드프레스',sets:3,reps:10,weight:0,category:'strength'},{name:'사이드 레터럴 레이즈',sets:3,reps:15,weight:0,category:'strength'}]},3:{name:'유산소/코어',exercises:[{name:'트레드밀 인터벌 20분',sets:1,reps:20,weight:0,category:'cardio'},{name:'플랭크',sets:3,reps:60,weight:0,category:'strength'},{name:'레그레이즈',sets:3,reps:15,weight:0,category:'strength'},{name:'케이블 우드찹',sets:3,reps:12,weight:0,category:'strength'}]},4:{name:'등 집중 B',exercises:[{name:'랫풀다운',sets:4,reps:10,weight:0,category:'strength'},{name:'시티드 케이블 로우',sets:4,reps:10,weight:0,category:'strength'},{name:'T-바 로우',sets:3,reps:8,weight:0,category:'strength'},{name:'원암 덤벨 로우',sets:3,reps:10,weight:0,category:'strength'},{name:'리버스 플라이',sets:3,reps:15,weight:0,category:'strength'}]},5:{name:'하체',expressions:[],exercises:[{name:'바벨 스쿼트',sets:4,reps:8,weight:0,category:'strength'},{name:'레그프레스',sets:3,reps:12,weight:0,category:'strength'},{name:'루마니안 데드리프트',sets:3,reps:10,weight:0,category:'strength'},{name:'레그컬',sets:3,reps:12,weight:0,category:'strength'},{name:'카프레이즈',sets:4,reps:15,weight:0,category:'strength'}]}};
-
-  var dailyTodos=[  {time:'05:30',text:'기상 + 스트레칭 10분',priority:'medium',category:'health'},  {time:'06:00',text:'헬스장 출발',priority:'high',category:'health'},  {time:'07:15',text:'샤워 및 출근 준비',priority:'medium',category:'personal'},  {time:'07:45',text:'고단백 아침식사 (오트밀+계란3개+그릭요거트)',priority:'high',category:'health'},  {time:'08:00',text:'Amazon 출근',priority:'high',category:'work'},  {time:'12:00',text:'점심 (닭가슴살+현미+채소)',priority:'medium',category:'health'},  {time:'15:00',text:'물 500ml + 견과류 간식',priority:'low',category:'health'},  {time:'17:00',text:'퇴근',priority:'high',category:'work'},  {time:'18:00',text:'저녁식사 (연어/참치+채소+고구마)',priority:'high',category:'health'},  {time:'20:00',text:'독서/자기계발 30분',priority:'medium',category:'personal'},  {time:'22:00',text:'마그네슘+취침 준비',priority:'low',category:'health'}];
-
-  for(var di=0;di<7;di++){
-
-    var d2=new Date(today);d2.setDate(today.getDate()+di);
-
-    var dow=d2.getDay();
-
-    var ds=d2.getFullYear()+'-'+pad(d2.getMonth()+1)+'-'+pad(d2.getDate());
-
-    if(weekdays.indexOf(dow)>=0){
-
-      dailyTodos.forEach(function(td){
-
-        var ref=db.collection('todos').doc();
-
-        batch.set(ref,{uid:uid,date:ds,text:td.text,time:td.time,priority:td.priority,category:td.category,type:'todo',done:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-
-      });
-
-      var wp=workoutPlan[dow];
-
-      if(wp){
-
-        var wref=db.collection('hb_workouts').doc();
-
-        batch.set(wref,{uid:uid,date:ds,exercises:wp.exercises,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-
-      }
-
-    }
-
-  }
-
-  batch.commit().then(function(){alert('이번 주 루틴이 캘린더에 추가되었습니다!');}).catch(function(e){alert('오류: '+e.message);});
-
-}
-
-var _chatHistory=[];
 
 function toggleChat(){
 
