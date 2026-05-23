@@ -539323,30 +539323,53 @@ async function confirmAiSuggest(){
   if(!curUser){if(typeof _cspToast==='function')_cspToast('로그인이 필요합니다',3000);return;}
   var uid=curUser.uid;
   try{
-    var batch=db.batch();
+    var promises=[];
     var count=0;
     arr.forEach(function(d){
-      var ts=firebase.firestore.FieldValue.serverTimestamp();
-      if(d.type==='todo'){
-        batch.set(db.collection('todos').doc(),{uid:uid,text:d.text||'',date:d.date||todayStr(),time:d.time||'',done:false,category:d.category||'',priority:'medium',type:'onetime',note:'',subTasks:[],createdAt:ts});
-        count++;
-      }else if(d.type==='meal'){
-        batch.set(db.collection('hb_meals').doc(),{uid:uid,date:d.date||todayStr(),mealType:d.mealType||'lunch',name:d.name||'',amount:200,kcal:Number(d.kcal)||0,protein:Number(d.protein)||0,carbs:Number(d.carbs)||0,fat:Number(d.fat)||0,done:false,recipe:d.recipe||{},createdAt:ts});
+      if(d.type==='meal'){
+        // Sanitize meal - match addMealEntry field set exactly
+        var validMealTypes=['breakfast','lunch','dinner','snack'];
+        var mealType=validMealTypes.indexOf(d.mealType)>-1?d.mealType:'lunch';
+        var mealDate=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
+        promises.push(db.collection('hb_meals').add({
+          uid:uid,
+          date:mealDate,
+          mealType:mealType,
+          name:String(d.name||''),
+          amount:Number(d.amount)||200,
+          kcal:Number(d.kcal)||0,
+          protein:Number(d.protein)||0,
+          carbs:Number(d.carbs)||0,
+          fat:Number(d.fat)||0,
+          createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        }));
         count++;
       }else if(d.type==='workout'){
-        var exs=d.exercises||[];
-        if(!exs.length)return;
-        batch.set(db.collection('hb_workouts').doc(),{uid:uid,date:d.date||todayStr(),exercises:exs,notes:d.notes||d.workout_name||'',doneExercises:{},createdAt:ts,updatedAt:ts});
+        var rawExs=d.exercises||[];
+        if(!rawExs.length)return;
+        var wkDate=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
+        // Sanitize exercises - keep only primitive-typed fields
+        var cleanExs=rawExs.map(function(e){
+          return{name:String(e.name||''),sets:Number(e.sets)||3,reps:Number(e.reps)||10,weight:Number(e.weight)||0};
+        });
+        promises.push(db.collection('hb_workouts').add({
+          uid:uid,
+          date:wkDate,
+          exercises:cleanExs,
+          createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+        }));
         count++;
       }
     });
-    await batch.commit();
+    if(!count){if(typeof _cspToast==='function')_cspToast('추가할 항목이 없습니다',2000);return;}
+    await Promise.all(promises);
     cancelAiSuggest();
     var inp=document.getElementById('aiPromptInput');if(inp)inp.value='';
     if(typeof _cspToast==='function')_cspToast('✅ '+count+'개 항목 캘린더에 추가 완료!',3000);
     if(typeof renderAll==='function')renderAll();
   }catch(e){
-    console.error('confirm suggest error:',e);
+    console.error('confirmAiSuggest error:',e,'code:',e.code);
     if(typeof _cspToast==='function')_cspToast('❌ 저장 오류: '+e.message,4000);
   }
 }
