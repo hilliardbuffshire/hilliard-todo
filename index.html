@@ -524493,82 +524493,67 @@ function showAiSuggestCard(arr){
   card.style.display='block';
 }
 
-async function confirmAiSuggest(){
-  console.log('[CAI] button clicked. _aiSuggestData=',_aiSuggestData,'curUser=',curUser);
-  // Diagnostic: show what state we have
+function confirmAiSuggest(){
   if(!_aiSuggestData||!_aiSuggestData.length){
-    if(typeof _cspToast==='function')_cspToast('❌ 저장 실패: AI 데이터 없음 (화면을 새로고침하고 다시 시도)',4000);
-    console.error('[CAI] _aiSuggestData is null or empty');
+    if(typeof _cspToast==='function')_cspToast('❌ AI 데이터 없음. 다시 생성해주세요',3000);
     return;
   }
   if(!curUser){
-    if(typeof _cspToast==='function')_cspToast('❌ 로그인 필요: 페이지를 새로고침 후 다시 로그인해주세요',4000);
-    console.error('[CAI] curUser is null');
+    if(typeof _cspToast==='function')_cspToast('❌ 로그인 필요',3000);
     return;
   }
   var arr=_aiSuggestData;
   var uid=curUser.uid;
-  console.log('[CAI] arr=',JSON.stringify(arr),'uid=',uid);
-  try{
-    var promises=[];
-    var count=0;
-    var skipped=[];
-    arr.forEach(function(d){
-      // Determine type with fallback heuristics
-      var resolvedType=d.type;
-      if(resolvedType!=='meal'&&resolvedType!=='workout'){
-        // Fallback: if it has an exercises array → workout, if it has kcal → meal
-        if(d.exercises&&d.exercises.length)resolvedType='workout';
-        else if(d.kcal||d.name||(d.mealType))resolvedType='meal';
-        else{skipped.push(d.type||'unknown');return;}
-      }
-      if(resolvedType==='meal'){
-        var validMealTypes=['breakfast','lunch','dinner','snack'];
-        var mealType=validMealTypes.indexOf(d.mealType)>-1?d.mealType:'lunch';
-        var mealDate=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
-        var mealDoc={
-          uid:uid,date:mealDate,mealType:mealType,
-          name:String(d.name||''),amount:Number(d.amount)||200,
-          kcal:Number(d.kcal)||0,protein:Number(d.protein)||0,
-          carbs:Number(d.carbs)||0,fat:Number(d.fat)||0,
-          createdAt:firebase.firestore.FieldValue.serverTimestamp()
-        };
-        console.log('[CAI] adding meal:',mealDate,mealType,d.name);
-        promises.push(db.collection('hb_meals').add(mealDoc));
-        count++;
-      }else if(resolvedType==='workout'){
-        var rawExs=d.exercises||[];
-        if(!rawExs.length){skipped.push('workout-no-exercises');return;}
-        var wkDate=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
-        var cleanExs=rawExs.map(function(e){
-          return{name:String(e.name||''),sets:Number(e.sets)||3,reps:Number(e.reps)||10,weight:Number(e.weight)||0};
-        });
-        var wkDoc={
-          uid:uid,date:wkDate,exercises:cleanExs,
-          createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-          updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-        };
-        console.log('[CAI] adding workout:',wkDate,cleanExs.length,'exercises');
-        promises.push(db.collection('hb_workouts').add(wkDoc));
-        count++;
-      }
-    });
-    if(skipped.length)console.warn('[CAI] skipped types:',skipped);
-    if(!count){
-      if(typeof _cspToast==='function')_cspToast('❌ 저장 실패: 타입 인식 불가 (types='+arr.map(function(d){return d.type;}).join(',')+')',5000);
-      return;
+  var promises=[];
+  var count=0;
+  arr.forEach(function(d){
+    var resolvedType=d.type;
+    if(resolvedType!=='meal'&&resolvedType!=='workout'){
+      if(d.exercises&&Array.isArray(d.exercises)&&d.exercises.length)resolvedType='workout';
+      else if(d.kcal!=null||d.name||d.mealType)resolvedType='meal';
+      else return;
     }
-    console.log('[CAI] awaiting',count,'writes...');
-    await Promise.all(promises);
-    console.log('[CAI] all writes done!');
+    if(resolvedType==='meal'){
+      var validMT=['breakfast','lunch','dinner','snack'];
+      var mt=validMT.indexOf(d.mealType)>-1?d.mealType:'lunch';
+      var dt=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
+      promises.push(db.collection('hb_meals').add({
+        uid:uid,date:dt,mealType:mt,
+        name:String(d.name||''),amount:parseFloat(d.amount)||0,
+        kcal:parseFloat(d.kcal)||0,protein:parseFloat(d.protein)||0,
+        carbs:parseFloat(d.carbs)||0,fat:parseFloat(d.fat)||0,
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      }));
+      count++;
+    }else if(resolvedType==='workout'){
+      var rawExs=d.exercises||[];
+      if(!rawExs.length)return;
+      var wdt=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
+      var exs=rawExs.map(function(e){
+        return{name:String(e.name||''),sets:parseInt(e.sets)||3,reps:parseInt(e.reps)||10,weight:parseFloat(e.weight)||0};
+      });
+      promises.push(db.collection('hb_workouts').add({
+        uid:uid,date:wdt,exercises:exs,
+        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      }));
+      count++;
+    }
+  });
+  if(!count){
+    if(typeof _cspToast==='function')_cspToast('추가할 식단/운동 항목이 없습니다',2000);
+    return;
+  }
+  var savedCount=count;
+  Promise.all(promises).then(function(){
     cancelAiSuggest();
     var inp=document.getElementById('aiPromptInput');if(inp)inp.value='';
-    if(typeof _cspToast==='function')_cspToast('✅ '+count+'개 항목 캘린더에 추가 완료!',3000);
+    if(typeof _cspToast==='function')_cspToast('✅ '+savedCount+'개 항목 캘린더에 추가 완료!',3000);
     if(typeof renderAll==='function')renderAll();
-  }catch(e){
-    console.error('[CAI] write error:',e,'code:',e.code,'message:',e.message);
-    if(typeof _cspToast==='function')_cspToast('❌ 저장 오류: '+e.message+' (코드: '+(e.code||'없음')+')',6000);
-  }
+  }).catch(function(e){
+    console.error('confirmAiSuggest write error:',e);
+    if(typeof _cspToast==='function')_cspToast('❌ 저장 오류: '+e.message,4000);
+  });
 }
 window.confirmAiSuggest=confirmAiSuggest;
 
