@@ -742,6 +742,102 @@ body.desk-mode #mbWeekBar{display:none!important}
 .mbGaugeFill{height:100%;background:var(--ac);border-radius:3px;transition:width .3s}
 .mbGaugePct{font-size:11px;font-weight:700;color:var(--ac);min-width:28px;text-align:right}
 .mbEmpty{padding:18px 14px;text-align:center;color:var(--tx3);font-size:13px}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   v13: Wide Side Panel (PC) / Bottom Sheet (Mobile)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#cspOv{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:590;opacity:0;pointer-events:none;transition:opacity .28s}
+#cspOv.on{opacity:1;pointer-events:all}
+#calSidePanel{position:fixed;top:0;right:0;bottom:0;width:min(520px,46vw);background:var(--card);z-index:600;transform:translateX(110%);transition:transform .32s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-12px 0 50px rgba(0,0,0,.2);overflow:hidden;border-left:1.5px solid var(--br)}
+#calSidePanel.open{transform:translateX(0)}
+@media(max-width:768px){
+  #calSidePanel{width:100%;height:92dvh;top:auto;left:0;right:0;bottom:0;border-radius:22px 22px 0 0;transform:translateY(110%);box-shadow:0 -12px 50px rgba(0,0,0,.22);border-left:none;border-top:1.5px solid var(--br)}
+  #calSidePanel.open{transform:translateY(0)}
+}
+body.desk-mode #calSidePanel{width:min(520px,46vw);height:100%;top:0;left:auto;right:0;bottom:0;border-radius:0;transform:translateX(110%)}
+body.desk-mode #calSidePanel.open{transform:translateX(0)}
+/* Panel head */
+.cspHead{display:flex;align-items:flex-start;justify-content:space-between;padding:20px 24px 14px;border-bottom:1.5px solid var(--br);flex-shrink:0;background:var(--bg2)}
+.cspDateWrap{flex:1;min-width:0}
+.cspDate{font-size:19px;font-weight:800;color:var(--tx);line-height:1.2}
+.cspSubDate{font-size:12px;color:var(--ac);font-weight:700;margin-top:3px;letter-spacing:.06em}
+.cspClose{width:38px;height:38px;flex-shrink:0;border:1.5px solid var(--br);background:var(--card);border-radius:50%;cursor:pointer;font-size:16px;color:var(--tx2);display:flex;align-items:center;justify-content:center;transition:all .18s;margin-left:12px;font-family:inherit}
+.cspClose:hover{background:var(--ac);border-color:var(--ac);color:#fff;transform:rotate(90deg)}
+/* Meta bar */
+.cspMeta{padding:10px 24px;border-bottom:1px solid var(--br);display:flex;gap:8px;flex-wrap:wrap;background:var(--bg2);flex-shrink:0}
+.cspMetaBadge{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+.cspMetaWrk{background:rgba(21,101,192,.13);color:#1565c0}
+.cspMetaMeal{background:rgba(46,125,50,.13);color:#2e7d32}
+.cspMetaTodo{background:rgba(0,0,0,.07);color:var(--tx2)}
+/* Gauge */
+.cspGaugeWrap{padding:12px 24px;border-bottom:1px solid var(--br);flex-shrink:0;display:none}
+.cspGaugeWrap.vis{display:block}
+.cspGaugeLbl{font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+.cspGaugePct{font-size:15px;font-weight:900;color:var(--ac)}
+.cspGaugePct.done100{color:#2e7d32}
+.cspGaugeTrack{height:10px;background:var(--br);border-radius:6px;overflow:hidden}
+.cspGaugeFill{height:100%;border-radius:6px;transition:width .55s cubic-bezier(.4,0,.2,1);background:var(--ac)}
+.cspGaugeFill.done100{background:linear-gradient(90deg,#2e7d32,#43a047)}
+/* Body */
+.cspBody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 0 24px}
+.cspBody::-webkit-scrollbar{width:4px}
+.cspBody::-webkit-scrollbar-thumb{background:var(--br);border-radius:2px}
+.cspSect{padding:16px 24px 4px}
+.cspSectHd{font-size:11px;font-weight:800;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--br)}
+.cspItem{display:flex;align-items:flex-start;gap:13px;padding:11px 8px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .14s;margin:0 -8px}
+.cspItem:hover{background:var(--bg2)}
+.cspItem:active{background:var(--br)}
+.cspNChk{width:22px;height:22px;flex-shrink:0;border:2px solid var(--br);border-radius:5px;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .2s cubic-bezier(.4,0,.2,1);background:transparent;position:relative}
+.cspNChk.done{background:var(--ac);border-color:var(--ac);animation:cspPop .22s ease}
+.cspNChk.done::after{content:"✓";color:#fff;font-size:12px;font-weight:900;line-height:1}
+@keyframes cspPop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+.cspItemBody{flex:1;min-width:0}
+.cspItemName{font-size:15px;font-weight:600;color:var(--tx);line-height:1.45;word-break:break-word;transition:all .18s}
+.cspItemName.done{opacity:.38;text-decoration:line-through;color:var(--tx3)}
+.cspItemSub{font-size:12px;color:var(--tx3);margin-top:3px;line-height:1.4}
+.cspItemTag{display:inline-flex;align-items:center;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;margin-right:5px;vertical-align:middle}
+/* Footer */
+.cspFoot{padding:14px 24px 16px;border-top:1.5px solid var(--br);display:flex;gap:10px;flex-shrink:0;background:var(--bg2)}
+@media(max-width:768px){.cspFoot{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}}
+.cspAddBtn{flex:1;padding:13px 0;background:var(--ac);color:var(--ac-txt,#fff);border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .18s;box-shadow:0 4px 16px rgba(0,0,0,.16);letter-spacing:.02em}
+.cspAddBtn:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.22)}
+.cspAddBtn:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,0,0,.12);filter:brightness(.96)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   v13: Button system overhaul
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* Quick-Add submit */
+.qaSubmit{background:var(--ac)!important;color:var(--ac-txt,#fff)!important;border:none!important;border-radius:10px!important;padding:9px 20px!important;font-weight:800!important;font-size:13px!important;cursor:pointer!important;transition:all .17s!important;box-shadow:0 3px 10px rgba(0,0,0,.15)!important;font-family:inherit!important;letter-spacing:.02em!important}
+.qaSubmit:hover{filter:brightness(1.08)!important;transform:translateY(-1px)!important;box-shadow:0 5px 16px rgba(0,0,0,.2)!important}
+.qaSubmit:active{transform:translateY(0)!important;filter:brightness(.95)!important}
+/* Preset buttons */
+.psBtn{border:1.5px solid var(--br)!important;background:var(--card)!important;color:var(--tx)!important;border-radius:20px!important;padding:7px 15px!important;font-size:12px!important;font-weight:600!important;cursor:pointer!important;transition:all .18s!important;font-family:inherit!important;letter-spacing:.02em!important}
+.psBtn:hover{border-color:var(--ac)!important;color:var(--ac)!important;background:var(--bg2)!important;transform:translateY(-1px)!important}
+.psBtn:active{transform:translateY(0)!important}
+.psSel{background:var(--ac)!important;border-color:var(--ac)!important;color:#fff!important;box-shadow:0 3px 10px rgba(0,0,0,.18)!important;font-weight:800!important}
+.psSel:hover{filter:brightness(1.08)!important}
+/* Apply button */
+.psApplyBtn{padding:10px 24px!important;font-weight:800!important;font-size:13px!important;border-radius:11px!important;background:#1565c0!important;color:#fff!important;border:none!important;cursor:pointer!important;box-shadow:0 4px 14px rgba(21,101,192,.38)!important;transition:all .18s!important;font-family:inherit!important;letter-spacing:.02em!important}
+.psApplyBtn:hover{filter:brightness(1.1)!important;transform:translateY(-1px)!important;box-shadow:0 6px 20px rgba(21,101,192,.44)!important}
+.psApplyBtn:active{transform:translateY(0)!important;filter:brightness(.96)!important}
+/* General action buttons (modal, weekly template) */
+button[onclick*="saveWeeklyTemplate"],button[onclick*="applyWeeklyTemplate"]{transition:all .17s!important}
+button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate"]:hover{filter:brightness(1.08)!important;transform:translateY(-1px)!important}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   v13: Undo Toast
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#cspToast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(16px);background:#1a1a1a;color:#fff;padding:11px 20px;border-radius:28px;font-size:13px;font-weight:600;z-index:800;opacity:0;pointer-events:none;transition:all .24s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.3);display:flex;align-items:center;gap:12px}
+#cspToast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:all}
+.cspToastUndo{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:14px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.cspToastUndo:hover{background:rgba(255,255,255,.28)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   v13: Layout hardening (prevent bleed at any viewport)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.calGrid{box-sizing:border-box;width:100%}
+.calCell{box-sizing:border-box;min-width:0}
+@media(max-width:600px){.calCellSum{font-size:10px;padding:2px 5px}}
 </style>
 
 
@@ -14076,7 +14172,7 @@ body.desk-mode #mbWeekBar{display:none!important}
 
 
 
-<script>firebase.initializeApp({apiKey:"AIzaSyDEPq3SqOCiltpmesT3vP9Jp7a_ujFou1k",authDomain:"daily-task-planner-9187f.firebaseapp.com",projectId:"daily-task-planner-9187f",storageBucket:"daily-task-planner-9187f.firebasestorage.app",messagingSenderId:"309757618979",appId:"1:309757618979:web:79fbdc11fbfbcdffa9ba96"});var auth=firebase.auth(),db=firebase.firestore();var DOMAIN="@hilliard.buffshire.internal";var todos=[],curUser=null,unsubFn=null;var curView='calendar',chipTF='all',chipAF='all',priF=null,catF=null;var calY,calM,mcY,mcM,selDate=null,_mbSelDay=null;var streak=parseInt(localStorage.getItem('hb-s')||'0');var lastAct=localStorage.getItem('hb-la')||'';var curTheme=localStorage.getItem('hb-t')||'signiel';var mType='todo',mPri='medium',mCat=null,mFreq='daily',mDays=[1,2,3,4,5],mSubTasks=[];var goals=[],ideas=[],unsubGoals=null,unsubIdeas=null;var meals=[],workouts=[],unsubMeals=null,unsubWorkouts=null;var gemKey=localStorage.getItem('hb-gem-key')||'';var curGoalHz='yearly',gColor='#C9A96E',gActs=[],iColor='#FFF9E6';function pad(n){return String(n).padStart(2,'0')}
+<script>firebase.initializeApp({apiKey:"AIzaSyDEPq3SqOCiltpmesT3vP9Jp7a_ujFou1k",authDomain:"daily-task-planner-9187f.firebaseapp.com",projectId:"daily-task-planner-9187f",storageBucket:"daily-task-planner-9187f.firebasestorage.app",messagingSenderId:"309757618979",appId:"1:309757618979:web:79fbdc11fbfbcdffa9ba96"});var auth=firebase.auth(),db=firebase.firestore();var DOMAIN="@hilliard.buffshire.internal";var todos=[],curUser=null,unsubFn=null;var curView='calendar',chipTF='all',chipAF='all',priF=null,catF=null;var calY,calM,mcY,mcM,selDate=null,_mbSelDay=null,_cspDs=null,_cspUndoTimer=null;var streak=parseInt(localStorage.getItem('hb-s')||'0');var lastAct=localStorage.getItem('hb-la')||'';var curTheme=localStorage.getItem('hb-t')||'signiel';var mType='todo',mPri='medium',mCat=null,mFreq='daily',mDays=[1,2,3,4,5],mSubTasks=[];var goals=[],ideas=[],unsubGoals=null,unsubIdeas=null;var meals=[],workouts=[],unsubMeals=null,unsubWorkouts=null;var gemKey=localStorage.getItem('hb-gem-key')||'';var curGoalHz='yearly',gColor='#C9A96E',gActs=[],iColor='#FFF9E6';function pad(n){return String(n).padStart(2,'0')}
 
 
 
@@ -14876,7 +14972,7 @@ return c;}
 
 
 
-function renderAll(){var c=computeCounts();document.getElementById('b-today').textContent=c.tPend;document.getElementById('b-all').textContent=c.all;document.getElementById('b-done').textContent=c.done;document.getElementById('b-rec').textContent=c.rec;document.getElementById('b-hi').textContent=c.hi;document.getElementById('b-me').textContent=c.me;document.getElementById('b-lo').textContent=c.lo;document.getElementById('sTotal').textContent=todos.length;document.getElementById('sDone').textContent=c.done;document.getElementById('sPend').textContent=c.pend;document.getElementById('sHigh').textContent=c.hiPend;var todayAll=c.tPend+c.tDone;var pct=todayAll>0?Math.round(c.tDone/todayAll*100):0;document.getElementById('progPct').textContent=pct+'%';document.getElementById('progCircle').style.strokeDashoffset=113.1-(pct/100)*113.1;if(curView==='today')renderToday();else if(curView==='all')renderAll2();else if(curView==='done')renderDone();else if(curView==='recurring')renderRecurring();else if(curView==='calendar')renderCal();else if(curView==='meal')renderMeal();else if(curView==='workout')renderWorkout();renderMiniCal();if(typeof updateMotivBar==='function')updateMotivBar();var _agEl=document.getElementById('mobileAgenda');if(_agEl&&_agEl.offsetParent!==null)renderAgenda();}
+function renderAll(){var c=computeCounts();document.getElementById('b-today').textContent=c.tPend;document.getElementById('b-all').textContent=c.all;document.getElementById('b-done').textContent=c.done;document.getElementById('b-rec').textContent=c.rec;document.getElementById('b-hi').textContent=c.hi;document.getElementById('b-me').textContent=c.me;document.getElementById('b-lo').textContent=c.lo;document.getElementById('sTotal').textContent=todos.length;document.getElementById('sDone').textContent=c.done;document.getElementById('sPend').textContent=c.pend;document.getElementById('sHigh').textContent=c.hiPend;var todayAll=c.tPend+c.tDone;var pct=todayAll>0?Math.round(c.tDone/todayAll*100):0;document.getElementById('progPct').textContent=pct+'%';document.getElementById('progCircle').style.strokeDashoffset=113.1-(pct/100)*113.1;if(curView==='today')renderToday();else if(curView==='all')renderAll2();else if(curView==='done')renderDone();else if(curView==='recurring')renderRecurring();else if(curView==='calendar')renderCal();else if(curView==='meal')renderMeal();else if(curView==='workout')renderWorkout();renderMiniCal();if(typeof updateMotivBar==='function')updateMotivBar();var _agEl=document.getElementById('mobileAgenda');if(_agEl&&_agEl.offsetParent!==null)renderAgenda();var _cspEl=document.getElementById('calSidePanel');if(_cspEl&&_cspEl.classList.contains('open')&&_cspDs)_buildSidePanelContent(_cspDs);}
 
 
 
@@ -15852,7 +15948,7 @@ if(other)cell.classList.add('cOther');if(ds===today)cell.classList.add('cToday')
 
 
 
-cell.appendChild(pills);(function(s){cell.onclick=function(){selDate=s;renderCal();renderMiniCal();showCalPopup(s);}})(ds);days.appendChild(cell);}
+cell.appendChild(pills);(function(s){cell.onclick=function(){selDate=s;renderCal();renderMiniCal();openSidePanel(s);}})(ds);days.appendChild(cell);}
 
 
 
@@ -34812,6 +34908,177 @@ function toggleMealDone(id,done){if(!db||!currentUser)return;db.collection('hb_m
 
 function toggleWorkoutExDone(wid,exIdx,done){if(!db||!currentUser)return;var upd={};upd['doneExercises.'+exIdx]=!done;db.collection('hb_workouts').doc(wid).update(upd);}
 
+/* ── v13: Side Panel / Bottom Sheet ── */
+function openSidePanel(ds){
+_cspDs=ds;selDate=ds;
+_buildSidePanelContent(ds);
+document.getElementById('cspOv').classList.add('on');
+document.getElementById('calSidePanel').classList.add('open');
+document.body.style.overflow='hidden';
+document.addEventListener('keydown',_cspKeyClose);
+}
+
+function closeSidePanel(){
+document.getElementById('cspOv').classList.remove('on');
+document.getElementById('calSidePanel').classList.remove('open');
+document.body.style.overflow='';
+document.removeEventListener('keydown',_cspKeyClose);
+}
+
+function _cspKeyClose(e){if(e.key==='Escape')closeSidePanel();}
+
+function _buildSidePanelContent(ds){
+var d=new Date(ds+'T00:00:00');
+var DW=['일','월','화','수','목','금','토'];
+var MO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+var isToday=ds===todayStr();
+document.getElementById('cspDate').textContent=d.getFullYear()+'년 '+MO[d.getMonth()]+' '+d.getDate()+'일 ('+DW[d.getDay()]+')';
+document.getElementById('cspSubDate').textContent=isToday?'📍 오늘':'';
+
+var dayWrk=workouts.filter(function(w){return w.date===ds;});
+var dayMls=meals.filter(function(m){return m.date===ds;});
+var dow=d.getDay();
+var _rBD={};todos.forEach(function(t){if(t.type!=='recurring')return;(t.recurringDays||(t.recurring==='daily'?[0,1,2,3,4,5,6]:[])).forEach(function(dd){if(!_rBD[dd])_rBD[dd]=[];_rBD[dd].push(t);});});
+var _dtS=todos.filter(function(t){return t.date===ds;});
+var _dtR=(_rBD[dow]||[]).filter(function(r){return !_dtS.some(function(x){return x.text===r.text;});});
+var allT=_dtS.concat(_dtR).sort(function(a,b){return(a.time||'').localeCompare(b.time||'');});
+
+var allEx=[];dayWrk.forEach(function(w){(w.exercises||[]).forEach(function(ex,i){allEx.push({wid:w.id,exIdx:i,ex:ex,mask:w.doneExercises||{}});});});
+
+/* Meta badges */
+var metaEl=document.getElementById('cspMeta');
+var mh='';
+if(allEx.length){var de=allEx.filter(function(x){return !!x.mask[x.exIdx];}).length;mh+='<span class="cspMetaBadge cspMetaWrk">💪 '+allEx.length+'종목'+(de?' · '+de+'완료':'')+'</span>';}
+if(dayMls.length){var tk=dayMls.reduce(function(s,m){return s+(m.kcal||0);},0);mh+='<span class="cspMetaBadge cspMetaMeal">🥗 '+dayMls.length+'개'+(tk?' · '+Math.round(tk)+'kcal':'')+'</span>';}
+if(allT.length){var td=allT.filter(function(t){return t.done;}).length;mh+='<span class="cspMetaBadge cspMetaTodo">✅ '+td+'/'+allT.length+'</span>';}
+metaEl.innerHTML=mh||'<span style="font-size:12px;color:var(--tx3)">일정 없음</span>';
+
+/* Completion gauge */
+var gWrap=document.getElementById('cspGaugeWrap');
+var gFill=document.getElementById('cspGaugeFill');
+var gPct=document.getElementById('cspGaugePct');
+var totalItems=allEx.length+dayMls.length;
+var doneItems=allEx.filter(function(x){return !!x.mask[x.exIdx];}).length+dayMls.filter(function(m){return !!m.done;}).length;
+if(totalItems>0){
+  gWrap.classList.add('vis');
+  var pct=Math.round(doneItems/totalItems*100);
+  var done100=pct>=100;
+  setTimeout(function(){gFill.style.width=pct+'%';},60);
+  gFill.className='cspGaugeFill'+(done100?' done100':'');
+  gPct.textContent=pct+'%';
+  gPct.className='cspGaugePct'+(done100?' done100':'');
+}else{gWrap.classList.remove('vis');}
+
+/* Body */
+var body=document.getElementById('cspBody');
+if(!allEx.length&&!dayMls.length&&!allT.length){
+  body.innerHTML='<div style="text-align:center;padding:50px 24px 30px"><div style="font-size:44px;margin-bottom:14px">📅</div><div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:6px">이 날 등록된 일정이 없습니다</div><div style="font-size:13px;color:var(--tx3)">아래 버튼으로 할일을 추가해보세요</div></div>';
+  return;
+}
+var bh='';
+
+/* Workouts */
+if(allEx.length){
+  bh+='<div class="cspSect"><div class="cspSectHd">💪 운동 루틴</div>';
+  allEx.forEach(function(x){
+    var isDone=!!x.mask[x.exIdx];
+    var sub=[];
+    if(x.ex.sets&&x.ex.reps)sub.push(x.ex.sets+'×'+x.ex.reps+'회');
+    if(x.ex.weight)sub.push(x.ex.weight+'kg');
+    bh+='<div class="cspItem" onclick="toggleWorkoutExDone(\''+x.wid+'\','+x.exIdx+','+(isDone?'true':'false')+')">'
+      +'<div class="cspNChk'+(isDone?' done':'')+'"></div>'
+      +'<div class="cspItemBody">'
+      +'<div class="cspItemName'+(isDone?' done':'')+'">'+_esc(x.ex.name)+'</div>'
+      +(sub.length?'<div class="cspItemSub">'+sub.join(' · ')+'</div>':'')
+      +'</div></div>';
+  });
+  bh+='</div>';
+}
+
+/* Meals */
+if(dayMls.length){
+  var ML={breakfast:'아침',lunch:'점심',dinner:'저녁',snack:'간식'};
+  var mo={breakfast:0,lunch:1,dinner:2,snack:3};
+  var MLC={'아침':'rgba(255,152,0,.12)','점심':'rgba(76,175,80,.12)','저녁':'rgba(33,150,243,.12)','간식':'rgba(156,39,176,.12)'};
+  var MTC={'아침':'#e65100','점심':'#2e7d32','저녁':'#1565c0','간식':'#6a1b9a'};
+  var tk=dayMls.reduce(function(s,m){return s+(m.kcal||0);},0);
+  var tp=dayMls.reduce(function(s,m){return s+(m.protein||0);},0);
+  var tc=dayMls.reduce(function(s,m){return s+(m.carbs||0);},0);
+  bh+='<div class="cspSect"><div class="cspSectHd">🥗 식단'
+    +(tk?'<span style="font-size:10px;font-weight:500;color:var(--tx3);margin-left:6px">총 '+Math.round(tk)+'kcal'+(tp?' · 단백질 '+Math.round(tp)+'g':'')+'</span>':'')
+    +'</div>';
+  dayMls.slice().sort(function(a,b){return(mo[a.mealType]||9)-(mo[b.mealType]||9);}).forEach(function(m){
+    var isDone=!!m.done;
+    var lbl=ML[m.mealType]||m.mealType;
+    var sub=[];
+    if(m.kcal)sub.push(Math.round(m.kcal)+'kcal');
+    if(m.protein)sub.push('단백질 '+Math.round(m.protein)+'g');
+    if(m.carbs)sub.push('탄수 '+Math.round(m.carbs)+'g');
+    if(m.fat)sub.push('지방 '+Math.round(m.fat)+'g');
+    bh+='<div class="cspItem" onclick="toggleMealDone(\''+m.id+'\','+(isDone?'true':'false')+')">'
+      +'<div class="cspNChk'+(isDone?' done':'')+'"></div>'
+      +'<div class="cspItemBody">'
+      +'<div class="cspItemName'+(isDone?' done':'')+'"><span class="cspItemTag" style="background:'+(MLC[lbl]||'rgba(0,0,0,.07)')+';color:'+(MTC[lbl]||'var(--tx2)')+'">'+lbl+'</span>'+_esc(m.name)+'</div>'
+      +(sub.length?'<div class="cspItemSub">'+sub.join(' · ')+'</div>':'')
+      +'</div></div>';
+  });
+  bh+='</div>';
+}
+
+/* Todos */
+if(allT.length){
+  bh+='<div class="cspSect"><div class="cspSectHd">📋 할 일</div>';
+  allT.forEach(function(t){
+    var isRec=t.type==='recurring';
+    var catC={workout:'#1565c0',meal:'#2e7d32',work:'#e65100',health:'#6a1b9a',study:'#1565c0',personal:'#555'};
+    var catN={workout:'운동',meal:'식단',work:'업무',health:'건강',study:'학습',personal:'개인'};
+    bh+='<div class="cspItem'+(isRec?'':'"  onclick="toggleDone(\''+t.id+'\','+!!t.done+')')+'\">'
+      +'<div class="cspNChk'+(t.done&&!isRec?' done':'')+'">'+( isRec?'<span style="font-size:10px;color:var(--tx3)">↺</span>':'')+'</div>'
+      +'<div class="cspItemBody">'
+      +'<div class="cspItemName'+(t.done&&!isRec?' done':'')+'">'+_esc(t.text||'')+'</div>'
+      +((t.time||t.note||t.category)?'<div class="cspItemSub">'+(t.time?'⏰ '+t.time+' ':'' )+(t.category&&catN[t.category]?'<span style="color:'+catC[t.category]+'">'+catN[t.category]+'</span> ':'' )+(t.note?'· '+_esc(t.note):'')+'</div>':'')
+      +'</div></div>';
+  });
+  bh+='</div>';
+}
+body.innerHTML=bh;
+}
+
+/* ── v13: Toast / Undo ── */
+function _cspToast(msg,undoCb){
+var el=document.getElementById('cspToast');if(!el)return;
+el.innerHTML=msg+(undoCb?'<button class="cspToastUndo" onclick="'+undoCb+'">실행취소</button>':'');
+el.classList.add('show');
+clearTimeout(_cspUndoTimer);
+_cspUndoTimer=setTimeout(function(){el.classList.remove('show');},3500);
+}
+
+/* ── v13: Enhanced toggle functions ── */
+function toggleMealDone(id,done){
+if(!db||!currentUser)return;
+db.collection('hb_meals').doc(id).update({done:!done});
+_cspToast(done?'식단 완료 취소됨':'🥗 식단 완료!',done?'':'toggleMealDone(\''+id+'\',false)');
+}
+
+function toggleWorkoutExDone(wid,exIdx,done){
+if(!db||!currentUser)return;
+var upd={};upd['doneExercises.'+exIdx]=!done;
+db.collection('hb_workouts').doc(wid).update(upd);
+_cspToast(done?'운동 완료 취소됨':'💪 운동 완료!',done?'':'toggleWorkoutExDone(\''+wid+'\','+exIdx+',false)');
+}
+
+/* ── v13: Resize handler ── */
+(function(){
+function _onResize(){
+  var panel=document.getElementById('calSidePanel');
+  if(!panel)return;
+  if(window.innerWidth>768&&panel.classList.contains('open')){
+    panel.style.removeProperty('transform');
+  }
+}
+window.addEventListener('resize',_onResize,{passive:true});
+})();
+
 </script>
 
 
@@ -35267,6 +35534,43 @@ function toggleWorkoutExDone(wid,exIdx,done){if(!db||!currentUser)return;var upd
 
 
 
+
+<!-- v13: Side Panel / Bottom Sheet -->
+<div id="cspOv" onclick="closeSidePanel()"></div>
+
+<div id="calSidePanel" role="dialog" aria-modal="true">
+
+  <div class="cspHead">
+    <div class="cspDateWrap">
+      <div class="cspDate" id="cspDate">날짜</div>
+      <div class="cspSubDate" id="cspSubDate"></div>
+    </div>
+    <button type="button" class="cspClose" onclick="closeSidePanel()" aria-label="닫기">✕</button>
+  </div>
+
+  <div class="cspMeta" id="cspMeta"></div>
+
+  <div class="cspGaugeWrap" id="cspGaugeWrap">
+    <div class="cspGaugeLbl">
+      <span>오늘 달성률</span>
+      <span class="cspGaugePct" id="cspGaugePct">0%</span>
+    </div>
+    <div class="cspGaugeTrack">
+      <div class="cspGaugeFill" id="cspGaugeFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="cspBody" id="cspBody"></div>
+
+  <div class="cspFoot">
+    <button type="button" class="cspAddBtn" onclick="selDate=_cspDs;openModalForDate()">
+      + 할일 추가
+    </button>
+  </div>
+
+</div>
+
+<div id="cspToast" role="status" aria-live="polite"></div>
 
 <!-- Mobile Bottom Navigation -->
 
