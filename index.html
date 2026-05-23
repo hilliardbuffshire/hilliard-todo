@@ -73090,7 +73090,7 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
 
 
 
-          <div class="chip on" onclick="chipT(this,'all')">전체</div>
+          <div style="font-size:.78rem;color:var(--tx3);padding:6px 2px 0">할 일에 시간을 배정하면 타임블록에 표시됩니다</div><div class="chip on" onclick="chipT(this,'all')" style="display:none">전체</div>
 
 
 
@@ -233998,1540 +233998,211 @@ function mkEmpty(ico,t,s){return'<div class="empty"><div class="emIco">'+ico+'</
 
 
 
-function renderToday(){var today=todayStr();var tasks=todos.filter(function(t){return t.date===today||isRecurringToday(t)});if(chipTF==='recurring')tasks=tasks.filter(function(t){return t.type==='recurring'});else if(chipTF!=='all')tasks=tasks.filter(function(t){return t.priority===chipTF});var pend=tasks.filter(function(t){return!t.done}),done=tasks.filter(function(t){return t.done});var sec=document.getElementById('todaySec');sec.innerHTML='';var carryOver=chipTF==='all'?todos.filter(function(t){return t.type!=='recurring'&&!t.done&&t.date&&t.date<today}):[];if(!pend.length&&!done.length&&!carryOver.length){sec.innerHTML=mkEmpty('☀️','오늘의 할 일이 없습니다','새 할 일을 추가하여 하루를 계획해보세요');return}if(carryOver.length){var cs=document.createElement('div');cs.className='carrySection';var cl=document.createElement('div');cl.className='carrySectionLbl';cl.innerHTML='⚠️ 이전 날 미완료 · '+carryOver.length+'개 — 오늘 마무리해보세요';cs.appendChild(cl);var cl2=document.createElement('div');cl2.className='tList';carryOver.forEach(function(t){var card=mkCard(t);card.classList.add('carry');var badge=document.createElement('div');badge.className='carryBadge';badge.textContent='📅 '+t.date+' 미완료';var tbody=card.querySelector('.tBody');if(tbody)tbody.insertBefore(badge,tbody.firstChild);cl2.appendChild(card);});cs.appendChild(cl2);sec.appendChild(cs);}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if(pend.length){var l=document.createElement('div');l.className='secLbl';l.textContent='진행중 · '+pend.length+'개';sec.appendChild(l);sec.appendChild(mkList(pend))}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if(done.length){var d=document.createElement('div');d.className='divider';d.style.marginTop='20px';d.innerHTML='<div class="divL"></div><div class="divT">완료 · '+done.length+'개</div><div class="divL"></div>';sec.appendChild(d);sec.appendChild(mkList(done));}}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function renderToday(){
+  var today=todayStr();
+  var sec=document.getElementById('todaySec');
+  if(!sec)return;
+  sec.innerHTML='';
+
+  var allTodayTodos=todos.filter(function(t){return t.date===today||isRecurringToday(t);});
+  var pendTodos=allTodayTodos.filter(function(t){return!t.done;});
+  var doneTodos=allTodayTodos.filter(function(t){return t.done;});
+  var carryOver=todos.filter(function(t){return t.type!=='recurring'&&!t.done&&t.date&&t.date<today;});
+  var todayMeals=(typeof meals!=='undefined'?meals:[]).filter(function(m){return m.date===today;});
+  var todayWks=(typeof workouts!=='undefined'?workouts:[]).filter(function(w){return w.date===today;});
+
+  if(!pendTodos.length&&!doneTodos.length&&!carryOver.length&&!todayMeals.length&&!todayWks.length){
+    sec.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--tx3)">'
+      +'<div style="font-size:2.5rem;margin-bottom:12px">⏱</div>'
+      +'<div style="font-size:1rem;font-weight:700;color:var(--tx2);margin-bottom:6px">오늘 시간 블록이 없습니다</div>'
+      +'<div style="font-size:.84rem">AI 프롬프트에서 <strong>"오늘 일정 짜줘"</strong> 라고 입력해보세요</div></div>';
+    return;
+  }
+
+  // ── Carry-over (미완료 이전 할일) ──────────────────────
+  if(carryOver.length){
+    var cs=document.createElement('div');
+    cs.style.cssText='background:#fff3e0;border:1px solid #ffcc02;border-radius:10px;padding:10px 14px;margin-bottom:14px';
+    var cl=document.createElement('div');
+    cl.style.cssText='font-size:.78rem;font-weight:700;color:#e65100;margin-bottom:6px';
+    cl.textContent='⚠️ 이전 날 미완료 · '+carryOver.length+'개 — 오늘 마무리해보세요';
+    cs.appendChild(cl);
+    carryOver.forEach(function(t){
+      var row=document.createElement('div');
+      row.style.cssText='font-size:.82rem;color:var(--tx);padding:3px 0;border-bottom:1px solid rgba(0,0,0,.06)';
+      row.innerHTML='<span style="color:var(--tx3);margin-right:6px">'+_esc(t.date)+'</span>'+_esc(t.text||'');
+      cs.appendChild(row);
+    });
+    sec.appendChild(cs);
+  }
+
+  // ── Current time ─────────────────────────────────────
+  var now=new Date();
+  var nowMin=now.getHours()*60+now.getMinutes();
+
+  // ── Build timeline items ──────────────────────────────
+  var mealDefaultTime={breakfast:'07:00',lunch:'12:00',dinner:'18:30',snack:'10:00'};
+  var mealKrLabel={breakfast:'🌅 아침',lunch:'☀️ 점심',dinner:'🌙 저녁',snack:'🍎 간식'};
+  var items=[];
+
+  pendTodos.forEach(function(t){
+    if(t.time){
+      items.push({time:t.time,type:'todo',data:t});
+    }
+  });
+  todayMeals.forEach(function(m){
+    items.push({time:mealDefaultTime[m.mealType]||'12:00',type:'meal',data:m});
+  });
+  todayWks.forEach(function(w){
+    items.push({time:'18:30',type:'workout',data:w});
+  });
+
+  items.sort(function(a,b){return a.time<b.time?-1:a.time>b.time?1:0;});
+
+  var unscheduled=pendTodos.filter(function(t){return!t.time;});
+
+  // ── Render header ─────────────────────────────────────
+  var totalBlocks=items.length;
+  var hdr=document.createElement('div');
+  hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:14px';
+  hdr.innerHTML='<div style="font-size:.76rem;font-weight:700;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase">⏱ TIMEBOX — 오늘의 시간블록</div>'
+    +'<div style="font-size:.76rem;color:var(--tx3)">'+totalBlocks+'개 블록'+(unscheduled.length?' · <span style="color:#e65100">'+unscheduled.length+'개 미배정</span>':'')+'</div>';
+  sec.appendChild(hdr);
+
+  // ── Timeline ──────────────────────────────────────────
+  var tlDiv=document.createElement('div');
+  tlDiv.style.cssText='position:relative';
+
+  if(items.length){
+    items.forEach(function(item){
+      var d=item.data;
+      var parts=item.time.split(':');
+      var itemMin=parseInt(parts[0]||0)*60+parseInt(parts[1]||0);
+      var isPast=itemMin+45<nowMin;
+      var isCurrent=Math.abs(itemMin-nowMin)<30;
+
+      // Color by type
+      var accent=item.type==='meal'?'#2e7d32'
+        :item.type==='workout'?'#1565c0'
+        :d.priority==='high'?'#c62828'
+        :d.priority==='low'?'#388e3c'
+        :'var(--ac)';
+
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;gap:10px;align-items:stretch;margin-bottom:6px'+(isPast?';opacity:.5':'')+(isCurrent?';filter:brightness(1.05)':'');
+
+      // Time label
+      var tLabel=document.createElement('div');
+      tLabel.style.cssText='width:46px;flex-shrink:0;font-size:.78rem;font-weight:700;color:'+(isCurrent?accent:'var(--tx3)')+';text-align:right;padding-top:12px;line-height:1';
+      tLabel.textContent=item.time;
+
+      // Vertical accent bar
+      var bar=document.createElement('div');
+      bar.style.cssText='width:3px;flex-shrink:0;border-radius:3px;background:'+accent+';min-height:44px';
+
+      // Content card
+      var card=document.createElement('div');
+      card.style.cssText='flex:1;background:var(--card);border:1px solid var(--br);border-radius:10px;padding:10px 14px;'+(isCurrent?'border-color:'+accent+';box-shadow:0 0 0 2px '+accent+'22':'');
+
+      if(item.type==='todo'){
+        var ckBox=document.createElement('input');
+        ckBox.type='checkbox';ckBox.checked=d.done||false;
+        ckBox.style.cssText='margin-right:8px;accent-color:'+accent;
+        ckBox.addEventListener('change',function(){toggleDone(d.id,this.checked);});
+        var nameSpan=document.createElement('div');
+        nameSpan.style.cssText='font-weight:600;font-size:.88rem;color:var(--tx);display:flex;align-items:center;gap:4px';
+        nameSpan.appendChild(ckBox);
+        var txt=document.createElement('span');
+        txt.textContent=d.text||'';
+        nameSpan.appendChild(txt);
+        card.appendChild(nameSpan);
+        if(d.category){
+          var cat=document.createElement('div');
+          cat.style.cssText='font-size:.72rem;color:var(--tx3);margin-top:3px;margin-left:22px';
+          cat.textContent=d.category;
+          card.appendChild(cat);
+        }
+      }else if(item.type==='meal'){
+        var mLabel=document.createElement('div');
+        mLabel.style.cssText='font-weight:600;font-size:.88rem;color:var(--tx)';
+        mLabel.textContent=(mealKrLabel[d.mealType]||'식단')+' · '+( d.name||'');
+        card.appendChild(mLabel);
+        if(d.kcal||d.protein){
+          var mMeta=document.createElement('div');
+          mMeta.style.cssText='font-size:.75rem;color:var(--tx2);margin-top:4px;display:flex;gap:8px';
+          if(d.kcal)mMeta.innerHTML+='<span>🔥 '+d.kcal+'kcal</span>';
+          if(d.protein)mMeta.innerHTML+='<span>💪 단백질 '+d.protein+'g</span>';
+          if(d.fat)mMeta.innerHTML+='<span>지방 '+d.fat+'g</span>';
+          card.appendChild(mMeta);
+        }
+      }else if(item.type==='workout'){
+        var exs=d.exercises||[];
+        var wLabel=document.createElement('div');
+        wLabel.style.cssText='font-weight:600;font-size:.88rem;color:var(--tx)';
+        wLabel.textContent='💪 '+(d.notes||'운동 루틴');
+        card.appendChild(wLabel);
+        if(exs.length){
+          var wMeta=document.createElement('div');
+          wMeta.style.cssText='font-size:.75rem;color:var(--tx2);margin-top:4px';
+          wMeta.textContent=exs.slice(0,4).map(function(e){return e.name;}).join(' · ')+(exs.length>4?' +'+( exs.length-4)+'개':'');
+          card.appendChild(wMeta);
+        }
+      }
+
+      row.appendChild(tLabel);
+      row.appendChild(bar);
+      row.appendChild(card);
+      tlDiv.appendChild(row);
+
+      // Current time separator after this block
+      if(isCurrent){
+        var nowLine=document.createElement('div');
+        nowLine.style.cssText='display:flex;align-items:center;gap:8px;margin:4px 0 4px 56px';
+        nowLine.innerHTML='<div style="width:8px;height:8px;border-radius:50%;background:#e53935;flex-shrink:0"></div>'
+          +'<div style="flex:1;height:2px;background:#e5393522;border-radius:1px"></div>'
+          +'<div style="font-size:.7rem;font-weight:700;color:#e53935;flex-shrink:0">지금 '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+'</div>';
+        tlDiv.appendChild(nowLine);
+      }
+    });
+  }else{
+    var noBlocks=document.createElement('div');
+    noBlocks.style.cssText='text-align:center;padding:20px;color:var(--tx3);font-size:.84rem';
+    noBlocks.textContent='시간 배정된 블록 없음';
+    tlDiv.appendChild(noBlocks);
+  }
+
+  sec.appendChild(tlDiv);
+
+  // ── Unscheduled section ───────────────────────────────
+  if(unscheduled.length){
+    var uSec=document.createElement('div');
+    uSec.style.cssText='margin-top:16px;padding-top:14px;border-top:1px dashed var(--br)';
+    var uHdr=document.createElement('div');
+    uHdr.style.cssText='font-size:.74rem;font-weight:700;color:#e65100;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px';
+    uHdr.textContent='⚠️ 시간 미배정 할 일 · '+unscheduled.length+'개 — 일론 머스크: 시간 없는 일은 하지 않는 것과 같다';
+    uSec.appendChild(uHdr);
+    unscheduled.forEach(function(t){
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg2);border:1px solid var(--br);border-radius:8px;margin-bottom:5px;cursor:pointer';
+      row.innerHTML='<span style="font-size:.84rem;flex:1;color:var(--tx)">'+_esc(t.text||'')+'</span>'
+        +'<button type="button" style="font-size:.72rem;padding:3px 8px;background:var(--ac);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit" onclick="openModal(\''+t.id+'\')">시간 배정</button>';
+      uSec.appendChild(row);
+    });
+    sec.appendChild(uSec);
+  }
+
+  // ── Done section ──────────────────────────────────────
+  if(doneTodos.length){
+    var dSec=document.createElement('div');
+    dSec.style.cssText='margin-top:14px;padding-top:12px;border-top:1px solid var(--br);opacity:.55';
+    var dHdr=document.createElement('div');
+    dHdr.style.cssText='font-size:.74rem;font-weight:700;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px';
+    dHdr.textContent='✅ 완료 · '+doneTodos.length+'개';
+    dSec.appendChild(dHdr);
+    dSec.appendChild(mkList(doneTodos));
+    sec.appendChild(dSec);
+  }
+}
 
 
 function renderAll2(){var tasks=todos.filter(function(t){return!t.done&&t.type!=='recurring'});if(chipAF!=='all')tasks=tasks.filter(function(t){return t.priority===chipAF});if(priF)tasks=tasks.filter(function(t){return t.priority===priF});if(catF)tasks=tasks.filter(function(t){return t.category===catF});var grp={};tasks.forEach(function(t){var d=t.date||'날짜 없음';if(!grp[d])grp[d]=[];grp[d].push(t)});var sec=document.getElementById('allSec');sec.innerHTML='';var dates=Object.keys(grp).sort().reverse();var today=todayStr();if(!dates.length){sec.innerHTML=mkEmpty('📋','할 일이 없습니다','새로운 할 일을 추가해보세요');return}
