@@ -204,13 +204,13 @@ body.desk-mode #calSidePanel.open{transform:translateX(0)}
 
 .cspSectHd{font-size:11px;font-weight:800;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between}
 
-.cspItem{display:flex;align-items:flex-start;gap:13px;padding:11px 8px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .14s;margin:0 -8px}
+.cspItem{display:flex;align-items:flex-start;gap:13px;padding:11px 8px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .14s;margin:0 -8px;cursor:pointer}
 
 .cspItem:hover{background:var(--bg2)}
 
 .cspItem:active{background:var(--br)}
 
-.cspNChk{width:22px;height:22px;flex-shrink:0;border:2px solid var(--br);border-radius:5px;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .2s cubic-bezier(.4,0,.2,1);background:transparent;position:relative}
+.cspNChk{width:22px;height:22px;flex-shrink:0;border:2px solid var(--br);border-radius:5px;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .2s cubic-bezier(.4,0,.2,1);background:transparent;position:relative;cursor:pointer}
 
 .cspNChk.done{background:var(--ac);border-color:var(--ac);animation:cspPop .22s ease}
 
@@ -976,9 +976,7 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
 
       <button class="mTypeBtn on" data-type="todo" onclick="setMType('todo');_mClearCat()">☑️ 할 일</button>
 
-      <button class="mTypeBtn" data-type="workout" onclick="setMType('todo');setCat('workout')">💪 운동 할일</button>
-
-      <button class="mTypeBtn" data-type="meal" onclick="setMType('todo');setCat('meal')">🥗 식단 할일</button>
+      <button class="mTypeBtn" data-type="recurring" onclick="setMType('recurring')">🔁 반복</button>
 
     </div>
 
@@ -2317,8 +2315,6 @@ function addWorkoutEntry(){
 }
 
 function deleteWorkoutEx(docId,exIdx){
-
-  if(!confirm('삭제?'))return;
 
   var w=workouts.find(function(w){return w.id===docId;});if(!w)return;
 
@@ -4842,7 +4838,7 @@ function renderMbWeekBar(){var bar=document.getElementById('mbWeekBar');if(!bar)
 
 function renderMbDayDetail(ds){var container=document.getElementById('mobileAgenda');if(!container)return;if(!ds)ds=todayStr();var today=todayStr();var d=new Date(ds+'T00:00:00');var DAY=['일','월','화','수','목','금','토'];var dow=d.getDay();var html='<div style="padding:10px 12px 4px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;font-weight:800;color:var(--tx)">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DAY[dow]+')'+(ds===today?' <span style="font-size:11px;font-weight:600;background:var(--ac);color:#fff;padding:2px 7px;border-radius:10px;margin-left:6px">오늘</span>':'')+' </span><button type="button" onclick="document.body.classList.toggle(\'desk-mode\');renderAll()" style="font-size:11px;color:var(--tx3);border:none;background:none;cursor:pointer;padding:4px 6px">🖥 PC 보기</button></div>';var dayWrk=workouts.filter(function(w){return w.date===ds;});var dayMls=meals.filter(function(m){return m.date===ds;});var _rBD={};todos.forEach(function(t){if(t.type!=='recurring')return;(t.recurringDays||(t.recurring==='daily'?[0,1,2,3,4,5,6]:[])).forEach(function(dd){if(!_rBD[dd])_rBD[dd]=[];_rBD[dd].push(t);});});var _dtS=todos.filter(function(t){return t.date===ds;});var _dtR=(_rBD[dow]||[]).filter(function(r){return !_dtS.some(function(x){return x.text===r.text;});});var allT=_dtS.concat(_dtR);if(!dayWrk.length&&!dayMls.length&&!allT.length){container.innerHTML=html+'<div class="mbEmpty">📅 이 날 등록된 일정이 없습니다<br><span style="font-size:12px;color:var(--tx3)">+ 버튼으로 추가하세요</span></div>';return;}if(dayWrk.length){var allEx=[];dayWrk.forEach(function(w){(w.exercises||[]).forEach(function(ex,i){allEx.push({wid:w.id,exIdx:i,ex:ex,doneMask:w.doneExercises||{}});});});var doneEx=allEx.filter(function(x){return !!x.doneMask[x.exIdx];}).length;var totalEx=allEx.length;var pct=totalEx?Math.round(doneEx/totalEx*100):0;html+='<div class="mbDaySect"><div class="mbDaySectHd"><span class="mbDaySectTitle">💪 운동</span><span class="mbDaySectMeta">'+totalEx+'종목</span></div>';if(totalEx){html+='<div class="mbGaugeRow"><div class="mbGaugeBar"><div class="mbGaugeFill" style="width:'+pct+'%"></div></div><span class="mbGaugePct">'+pct+'%</span></div>';}allEx.forEach(function(x){var isDone=!!x.doneMask[x.exIdx];var sub='';if(x.ex.sets&&x.ex.reps)sub+=x.ex.sets+'x'+x.ex.reps;if(x.ex.weight)sub+=(sub?' · ':'')+x.ex.weight+'kg';html+='<div class="mbDayItem" onclick="toggleWorkoutExDone(\''+x.wid+'\','+x.exIdx+','+(isDone?'true':'false')+')" >'+'<div class="mbNChk'+(isDone?' done':'')+'"></div>'+'<div><div class="mbDayItemTxt'+(isDone?' done':'')+'">'+_esc(x.ex.name)+'</div>'+(sub?'<div class="mbDayItemSub">'+sub+'</div>':'')+' </div></div>';});html+='</div>';}if(dayMls.length){var doneMls=dayMls.filter(function(m){return !!m.done;}).length;var totalMls=dayMls.length;var pctM=totalMls?Math.round(doneMls/totalMls*100):0;var totalK=dayMls.reduce(function(s,m){return s+(m.kcal||0);},0);html+='<div class="mbDaySect"><div class="mbDaySectHd"><span class="mbDaySectTitle">🥗 식단</span><span class="mbDaySectMeta">'+(totalK?Math.round(totalK)+'kcal · ':'')+totalMls+'개</span></div>';if(totalMls){html+='<div class="mbGaugeRow"><div class="mbGaugeBar"><div class="mbGaugeFill" style="width:'+pctM+'%;background:#2e7d32"></div></div><span class="mbGaugePct" style="color:#2e7d32">'+pctM+'%</span></div>';}var ML={breakfast:'아침',lunch:'점심',dinner:'저녁',snack:'간식'};var mo={breakfast:1,lunch:2,dinner:3,snack:4};dayMls.slice().sort(function(a,b){return(mo[a.mealType]||9)-(mo[b.mealType]||9);}).forEach(function(m){var isDoneM=!!m.done;var sub=[];if(m.kcal)sub.push(Math.round(m.kcal)+'kcal');if(m.protein)sub.push('단백질 '+Math.round(m.protein)+'g');html+='<div class="mbDayItem" onclick="toggleMealDone(\''+m.id+'\','+(isDoneM?'true':'false')+')">'+'<div class="mbNChk'+(isDoneM?' done':'')+'"></div>'+'<div><div class="mbDayItemTxt'+(isDoneM?' done':'')+'"><span style="font-size:10px;font-weight:700;color:#2e7d32;margin-right:4px">'+(ML[m.mealType]||m.mealType)+'</span>'+_esc(m.name)+'<span style="color:#2e7d32;font-size:11px;font-weight:700;margin-left:5px">~$'+_mealPrice(m.name,m.kcal)+'</span></div>'+(sub.length?'<div class="mbDayItemSub">'+sub.join(' · ')+'</div>':'')+' </div></div>';});html+='</div>';}if(allT.length){html+='<div class="mbDaySect"><div class="mbDaySectHd"><span class="mbDaySectTitle">📋 할일</span><span class="mbDaySectMeta">'+allT.filter(function(t){return t.done;}).length+'/'+allT.length+'</span></div>';allT.forEach(function(t){html+='<div class="mbDayItem" onclick="toggleDone(\''+t.id+'\','+!!t.done+')">'+'<div class="mbNChk'+(t.done?' done':'')+'"></div>'+'<div class="mbDayItemTxt'+(t.done?' done':'')+'">'+_esc(t.text||'')+'</div></div>';});html+='</div>';}container.innerHTML=html;}
 
-function toggleMealDone(id,done){if(!db||!currentUser)return;db.collection('hb_meals').doc(id).update({done:!done});}
+/* toggleMealDone is defined below in v13 section */
 
 function toggleWorkoutExDone(wid,exIdx,done){if(!db||!curUser)return;var upd={};upd['doneExercises.'+exIdx]=!done;db.collection('hb_workouts').doc(wid).update(upd);}
 
@@ -5143,7 +5139,7 @@ _cspUndoTimer=setTimeout(function(){el.classList.remove('show');},3500);
 
 function toggleMealDone(id,done){
 
-if(!db||!currentUser)return;
+if(!db||!curUser)return;
 
 db.collection('hb_meals').doc(id).update({done:!done});
 
@@ -5153,7 +5149,7 @@ _cspToast(done?'식단 완료 취소됨':'🥗 식단 완료!',done?'':'toggleMe
 
 function toggleWorkoutExDone(wid,exIdx,done){
 
-if(!db||!currentUser)return;
+if(!db||!curUser)return;
 
 var upd={};upd['doneExercises.'+exIdx]=!done;
 
