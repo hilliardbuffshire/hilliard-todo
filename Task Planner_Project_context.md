@@ -1,5 +1,5 @@
 # HILLIARD BUFFSHIRE — Task Planner · Project Context
-> 마지막 업데이트: 2026-05-24 | Commit: `24ed27ead4a5` | (patch_v17_refactor)
+> 마지막 업데이트: 2026-05-24 | Commit: `4d9de1223feb` | (patch_v18_cleanup)
 
 ---
 
@@ -364,21 +364,27 @@ D:연어 150g
 - `.calCellWrk`: `border-left:4px solid #1565c0` 파란 카드
 - `.calCellMeal`: `border-left:4px solid #2e7d32` 녹색 카드
 
-### 사이드바 (patch_v17_refactor — 2탭 구조)
-표시되는 탭 **2개만**:
-| ID | 레이블 | setView |
-|----|--------|---------|
-| `nv-calendar` | 📅 대시보드 | `calendar` |
-| `nv-settings` | ⚙️ 설정 | `settings` |
+### 레이아웃 (patch_v18_cleanup — 풀스크린 캘린더)
+**사이드바/하단 nav/pH 헤더 완전 제거** — 캘린더가 화면 전체를 채움.
 
-모바일 하단 nav도 **2개만**: `mbn-cal`, `mbn-settings`
+| 제거 항목 | 이전 | 현재 |
+|---------|------|------|
+| `<aside id="sidebar">` | 존재 | HTML에서 완전 삭제 |
+| `#mobileBottomNav` | 5탭 하단 nav | HTML에서 완전 삭제 |
+| `.pH` motivBar 헤더 | 로그인 정보 표시 | hidden compat refs로 교체 (id 유지, display:none) |
+| `#main` 마진 | `margin-left:var(--sw)` | `margin-left:0` |
 
-숨김 처리된 뷰: `vToday`, `vAll`, `vDone`, `vRecurring`, `vGoals`, `vIdeas` — `display:none!important`
+레이아웃 구조:
+```
+body
+└── #main (margin-left:0, height:100dvh)
+    └── #vCalendar.vPg.va
+        ├── #aiPromptBar  ← 최상단 AI 입력창
+        └── 캘린더 그리드 (풀스크린)
+```
 
 레거시 함수 스텁 (빈 함수, ReferenceError 방지):
-`renderToday`, `renderAll2`, `renderDone`, `renderRecurring`, `renderGoals`, `renderIdeas`, `renderWeek`, `toggleNavGrp`, `filterP`, `filterCat`, `chipT`, `chipA`
-
-사이드바 너비: `--sw:300px`
+`renderToday`, `renderAll2`, `renderDone`, `renderRecurring`, `renderGoals`, `renderIdeas`, `renderWeek`, `toggleNavGrp`, `filterP`, `filterCat`, `chipT`, `chipA`, `_syncMobileNav`
 
 ### 핵심 함수
 | 함수 | 역할 |
@@ -451,6 +457,17 @@ todos.filter(function(t){ return t.type === 'recurring'; })
 - 모델: `localStorage('hb-gem-model')` — 기본값 `gemini-2.5-flash-lite`
 - 지원 모델: `gemini-2.5-flash-lite` / `gemini-2.0-flash` / `gemini-1.5-pro`
 - 무료 키 발급: https://aistudio.google.com/app/apikey
+
+### AI 시스템 프롬프트 (patch_v18_cleanup — 밀프렙 벌크업)
+```
+너는 Dallas, TX에 거주하는 직장인을 위한 전속 헬스/생산성 코치야.
+[절대 지켜야 할 식단 규칙]: 비용을 극단적으로 절감하기 위해
+매일 탄수화물/단백질 소스를 바꾸지 마.
+일주일 내내 같은 대용량 식재료(예: 흰쌀밥, 닭가슴살, 계란, 냉동 브로콜리)를
+반복 활용하는 '밀프렙(Meal Prep)' 방식의 벌크업 식단만 제안해.
+Dallas Walmart 물가 기준으로 주당 $40~$50 이내로 맞춰.
+[운동 규칙]: 퇴근 후 현실적으로 실행 가능한 부위별 루틴을 짜줘.
+```
 
 ### ✨ AI 자연어 프롬프트 바 (patch_v17~v18)
 - 위치: `#vCalendar` 상단 (calGoalBanner 바로 아래)
@@ -655,6 +672,7 @@ GitHub Actions 완료 (~1분) 후 → https://hilliardbuffshire.github.io/hillia
 | 2026-05-23 | — | **🔥 Firestore Rules 수정 (근본 원인 해결)**: `daily-task-planner-9187f` 프로젝트 Firestore 보안 규칙에 `hb_meals`·`hb_workouts` match 블록 누락 → Firebase 기본 deny 적용됨. Firebase 콘솔에서 두 컬렉션에 uid 기반 read/create/update/delete 규칙 추가 후 Publish. 검증: JS 콘솔 테스트 write `{"hb_meals":"OK:76RNr52VhyKA5NRqKgMh","hb_workouts":"OK:Skc51npXpsnIIVAfOb8w"}` 확인. 캘린더 May 23 셀 🐂2개/🥗1개 표시 최종 확인. |
 | 2026-05-23 | `6fc29e17bf40` | **patch_v28 할일삭제+폰트확대+Dallas가격+권한수정**: ①캘린더 할일 섹션(tDiv) — 커스텀 _tl 요소 → _mkItem 으로 교체, hover ✕ 삭제버튼 추가. ②_mkItem font-size 10px→14px, 섹션헤더 12px, calCell min-height 130px. ③ 함수 추가 — 30종 재료 Dallas TX 75229 기준 단가 lookup, 캘린더 셀·사이드 패널 식단 옆에  자동 표시. ④ curUser 가드 추가 + goal/idea 타입 지원. ⑤ 에러 핸들러 추가(기존 무음실패 → toast 표시). Firestore 규칙 확인: todos/goals/ideas/hb_meals/hb_workouts 모두 올바른 read/update/delete 규칙 적용 확인 |
 | 2026-05-24 | `d02e9d173926` | **patch_v15-ux (설정·사이드패널·사이드바 UX 개선)**: ①설정 탭 즉시 사라짐 수정 — `setView`에서 settings 뷰는 `toggleSb(false)` 제외 (모바일에서 사이드바 닫아도 설정 유지). ②`renderSettings()` 테마 이름 수정 — `['light','dark','forest','ocean','rose']` → 실제 CSS 테마명 `['signiel','obsidian','blanc','jade','sapphire']` (시그니엘/옵시디언/블랑/제이드/사파이어). ③모바일 하단 내비 📋 루틴 탭 → ⚙️ 설정 탭으로 교체 (`mbn-tmpl` → `mbn-settings`). ④왼쪽 사이드바 구조 재편 — **[핵심]** 대시보드·오늘할일·주간보기 / **[건강]** 식단관리·운동루틴·주간루틴세팅 / **[▸ 더 보기]** 목표관리·아이디어노트·전체할일·완료항목·반복일정 / **[하단 고정]** ⚙️ 설정 (`margin-top:auto`). ⑤사이드 패널 각 섹션 헤더에 `+ 추가` 퀵-애드 버튼 인라인 폼 — 운동(`_cspSaveWrk`)/식단(`_cspSaveMeal`)/할일(`_cspSaveTodoQ`) Enter 키 저장 지원. 패널이 닫히지 않고 항목 추가 가능. ⑥식단 항목 서브정보 단순화 — kcal만 표시 (단백질·탄수·지방 제거). ⑦사이드 패널 푸터 → "+ 할일 추가" 단일 버튼 (🥗 식단·💪 운동 탐색 버튼 제거, 섹션별 인라인 추가로 대체). |
+| 2026-05-24 | `4d9de1223feb` | **patch_v18_cleanup (UI 극단적 단순화 + 밀프렙 AI + 삭제/인라인편집 버그 수정)**: ①사이드바(`<aside id="sidebar">`) HTML 완전 제거. 모바일 하단 nav(`#mobileBottomNav`) 완전 제거. `.pH` motivBar 헤더 제거 — ID 유지용 hidden compat refs(display:none) 교체. `#main { margin-left:0 }` (dead space 제거). ②AI 시스템 프롬프트 전면 교체 — 밀프렙 벌크업 중심: "흰쌀밥·닭가슴살·계란·냉동 브로콜리 반복, Dallas Walmart 주당 $40~$50, 퇴근 후 부위별 루틴". ③`_delItem` — `confirm()` 다이얼로그 제거(즉시 삭제). `deleteMealEntry`: `curUser` 가드 + `.then(renderAll + _buildSidePanelContent)`. `deleteWorkoutEx`: `curUser` 가드 + `.then(renderAll + _buildSidePanelContent)`. ④인라인 편집 — Todo: `data-tid` 속성 + `_cspEditTodo(el)` (dataset.tid 읽기, textContent → input 전환, Enter/blur 저장). Meal: `data-mid` + `data-mname` 속성 + `_cspEditMeal(el)` (tag span 보존, dataset 읽기). `.cspItemName { cursor:pointer }`. `_syncMobileNav` 안전 스텁 추가. 브라우저 14개 항목 검증 ALL GREEN. Node.js 구문 검사 PASS. |
 | 2026-05-24 | `24ed27ead4a5` | **patch_v17_refactor (전면 미니멀 리팩토링)**: Step1 — 레거시 기능 제거: 사이드바 12개 버튼 → 📅 대시보드 + ⚙️ 설정 2개만. 모바일 하단 nav 5개 → 2개. vToday/vAll/vDone/vRecurring/vGoals/vIdeas 뷰 `display:none!important`. weeklyTmplModal `display:none!important`. renderToday/renderAll2/renderDone/renderRecurring/renderGoals/renderIdeas/renderWeek 등 레거시 함수 빈 스텁으로 교체(ReferenceError 방지). Step2 — setView() 완전 재작성: `calendar`/`settings` 두 뷰만 처리. `.vPg.va` + `.navItem.on` + `.mbNavBtn.on` 정확히 동기화. 설정탭 깜빡임 버그 근본 수정 — renderAll()에서 settings 뷰 재렌더 호출 제거(데이터 갱신 시 settings 뷰 상태 유지). renderAll() 간소화 — calendar 뷰만 renderCal(). Step3 — AI 시스템 컨텍스트 교체: "너는 내 전속 헬스/생산성 코치야. 목표: 경제적으로 가장 저렴하게 세팅한 벌크업 식단과 운동 프로그램." 벌크업·저예산($40-50/주) 중심. Step4 — 사이드 패널 푸터 인라인 Task 추가 폼: `#cspTaskInp` 입력창 + Enter/+ 추가 버튼. `_cspAddTask()` 함수 신규 추가. Node.js 구문 검사 통과. 브라우저 10개 항목 검증 완료. |
 | 2026-05-24 | `d784cac20c3f` | **patch_v16-fix (체크박스 버그 수정 + 모달 간소화)**: ①**CRITICAL BUG FIX**: `toggleMealDone`(×2) + `toggleWorkoutExDone`(×1) 에서 `if(!db\|\|!currentUser)return;` → `if(!db\|\|!curUser)return;` — `currentUser`는 undefined이므로 체크박스가 항상 조기 반환됨. Firestore write 테스트(`meal_done_after_toggle: true`) 확인. ②`deleteWorkoutEx` — 삭제 확인 다이얼로그(`confirm('삭제?')`) 제거 → 즉시 삭제. ③모달 타입 버튼 간소화 — 기존 `[☑️ 할 일 \| 💪 운동 할일 \| 🥗 식단 할일]` → `[☑️ 할 일 \| 🔁 반복]` (운동/식단 할일 버튼은 todo에 카테고리 태그만 달 뿐 실제 Firestore 레코드를 생성하지 않아 사용자 혼동 유발 — 제거). ④중복 `toggleMealDone` 함수(구버전 최소 버전 ~line 4845) → 주석으로 교체. ⑤`.cspNChk`, `.cspItem` CSS에 `cursor:pointer` 추가. 36개 핵심 함수 전수 확인 완료. |
 | 2026-05-24 | `d5ef00076c70` | **patch_v14-final (사이드패널 UX 전체 수정)**: ①`.mOv` modal overlay z-index 500→700 (사이드 패널 z-index 600보다 위 — "+" 버튼 눌렀을 때 그레이 화면 막힘 해결). ②사이드 패널 항목별 hover 삭제 버튼 — 운동(`deleteWorkoutEx`)/식단(`deleteMealEntry`)/할일(`deleteTodo`) 각각 🗑 버튼 추가 `.cspDelBtn` (opacity:0→1 on hover, mobile .55 상시). ③삭제 confirm 대화상자 제거 (`deleteMealEntry`/`deleteTodo` — 즉시 삭제). ④사이드 패널 푸터 3-button — 기존 "+ 할일 추가" 단일 버튼 → 할일 추가 + 🥗 식단 + 💪 운동 3개 버튼 (패널 닫고 해당 뷰 이동). ⑤모달 타입 버튼 개편 — 🔁 반복·📝 메모 → 💪 운동 할일·🥗 식단 할일 (setCat 연동, _mClearCat 헬퍼 추가). ⑥식단 정렬 버그 수정 — `mo={breakfast:0,...}` → `{breakfast:1,...}` (falsy 0 → 9 오정렬 해결, 아침→점심→저녁→간식 순). ⑦카테고리 row `.mAdvRow` → `.mCatRow` (항상 표시). ⑧setCat 함수 mTypeBtn 동기화 추가. ⑨JS syntax OK, hilliard-todo 배포 완료. |
