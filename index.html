@@ -202,7 +202,7 @@ body.desk-mode #calSidePanel.open{transform:translateX(0)}
 
 .cspSect{padding:16px 24px 4px}
 
-.cspSectHd{font-size:11px;font-weight:800;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--br)}
+.cspSectHd{font-size:11px;font-weight:800;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between}
 
 .cspItem{display:flex;align-items:flex-start;gap:13px;padding:11px 8px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .14s;margin:0 -8px}
 
@@ -247,6 +247,14 @@ body.desk-mode #calSidePanel.open{transform:translateX(0)}
 .cspFootSec{flex:1;padding:12px 0;background:transparent;color:var(--tx2);border:1.5px solid var(--br);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .17s}
 .cspFootSec:hover{border-color:var(--ac);color:var(--ac)}
 .cspFoot{gap:8px}
+.cspQAdd{font-size:12px;font-weight:700;padding:3px 10px;border:1.5px solid var(--ac-br);border-radius:20px;background:var(--ac-bg);color:var(--ac);cursor:pointer;font-family:inherit;transition:all .15s;flex-shrink:0;line-height:1}
+.cspQAdd:hover{background:var(--ac);color:#fff}
+.cspInlineAdd{display:none;padding:8px 10px;margin:0 0 8px;background:var(--bg2);border:1.5px dashed var(--br2);border-radius:10px;gap:6px;align-items:center}
+.cspInlineAdd.on{display:flex}
+.cspInlineInput{flex:1;min-width:0;padding:6px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--card);color:var(--tx);font-size:14px;font-family:inherit;outline:none}
+.cspInlineInput:focus{border-color:var(--ac)}
+.cspInlineSel{padding:6px 8px;border:1.5px solid var(--br);border-radius:8px;background:var(--card);color:var(--tx);font-size:13px;font-family:inherit;outline:none;flex-shrink:0;max-width:72px}
+.cspInlineSave{padding:6px 14px;background:var(--ac);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -506,33 +514,35 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
 
     <div class="sbNav">
 
+      <div class="navSect">핵심</div>
+
       <button type="button" class="navItem on" id="nv-calendar" onclick="setView('calendar')"><span class="navIco">📅</span>대시보드</button>
 
       <button type="button" class="navItem" id="nv-today" onclick="setView('today')"><span class="navIco">☀️</span>오늘의 할 일<span class="navBadge" id="b-today">0</span></button>
 
       <button type="button" class="navItem" id="nv-week" onclick="setView('week')"><span class="navIco">📆</span>주간 보기</button>
 
-      <button type="button" class="navItem" id="nv-goals" onclick="setView('goals')"><span class="navIco">🎯</span>목표 관리</button>
+      <div class="navSect">건강</div>
 
-      <button type="button" class="navItem" id="nv-settings" onclick="setView('settings')"><span class="navIco">⚙️</span>설정</button>
+      <button type="button" class="navItem" id="nv-meal" onclick="setView('meal')"><span class="navIco">🥗</span>식단 관리</button>
+
+      <button type="button" class="navItem" id="nv-workout" onclick="setView('workout')"><span class="navIco">💪</span>운동 루틴</button>
+
+      <button type="button" class="navItem" id="nv-wtmpl" onclick="openWeeklyTemplate()"><span class="navIco">📋</span>주간 루틴 세팅</button>
 
       <button type="button" class="navMoreBtn" id="navMoreBtn" onclick="toggleNavMore()" style="width:100%;text-align:left;padding:8px 16px;border:none;background:none;color:var(--tx3);font-size:12px;cursor:pointer;font-family:inherit;border-top:1px solid var(--br);margin-top:4px">▸ 더 보기</button>
 
       <div id="navMorePanel" style="display:none">
+
+        <button type="button" class="navItem" id="nv-goals" onclick="setView('goals')"><span class="navIco">🎯</span>목표 관리</button>
+
+        <button type="button" class="navItem" id="nv-ideas" onclick="setView('ideas')"><span class="navIco">💡</span>아이디어 노트</button>
 
         <button type="button" class="navItem" id="nv-all" onclick="setView('all')"><span class="navIco">📋</span>전체 할 일<span class="navBadge" id="b-all">0</span></button>
 
         <button type="button" class="navItem" id="nv-done" onclick="setView('done')"><span class="navIco">✅</span>완료된 항목<span class="navBadge" id="b-done">0</span></button>
 
         <button type="button" class="navItem" id="nv-recurring" onclick="setView('recurring')"><span class="navIco">🔁</span>반복 일정<span class="navBadge" id="b-rec">0</span></button>
-
-        <button type="button" class="navItem" id="nv-ideas" onclick="setView('ideas')"><span class="navIco">💡</span>아이디어 노트</button>
-
-        <button type="button" class="navItem" id="nv-workout" onclick="setView('workout')"><span class="navIco">💪</span>운동 루틴</button>
-
-        <button type="button" class="navItem" id="nv-wtmpl" onclick="openWeeklyTemplate()"><span class="navIco">📋</span>주간 루틴 세팅</button>
-
-        <button type="button" class="navItem" id="nv-meal" onclick="setView('meal')"><span class="navIco">🍽️</span>루틴 설정</button>
 
       </div>
 
@@ -549,6 +559,8 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
       <button type="button" id="nv-health" onclick="filterCat('health')" style="display:none"></button>
 
       <button type="button" id="nv-personal" onclick="filterCat('personal')" style="display:none"></button>
+
+      <button type="button" class="navItem" id="nv-settings" onclick="setView('settings')" style="margin-top:auto"><span class="navIco">⚙️</span>설정</button>
 
     </div>
 
@@ -1876,7 +1888,7 @@ function setView(v){curView=v;priF=null;catF=null;document.querySelectorAll('.vP
 
 if(document.getElementById('nv-'+v))document.getElementById('nv-'+v).classList.add('on');var titles={today:'오늘의 할 일',all:'전체 할 일 목록',calendar:'📅 대시보드',done:'완료된 항목',recurring:'반복 일정',goals:'🎯 목표 관리',ideas:'💡 아이디어 노트',week:'주간 보기',settings:'⚙️ 설정',meal:'🔁 루틴 설정'};document.getElementById('pTitle').textContent=titles[v]||v;if(v==='calendar'){renderCal();}if(v==='settings'){renderSettings();}
 
-else if(v==='goals')renderGoals();else if(v==='ideas')renderIdeas();else if(v==='today')renderToday();else if(v==='all')renderAll2();else if(v==='done')renderDone();else if(v==='recurring')renderRecurring();else if(v==='week'){if(!wkStart)wkStart=_getWeekStart(new Date());renderWeek();}if(window.innerWidth<=780)toggleSb(false);}
+else if(v==='goals')renderGoals();else if(v==='ideas')renderIdeas();else if(v==='today')renderToday();else if(v==='all')renderAll2();else if(v==='done')renderDone();else if(v==='recurring')renderRecurring();else if(v==='week'){if(!wkStart)wkStart=_getWeekStart(new Date());renderWeek();}if(window.innerWidth<=780&&v!=='settings')toggleSb(false);}
 
 function filterP(p){priF=p;catF=null;curView='all';document.querySelectorAll('.vPg').forEach(function(el){el.classList.remove('va')});document.querySelectorAll('.navItem').forEach(function(el){el.classList.remove('on')});document.getElementById('vAll').classList.add('va');if(document.getElementById('nv-'+p))document.getElementById('nv-'+p).classList.add('on');var lbl={high:'높음 우선순위',medium:'보통 우선순위',low:'낮음 우선순위'};document.getElementById('pTitle').textContent=lbl[p];renderAll2();if(window.innerWidth<=780)toggleSb(false);}
 
@@ -3550,11 +3562,11 @@ function renderSettings(){
 
   if(tb){
 
-    var themes=[['light','☀️ 라이트'],['dark','🌙 다크'],['obsidian','⬛ 옵시디언'],['forest','🌿 포레스트'],['ocean','🌊 오션'],['rose','🌸 로즈']];
+    var themes=[['signiel','☀️ 시그니엘'],['obsidian','⬛ 옵시디언'],['blanc','◻️ 블랑'],['jade','🌿 제이드'],['sapphire','💎 사파이어']];
 
     tb.innerHTML='';
 
-    var cur=document.documentElement.getAttribute('data-theme')||'light';
+    var cur=document.documentElement.getAttribute('data-theme')||'signiel';
 
     themes.forEach(function(th){
 
@@ -4958,7 +4970,11 @@ var bh='';
 
 if(allEx.length){
 
-  bh+='<div class="cspSect"><div class="cspSectHd">💪 운동 루틴</div>';
+  bh+='<div class="cspSect"><div class="cspSectHd">💪 운동<button class="cspQAdd" onclick="event.stopPropagation();_cspToggleAdd(\'cspWrkAdd_'+ds+'\')" >+ 추가</button></div>'
+    +'<div class="cspInlineAdd" id="cspWrkAdd_'+ds+'">'
+    +'<input class="cspInlineInput" id="cspWrkNm_'+ds+'" placeholder="운동명..." onkeydown="if(event.key===\'Enter\')_cspSaveWrk(\''+ds+'\')" >'
+    +'<button class="cspInlineSave" onclick="_cspSaveWrk(\''+ds+'\')" >저장</button>'
+    +'</div>';
 
   allEx.forEach(function(x){
 
@@ -5011,9 +5027,12 @@ if(dayMls.length){
   var tc=dayMls.reduce(function(s,m){return s+(m.carbs||0);},0);
 
   bh+='<div class="cspSect"><div class="cspSectHd">🥗 식단'
-
-    +(tk?'<span style="font-size:10px;font-weight:500;color:var(--tx3);margin-left:6px">총 '+Math.round(tk)+'kcal'+(tp?' · 단백질 '+Math.round(tp)+'g':'')+'</span>':'')
-
+    +(tk?'<span style="font-size:10px;font-weight:500;color:var(--tx3);margin-left:4px">'+Math.round(tk)+'kcal</span>':'')
+    +'<button class="cspQAdd" onclick="event.stopPropagation();_cspToggleAdd(\'cspMlAdd_'+ds+'\')" >+ 추가</button></div>'
+    +'<div class="cspInlineAdd" id="cspMlAdd_'+ds+'">'
+    +'<input class="cspInlineInput" id="cspMlNm_'+ds+'" placeholder="음식명..." onkeydown="if(event.key===\'Enter\')_cspSaveMeal(\''+ds+'\')" >'
+    +'<select class="cspInlineSel" id="cspMlType_'+ds+'"><option value="breakfast">아침</option><option value="lunch" selected>점심</option><option value="dinner">저녁</option><option value="snack">간식</option></select>'
+    +'<button class="cspInlineSave" onclick="_cspSaveMeal(\''+ds+'\')" >저장</button>'
     +'</div>';
 
   dayMls.slice().sort(function(a,b){return(mo[a.mealType]||9)-(mo[b.mealType]||9);}).forEach(function(m){
@@ -5025,12 +5044,6 @@ if(dayMls.length){
     var sub=[];
 
     if(m.kcal)sub.push(Math.round(m.kcal)+'kcal');
-
-    if(m.protein)sub.push('단백질 '+Math.round(m.protein)+'g');
-
-    if(m.carbs)sub.push('탄수 '+Math.round(m.carbs)+'g');
-
-    if(m.fat)sub.push('지방 '+Math.round(m.fat)+'g');
 
     _hbRecipes[m.id]=m; var hasRec=!!(m.recipe&&m.recipe.steps&&m.recipe.steps.length);
 
@@ -5062,7 +5075,11 @@ if(dayMls.length){
 
 if(allT.length){
 
-  bh+='<div class="cspSect"><div class="cspSectHd">📋 할 일</div>';
+  bh+='<div class="cspSect"><div class="cspSectHd">📋 할 일<button class="cspQAdd" onclick="event.stopPropagation();_cspToggleAdd(\'cspTdAdd_'+ds+'\')" >+ 추가</button></div>'
+    +'<div class="cspInlineAdd" id="cspTdAdd_'+ds+'">'
+    +'<input class="cspInlineInput" id="cspTdNm_'+ds+'" placeholder="할 일 내용..." onkeydown="if(event.key===\'Enter\')_cspSaveTodoQ(\''+ds+'\')" >'
+    +'<button class="cspInlineSave" onclick="_cspSaveTodoQ(\''+ds+'\')" >저장</button>'
+    +'</div>';
 
   allT.forEach(function(t){
 
@@ -5097,6 +5114,14 @@ if(allT.length){
 body.innerHTML=bh;
 
 }
+
+function _cspToggleAdd(id){var el=document.getElementById(id);if(el)el.classList.toggle('on');}
+
+function _cspSaveMeal(ds){if(!curUser)return;var nm=(document.getElementById('cspMlNm_'+ds)||{}).value;if(!nm||!nm.trim())return;nm=nm.trim();var mt=(document.getElementById('cspMlType_'+ds)||{}).value||'lunch';db.collection('hb_meals').add({uid:curUser.uid,date:ds,mealType:mt,name:nm,kcal:0,protein:0,carbs:0,fat:0,done:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){var el=document.getElementById('cspMlNm_'+ds);if(el)el.value='';_cspToast('🥗 '+nm+' 저장됨',null);});}
+
+function _cspSaveWrk(ds){if(!curUser)return;var nm=(document.getElementById('cspWrkNm_'+ds)||{}).value;if(!nm||!nm.trim())return;nm=nm.trim();db.collection('hb_workouts').add({uid:curUser.uid,date:ds,exercises:[{name:nm,sets:3,reps:10,weight:0,category:'strength'}],doneExercises:{},createdAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){var el=document.getElementById('cspWrkNm_'+ds);if(el)el.value='';_cspToast('💪 '+nm+' 저장됨',null);});}
+
+function _cspSaveTodoQ(ds){if(!curUser)return;var nm=(document.getElementById('cspTdNm_'+ds)||{}).value;if(!nm||!nm.trim())return;nm=nm.trim();db.collection('todos').add({uid:curUser.uid,text:nm,date:ds,done:false,priority:'medium',type:'todo',createdAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){var el=document.getElementById('cspTdNm_'+ds);if(el)el.value='';_cspToast('✅ '+nm+' 저장됨',null);});}
 
 /* ── v13: Toast / Undo ── */
 
@@ -5268,10 +5293,6 @@ window.addEventListener('resize',_onResize,{passive:true});
 
     <button type="button" class="cspAddBtn" onclick="selDate=_cspDs;closeSidePanel();setTimeout(openModalForDate,80)">+ 할일 추가</button>
 
-    <button type="button" class="cspFootSec" onclick="selDate=_cspDs;closeSidePanel();setView('meal')">🥗 식단</button>
-
-    <button type="button" class="cspFootSec" onclick="selDate=_cspDs;closeSidePanel();setView('workout')">💪 운동</button>
-
   </div>
 
 </div>
@@ -5290,7 +5311,7 @@ window.addEventListener('resize',_onResize,{passive:true});
 
   <button type="button" class="mbNavBtn" id="mbn-workout" onclick="setView('workout');_syncMobileNav('workout')"><span class="mbIco">💪</span><span class="mbLbl">운동</span></button>
 
-  <button type="button" class="mbNavBtn" id="mbn-tmpl" onclick="openWeeklyTemplate();_syncMobileNav('tmpl')"><span class="mbIco">📋</span><span class="mbLbl">루틴</span></button>
+  <button type="button" class="mbNavBtn" id="mbn-settings" onclick="setView('settings');_syncMobileNav('settings')"><span class="mbIco">⚙️</span><span class="mbLbl">설정</span></button>
 
 </nav>
 
