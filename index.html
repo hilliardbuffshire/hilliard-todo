@@ -514,51 +514,16 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
 
     <div class="sbNav">
 
-      <div class="navSect">핵심</div>
-
       <button type="button" class="navItem on" id="nv-calendar" onclick="setView('calendar')"><span class="navIco">📅</span>대시보드</button>
 
-      <button type="button" class="navItem" id="nv-today" onclick="setView('today')"><span class="navIco">☀️</span>오늘의 할 일<span class="navBadge" id="b-today">0</span></button>
-
-      <button type="button" class="navItem" id="nv-week" onclick="setView('week')"><span class="navIco">📆</span>주간 보기</button>
-
-      <div class="navSect">건강</div>
-
-      <button type="button" class="navItem" id="nv-meal" onclick="setView('meal')"><span class="navIco">🥗</span>식단 관리</button>
-
-      <button type="button" class="navItem" id="nv-workout" onclick="setView('workout')"><span class="navIco">💪</span>운동 루틴</button>
-
-      <button type="button" class="navItem" id="nv-wtmpl" onclick="openWeeklyTemplate()"><span class="navIco">📋</span>주간 루틴 세팅</button>
-
-      <button type="button" class="navMoreBtn" id="navMoreBtn" onclick="toggleNavMore()" style="width:100%;text-align:left;padding:8px 16px;border:none;background:none;color:var(--tx3);font-size:12px;cursor:pointer;font-family:inherit;border-top:1px solid var(--br);margin-top:4px">▸ 더 보기</button>
-
-      <div id="navMorePanel" style="display:none">
-
-        <button type="button" class="navItem" id="nv-goals" onclick="setView('goals')"><span class="navIco">🎯</span>목표 관리</button>
-
-        <button type="button" class="navItem" id="nv-ideas" onclick="setView('ideas')"><span class="navIco">💡</span>아이디어 노트</button>
-
-        <button type="button" class="navItem" id="nv-all" onclick="setView('all')"><span class="navIco">📋</span>전체 할 일<span class="navBadge" id="b-all">0</span></button>
-
-        <button type="button" class="navItem" id="nv-done" onclick="setView('done')"><span class="navIco">✅</span>완료된 항목<span class="navBadge" id="b-done">0</span></button>
-
-        <button type="button" class="navItem" id="nv-recurring" onclick="setView('recurring')"><span class="navIco">🔁</span>반복 일정<span class="navBadge" id="b-rec">0</span></button>
-
-      </div>
-
-      <button type="button" id="nv-high" onclick="filterP('high')" style="display:none"><span class="navBadge" id="b-hi">0</span></button>
-
-      <button type="button" id="nv-medium" onclick="filterP('medium')" style="display:none"><span class="navBadge" id="b-me">0</span></button>
-
-      <button type="button" id="nv-low" onclick="filterP('low')" style="display:none"><span class="navBadge" id="b-lo">0</span></button>
-
-      <button type="button" id="nv-work" onclick="filterCat('work')" style="display:none"></button>
-
-      <button type="button" id="nv-study" onclick="filterCat('study')" style="display:none"></button>
-
-      <button type="button" id="nv-health" onclick="filterCat('health')" style="display:none"></button>
-
-      <button type="button" id="nv-personal" onclick="filterCat('personal')" style="display:none"></button>
+      <!-- hidden badge refs for legacy JS compat -->
+      <span id="b-today" style="display:none">0</span>
+      <span id="b-all" style="display:none">0</span>
+      <span id="b-done" style="display:none">0</span>
+      <span id="b-rec" style="display:none">0</span>
+      <span id="b-hi" style="display:none">0</span>
+      <span id="b-me" style="display:none">0</span>
+      <span id="b-lo" style="display:none">0</span>
 
       <button type="button" class="navItem" id="nv-settings" onclick="setView('settings')" style="margin-top:auto"><span class="navIco">⚙️</span>설정</button>
 
@@ -672,7 +637,7 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
 
       <!-- TODAY -->
 
-      <div class="vPg" id="vToday">
+      <div class="vPg" id="vToday" style="display:none!important">
 
         <div class="chipRow" id="crToday">
 
@@ -694,7 +659,7 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
 
       <!-- ALL -->
 
-      <div class="vPg" id="vAll">
+      <div class="vPg" id="vAll" style="display:none!important">
 
         <div class="chipRow" id="crAll">
 
@@ -850,15 +815,15 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
 
       <!-- DONE -->
 
-      <div class="vPg" id="vDone"><div id="doneSec"></div></div>
+      <div class="vPg" id="vDone" style="display:none!important"><div id="doneSec"></div></div>
 
       <!-- RECURRING -->
 
-      <div class="vPg" id="vRecurring"><div id="recurringSec"></div></div>
+      <div class="vPg" id="vRecurring" style="display:none!important"><div id="recurringSec"></div></div>
 
       <!-- ── GOALS VIEW ── -->
 
-      <div class="vPg" id="vGoals">
+      <div class="vPg" id="vGoals" style="display:none!important">
 
         <div class="goalTabs">
 
@@ -882,7 +847,7 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
 
       <!-- ── IDEAS / IDEA BANK VIEW ── -->
 
-      <div class="vPg" id="vIdeas" style="padding:0">
+      <div class="vPg" id="vIdeas" style="display:none!important;padding:0">
 
         <div class="ibToolbar">
 
@@ -1350,7 +1315,42 @@ if(t.type==='recurring')c.rec++;}
 
 return c;}
 
-function renderAll(){var c=computeCounts();document.getElementById('b-today').textContent=c.tPend;document.getElementById('b-all').textContent=c.all;document.getElementById('b-done').textContent=c.done;document.getElementById('b-rec').textContent=c.rec;document.getElementById('b-hi').textContent=c.hi;document.getElementById('b-me').textContent=c.me;document.getElementById('b-lo').textContent=c.lo;document.getElementById('sTotal').textContent=todos.length;document.getElementById('sDone').textContent=c.done;document.getElementById('sPend').textContent=c.pend;document.getElementById('sHigh').textContent=c.hiPend;var todayAll=c.tPend+c.tDone;var pct=todayAll>0?Math.round(c.tDone/todayAll*100):0;document.getElementById('progPct').textContent=pct+'%';document.getElementById('progCircle').style.strokeDashoffset=113.1-(pct/100)*113.1;if(curView==='today')renderToday();else if(curView==='all')renderAll2();else if(curView==='done')renderDone();else if(curView==='recurring')renderRecurring();else if(curView==='calendar'){renderCal();renderKcalStatus();}else if(curView==='meal')renderMeal();else if(curView==='workout')renderWorkout();renderMiniCal();if(typeof updateMotivBar==='function')updateMotivBar();var _agEl=document.getElementById('mobileAgenda');if(_agEl&&_agEl.offsetParent!==null)renderAgenda();var _cspEl=document.getElementById('calSidePanel');if(_cspEl&&_cspEl.classList.contains('open')&&_cspDs)_buildSidePanelContent(_cspDs);}
+// ── Stub functions (views removed in v17 refactor) ──
+function renderToday(){}
+function renderAll2(){}
+function renderDone(){}
+function renderRecurring(){}
+function renderGoals(){}
+function renderIdeas(){}
+function renderWeek(){}
+function toggleNavGrp(){}
+function toggleNavMore(){var p=document.getElementById('navMorePanel');if(p)p.style.display=p.style.display==='none'?'block':'none';}
+function filterP(){}
+function filterCat(){}
+function chipT(){}
+function chipA(){}
+
+function renderAll(){
+  var c=computeCounts();
+  // Update hidden compat refs
+  var _sf=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
+  _sf('b-today',c.tPend);_sf('b-all',c.all);_sf('b-done',c.done);_sf('b-rec',c.rec);
+  _sf('b-hi',c.hi);_sf('b-me',c.me);_sf('b-lo',c.lo);
+  _sf('sTotal',todos.length);_sf('sDone',c.done);_sf('sPend',c.pend);_sf('sHigh',c.hiPend);
+  var todayAll=c.tPend+c.tDone;
+  var pct=todayAll>0?Math.round(c.tDone/todayAll*100):0;
+  _sf('progPct',pct+'%');
+  var pc=document.getElementById('progCircle');if(pc)pc.style.strokeDashoffset=113.1-(pct/100)*113.1;
+  // Only render active view
+  if(curView==='calendar'){renderCal();if(typeof renderKcalStatus==='function')renderKcalStatus();}
+  // settings view is static — renderSettings() already ran once on tab click, no re-render needed
+  renderMiniCal();
+  if(typeof updateMotivBar==='function')updateMotivBar();
+  var _agEl=document.getElementById('mobileAgenda');
+  if(_agEl&&_agEl.offsetParent!==null&&typeof renderAgenda==='function')renderAgenda();
+  var _cspEl=document.getElementById('calSidePanel');
+  if(_cspEl&&_cspEl.classList.contains('open')&&_cspDs)_buildSidePanelContent(_cspDs);
+}
 
 function updateBadges(){}
 
@@ -1882,11 +1882,30 @@ function calNext(){calM++;if(calM>11){calM=0;calY++}mcM=calM;mcY=calY;renderCal(
 
 function calToday(){var now=new Date();calY=now.getFullYear();calM=now.getMonth();mcY=calY;mcM=calM;selDate=todayStr();renderCal();renderMiniCal()}
 
-function setView(v){curView=v;priF=null;catF=null;document.querySelectorAll('.vPg').forEach(function(el){el.classList.remove('va')});document.querySelectorAll('.navItem').forEach(function(el){el.classList.remove('on')});var vm={today:'vToday',all:'vAll',calendar:'vCalendar',done:'vDone',recurring:'vRecurring',goals:'vGoals',ideas:'vIdeas',meal:'vMeal',workout:'vWorkout',week:'vWeekly',settings:'vSettings'};if(vm[v]){document.getElementById(vm[v]).classList.add('va');}var _nmap={today:'nv-today',all:'nv-all',calendar:'nv-calendar',done:'nv-done',recurring:'nv-recurring',goals:'nv-goals',ideas:'nv-ideas',meal:'nv-meal',workout:'nv-workout',week:'nv-week',settings:'nv-settings'};var _nb=document.getElementById(_nmap[v]||'');if(_nb)_nb.classList.add('on');
-
-if(document.getElementById('nv-'+v))document.getElementById('nv-'+v).classList.add('on');var titles={today:'오늘의 할 일',all:'전체 할 일 목록',calendar:'📅 대시보드',done:'완료된 항목',recurring:'반복 일정',goals:'🎯 목표 관리',ideas:'💡 아이디어 노트',week:'주간 보기',settings:'⚙️ 설정',meal:'🔁 루틴 설정'};document.getElementById('pTitle').textContent=titles[v]||v;if(v==='calendar'){renderCal();}if(v==='settings'){renderSettings();}
-
-else if(v==='goals')renderGoals();else if(v==='ideas')renderIdeas();else if(v==='today')renderToday();else if(v==='all')renderAll2();else if(v==='done')renderDone();else if(v==='recurring')renderRecurring();else if(v==='week'){if(!wkStart)wkStart=_getWeekStart(new Date());renderWeek();}if(window.innerWidth<=780&&v!=='settings')toggleSb(false);}
+function setView(v){
+  // Only two live views: calendar | settings
+  curView=v;
+  // Remove active class from all pages and nav items
+  document.querySelectorAll('.vPg').forEach(function(el){el.classList.remove('va');});
+  document.querySelectorAll('.navItem,.mbNavBtn').forEach(function(el){el.classList.remove('on');});
+  // Activate target page
+  var vm={calendar:'vCalendar',settings:'vSettings'};
+  var pid=vm[v]||'vCalendar';
+  var pel=document.getElementById(pid);
+  if(pel){pel.classList.add('va');}
+  // Activate nav button
+  var nb=document.getElementById('nv-'+v);if(nb)nb.classList.add('on');
+  var mbnMap={calendar:'mbn-cal',settings:'mbn-settings'};
+  var mnb=document.getElementById(mbnMap[v]||'');if(mnb)mnb.classList.add('on');
+  // Page title
+  var titles={calendar:'📅 대시보드',settings:'⚙️ 설정'};
+  var pt=document.getElementById('pTitle');if(pt)pt.textContent=titles[v]||v;
+  // Render
+  if(v==='calendar'){renderCal();if(typeof renderKcalStatus==='function')renderKcalStatus();}
+  else if(v==='settings'){renderSettings();}
+  // Mobile: close sidebar only for non-settings views
+  if(window.innerWidth<=780&&v!=='settings')toggleSb(false);
+}
 
 function filterP(p){priF=p;catF=null;curView='all';document.querySelectorAll('.vPg').forEach(function(el){el.classList.remove('va')});document.querySelectorAll('.navItem').forEach(function(el){el.classList.remove('on')});document.getElementById('vAll').classList.add('va');if(document.getElementById('nv-'+p))document.getElementById('nv-'+p).classList.add('on');var lbl={high:'높음 우선순위',medium:'보통 우선순위',low:'낮음 우선순위'};document.getElementById('pTitle').textContent=lbl[p];renderAll2();if(window.innerWidth<=780)toggleSb(false);}
 
@@ -3670,7 +3689,12 @@ function toggleNavGrp(grp){
 
 }
 
-var AI_PROMPT_SYS='[Jayden 프로필] 30대 초반 한국인 남성 | Amazon 직장인 | Dallas TX 거주\n'
+var AI_PROMPT_SYS='너는 내 전속 헬스/생산성 코치야. 나는 직장인이고 월~금 출근해. 목표: 경제적으로 가장 저렴하게 세팅한 벌크업 식단과 운동 프로그램. 입력된 프롬프트에 맞춰서 날짜별 식단(메뉴, 칼로리, 가격)과 운동 루틴을 JSON 배열로 반환해.\n\n'
++'[Jayden 프로필] 30대 초반 한국인 남성 | Amazon 직장인 | Dallas TX 거주 | 키 178cm / 체중 82kg\n'
++'목표: 경제적인 벌크업 — 저렴한 재료로 칼로리·단백질 극대화\n'
++'즐겨 먹는 식재료: 닭가슴살, 달걀, 오트밀, 참치캔, 고구마, 두부, 통조림콩\n'
++'운동 수준: 중급 | 마트: Walmart/HEB Dallas TX 기준 실제 가격 사용\n'
++'일일 목표: 2500kcal / 단백질 180g 이상 | 예산: 주 $40-50 이하\n\n'
 
 +'키 178cm / 체중 82kg | 목표: 체지방 감량 + 등·광배·어깨 근육 성장 (프레임 빌더)\n'
 
@@ -5117,6 +5141,16 @@ function _cspSaveMeal(ds){if(!curUser)return;var nm=(document.getElementById('cs
 
 function _cspSaveWrk(ds){if(!curUser)return;var nm=(document.getElementById('cspWrkNm_'+ds)||{}).value;if(!nm||!nm.trim())return;nm=nm.trim();db.collection('hb_workouts').add({uid:curUser.uid,date:ds,exercises:[{name:nm,sets:3,reps:10,weight:0,category:'strength'}],doneExercises:{},createdAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){var el=document.getElementById('cspWrkNm_'+ds);if(el)el.value='';_cspToast('💪 '+nm+' 저장됨',null);});}
 
+function _cspAddTask(){
+  var ds=_cspDs;if(!ds||!curUser)return;
+  var inp=document.getElementById('cspTaskInp');
+  if(!inp||!inp.value.trim())return;
+  var nm=inp.value.trim();
+  db.collection('todos').add({uid:curUser.uid,text:nm,date:ds,done:false,priority:'medium',type:'todo',createdAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    inp.value='';inp.focus();if(typeof _cspToast==='function')_cspToast('✅ '+nm+' 추가됨',null);
+  }).catch(function(e){console.error(e);});
+}
+
 function _cspSaveTodoQ(ds){if(!curUser)return;var nm=(document.getElementById('cspTdNm_'+ds)||{}).value;if(!nm||!nm.trim())return;nm=nm.trim();db.collection('todos').add({uid:curUser.uid,text:nm,date:ds,done:false,priority:'medium',type:'todo',createdAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){var el=document.getElementById('cspTdNm_'+ds);if(el)el.value='';_cspToast('✅ '+nm+' 저장됨',null);});}
 
 /* ── v13: Toast / Undo ── */
@@ -5183,9 +5217,9 @@ window.addEventListener('resize',_onResize,{passive:true});
 
 </script>
 
-<!-- Weekly Template Modal -->
+<!-- Weekly Template Modal (removed v17) -->
 
-<div id="weeklyTmplModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:900;align-items:center;justify-content:center">
+<div id="weeklyTmplModal" style="display:none!important;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:900;align-items:center;justify-content:center">
 
   <div style="background:var(--card);border-radius:14px;width:min(700px,96vw);max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,.3)">
 
@@ -5285,9 +5319,15 @@ window.addEventListener('resize',_onResize,{passive:true});
 
   <div class="cspBody" id="cspBody"></div>
 
-  <div class="cspFoot">
+  <div class="cspFoot" style="flex-direction:column;gap:8px;padding:12px 16px">
 
-    <button type="button" class="cspAddBtn" onclick="selDate=_cspDs;closeSidePanel();setTimeout(openModalForDate,80)">+ 할일 추가</button>
+    <div style="display:flex;gap:8px;width:100%;align-items:center">
+
+      <input type="text" id="cspTaskInp" placeholder="할 일 입력 후 Enter..." style="flex:1;padding:10px 14px;border:1.5px solid var(--br);border-radius:10px;font-size:.88rem;background:var(--bg);color:var(--tx);outline:none;font-family:inherit;min-width:0" onkeydown="if(event.key==='Enter')_cspAddTask()">
+
+      <button type="button" class="cspAddBtn" style="flex:0 0 auto;padding:10px 18px;font-size:.88rem" onclick="_cspAddTask()">+ 추가</button>
+
+    </div>
 
   </div>
 
@@ -5300,12 +5340,6 @@ window.addEventListener('resize',_onResize,{passive:true});
 <nav id="mobileBottomNav" role="navigation" aria-label="모바일 하단 네비게이션">
 
   <button type="button" class="mbNavBtn on" id="mbn-cal" onclick="setView('calendar');_syncMobileNav('cal')"><span class="mbIco">📅</span><span class="mbLbl">홈</span></button>
-
-  <button type="button" class="mbNavBtn" id="mbn-all" onclick="setView('all');_syncMobileNav('all')"><span class="mbIco">✅</span><span class="mbLbl">할일</span></button>
-
-  <button type="button" class="mbNavBtn" id="mbn-meal" onclick="setView('meal');_syncMobileNav('meal')"><span class="mbIco">🥗</span><span class="mbLbl">식단</span></button>
-
-  <button type="button" class="mbNavBtn" id="mbn-workout" onclick="setView('workout');_syncMobileNav('workout')"><span class="mbIco">💪</span><span class="mbLbl">운동</span></button>
 
   <button type="button" class="mbNavBtn" id="mbn-settings" onclick="setView('settings');_syncMobileNav('settings')"><span class="mbIco">⚙️</span><span class="mbLbl">설정</span></button>
 
