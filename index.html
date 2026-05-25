@@ -2178,6 +2178,7 @@ function setMainView(v){
   var vs=document.getElementById('vSearch'),vc=document.getElementById('vCalendar');
   var bs=document.getElementById('vt-search'),bc=document.getElementById('vt-calendar');
   if(v==='calendar'){
+    if(!calY||calM===undefined){var _n=new Date();calY=_n.getFullYear();calM=_n.getMonth();if(!mcY)mcY=calY;if(!mcM&&mcM!==0)mcM=calM;if(!selDate){var _d=_n;selDate=_d.getFullYear()+'-'+(String(_d.getMonth()+1).padStart(2,'0'))+'-'+(String(_d.getDate()).padStart(2,'0'));}}
     if(vs)vs.classList.remove('va');
     if(vc)vc.classList.add('va');
     if(bs)bs.classList.remove('on');
@@ -3016,19 +3017,7 @@ var lbl=document.createElement('div');lbl.className='secLbl';lbl.textContent='�
 
 
 
-function renderMiniCal(){var MO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];document.getElementById('mcTitle').textContent=mcY+'년 '+MO[mcM];var grid=document.getElementById('mcGrid');grid.innerHTML='';['일','월','화','수','목','금','토'].forEach(function(d){var el=document.createElement('div');el.className='mcDow';el.textContent=d;grid.appendChild(el)});var first=new Date(mcY,mcM,1).getDay(),dim=new Date(mcY,mcM+1,0).getDate(),prev=new Date(mcY,mcM,0).getDate();var today=todayStr(),tdMap={};todos.forEach(function(t){if(t.date)tdMap[t.date]=(tdMap[t.date]||0)+1});for(var i=first-1;i>=0;i--){var el=document.createElement('div');el.className='mcDay mcOther';el.textContent=prev-i;grid.appendChild(el)}
-
-
-
-for(var d=1;d<=dim;d++){var ds=mcY+'-'+pad(mcM+1)+'-'+pad(d);var el=document.createElement('div');el.className='mcDay';if(ds===today)el.classList.add('mcToday');else if(ds===selDate)el.classList.add('mcSel');el.textContent=d;if(tdMap[ds]){var dot=document.createElement('div');dot.className='mcDot';el.appendChild(dot)}
-
-
-
-(function(s){el.onclick=function(){var dd=new Date(s);selDate=s;calY=dd.getFullYear();calM=dd.getMonth();mcY=calY;mcM=calM;setView('calendar');setTimeout(function(){renderCal();showCalPopup(s);},80)}})(ds);grid.appendChild(el);}
-
-
-
-var rem=(7-(first+dim)%7)%7;for(var i=1;i<=rem;i++){var el=document.createElement('div');el.className='mcDay mcOther';el.textContent=i;grid.appendChild(el)}}
+function renderMiniCal(){}
 
 
 
@@ -3040,7 +3029,7 @@ function mcNext(){mcM++;if(mcM>11){mcM=0;mcY++}renderMiniCal()}
 
 
 
-function renderCal(){var MO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];document.getElementById('calMoT').textContent=calY+'년 '+MO[calM];var banner=document.getElementById('calGoalBanner');if(banner){var longGoals=goals.filter(function(g){return g.horizon==='yearly'||g.horizon==='quarterly'||g.horizon==='monthly';});if(longGoals.length){var bHtml='<div class="calBannerTitle">🎯 장기·분기·월간 목표 리마인더</div>'+'<div style="display:flex;flex-wrap:wrap;gap:0">';longGoals.forEach(function(g){var hz=HZ_KR[g.horizon]||g.horizon;var acts=g.actions||[];var dn=acts.filter(function(a){return a.done}).length;var pct=acts.length?Math.round(dn/acts.length*100):0;bHtml+='<div class="calGoalBannerItem" style="border-left:3px solid '+(g.color||'var(--ac)')+'">'+'<span style="font-size:10px;font-weight:700;color:var(--ac);margin-right:2px">'+hz+'</span>'+_esc(g.title)+(acts.length?'<span style="font-size:10px;color:var(--tx3);margin-left:4px">'+pct+'%</span>':'')+'</div>';});bHtml+='</div>';banner.innerHTML=bHtml;banner.style.display='block';}else{banner.innerHTML='';banner.style.display='none';}}var first=new Date(calY,calM,1).getDay(),dim=new Date(calY,calM+1,0).getDate();var prevDim=new Date(calY,calM,0).getDate(),today=todayStr();var tdMap={};todos.forEach(function(t){if(t.date){if(!tdMap[t.date])tdMap[t.date]=[];tdMap[t.date].push(t)}});var _rBD={};todos.forEach(function(t){if(t.type!=='recurring')return;(t.recurringDays||(t.recurring==='daily'?[0,1,2,3,4,5,6]:[])).forEach(function(d){if(!_rBD[d])_rBD[d]=[];_rBD[d].push(t);});});var days=document.getElementById('calDays');days.innerHTML='';var total=Math.ceil((first+dim)/7)*7;for(var i=0;i<total;i++){
+function renderCal(){if(!calY||calM===undefined){var _n=new Date();calY=_n.getFullYear();calM=_n.getMonth();if(!mcY)mcY=calY;if(!mcM&&mcM!==0)mcM=calM;}var MO=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];document.getElementById('calMoT').textContent=calY+'년 '+MO[calM];var banner=document.getElementById('calGoalBanner');if(banner){var longGoals=goals.filter(function(g){return g.horizon==='yearly'||g.horizon==='quarterly'||g.horizon==='monthly';});if(longGoals.length){var bHtml='<div class="calBannerTitle">🎯 장기·분기·월간 목표 리마인더</div>'+'<div style="display:flex;flex-wrap:wrap;gap:0">';longGoals.forEach(function(g){var hz=HZ_KR[g.horizon]||g.horizon;var acts=g.actions||[];var dn=acts.filter(function(a){return a.done}).length;var pct=acts.length?Math.round(dn/acts.length*100):0;bHtml+='<div class="calGoalBannerItem" style="border-left:3px solid '+(g.color||'var(--ac)')+'">'+'<span style="font-size:10px;font-weight:700;color:var(--ac);margin-right:2px">'+hz+'</span>'+_esc(g.title)+(acts.length?'<span style="font-size:10px;color:var(--tx3);margin-left:4px">'+pct+'%</span>':'')+'</div>';});bHtml+='</div>';banner.innerHTML=bHtml;banner.style.display='block';}else{banner.innerHTML='';banner.style.display='none';}}var first=new Date(calY,calM,1).getDay(),dim=new Date(calY,calM+1,0).getDate();var prevDim=new Date(calY,calM,0).getDate(),today=todayStr();var tdMap={};todos.forEach(function(t){if(t.date){if(!tdMap[t.date])tdMap[t.date]=[];tdMap[t.date].push(t)}});var _rBD={};todos.forEach(function(t){if(t.type!=='recurring')return;(t.recurringDays||(t.recurring==='daily'?[0,1,2,3,4,5,6]:[])).forEach(function(d){if(!_rBD[d])_rBD[d]=[];_rBD[d].push(t);});});var days=document.getElementById('calDays');days.innerHTML='';var total=Math.ceil((first+dim)/7)*7;for(var i=0;i<total;i++){
 var cell=document.createElement('div');
 cell.className='calCell';
 var dn,ds,other=false;
