@@ -1092,7 +1092,7 @@ button[onclick*="saveWeeklyTemplate"]:hover,button[onclick*="applyWeeklyTemplate
       <!-- ===== VIEW: AI SEARCH (default) ===== -->
       <div class="vPg va" id="vSearch">
         <div id="vsTopBar">
-          <div id="vsLogo">HILLIARD</div>
+          <div id="vsLogo"><svg viewBox="0 0 36 52" width="36" height="52" fill="currentColor" style="color:var(--ac)" xmlns="http://www.w3.org/2000/svg"><rect x="13" y="0" width="10" height="52" rx="2"/><rect x="0" y="12" width="36" height="10" rx="2"/></svg></div>
           <div id="vsTagline">주님과 함께하는 건강 플래너</div>
         </div>
         <div id="vsBody">
@@ -6448,6 +6448,8 @@ var AI_PROMPT_SYS='너는 Dallas, TX에 거주하는 직장인을 위한 전속 
 
 
 
++'[수정 요청 규칙] 수정/변경 요청 시 이전 계획 전체를 수정된 내용이 반영된 완전한 JSON 배열로 반환해라. 수정되지 않은 항목도 빠짐없이 포함.\n\n'
+
 +'오늘: ';
 
 
@@ -6508,18 +6510,14 @@ async function submitAiPrompt(){
 
 
 
-  // Build user message with full context
-
-
-
-  var userMsg=AI_PROMPT_SYS+todayStr2+'. '+weekCtx+'. 요청: "'+txt+'"';
-
-
-
-  // Add to history
-
-
-
+  // Build user message — full system prompt on first turn, context-aware on follow-ups
+  var userMsg;
+  if(!_aiHistory.length){
+    userMsg=AI_PROMPT_SYS+todayStr2+'. '+weekCtx+'. 요청: "'+txt+'"';
+  }else{
+    var _planCtx=_aiSuggestData?('현재 제안된 계획 전체: '+JSON.stringify(_aiSuggestData)+'. '):'';
+    userMsg=_planCtx+'오늘:'+todayStr2+'. '+weekCtx+'. 수정/추가 요청: "'+txt+'"';
+  }
   _aiHistory.push({role:'user',parts:[{text:userMsg}]});
 
 
@@ -6985,11 +6983,10 @@ function confirmAiSuggest(){
   if(!curUser){if(typeof _cspToast==='function')_cspToast('❌ 로그인 필요',3000);return;}
   var arr=_aiSuggestData;
   var uid=curUser.uid;
-  var dates={};
-  arr.forEach(function(d){var dt=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();dates[dt]=true;});
+  // Delete ALL aiSource items for user — ensures one plan at a time regardless of dates
   var delPromises=[];
-  meals.forEach(function(m){if(m.aiSource&&m.uid===uid&&dates[m.date])delPromises.push(db.collection('hb_meals').doc(m.id).delete());});
-  workouts.forEach(function(w){if(w.aiSource&&w.uid===uid&&dates[w.date])delPromises.push(db.collection('hb_workouts').doc(w.id).delete());});
+  meals.forEach(function(m){if(m.aiSource&&m.uid===uid)delPromises.push(db.collection('hb_meals').doc(m.id).delete());});
+  workouts.forEach(function(w){if(w.aiSource&&w.uid===uid)delPromises.push(db.collection('hb_workouts').doc(w.id).delete());});
   Promise.all(delPromises).then(function(){
     var promises=[];var count=0;
     arr.forEach(function(d){
