@@ -3488,7 +3488,7 @@ function mkIdeaCard(){return document.createElement('div')}
 
 
 
-var _hCSS='.mealTabBtn{padding:6px 14px;border:1.5px solid var(--br);border-radius:20px;background:var(--bg2);color:var(--txt);font-size:12px;cursor:pointer;font-weight:600;transition:.15s}.mealTabBtn.on{background:var(--ac);color:var(--ac-txt);border-color:var(--ac)}.nutrCard{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;padding:12px;text-align:center}.nutrCard .val{font-size:20px;font-weight:800;color:var(--ac)}.nutrCard .lbl{font-size:11px;color:var(--txt2);margin-top:2px}.mealGroup{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;margin-bottom:10px;overflow:hidden}.mealGroupHd{padding:10px 14px;font-size:13px;font-weight:700;color:var(--txt);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}.mealItem{display:flex;align-items:center;padding:8px 14px;border-bottom:1px solid var(--br);gap:10px}.mealItem:last-child{border-bottom:none}.mealItemName{flex:1;font-size:13px;color:var(--txt);font-weight:600}.mealItemNutr{font-size:11px;color:var(--txt2);flex-wrap:wrap}.wrkCard{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;margin-bottom:10px;overflow:hidden}.wrkCardHd{padding:10px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--br)}.wrkItem{display:flex;align-items:center;padding:8px 14px;border-bottom:1px solid var(--br);gap:10px}.wrkItem:last-child{border-bottom:none}.wrkItemName{flex:1;font-size:13px;font-weight:600;color:var(--txt)}.wrkBadge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}.wrkStreakDay{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--br)}.delBtn{background:none;border:none;color:var(--txt2);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:4px}.chatBubble{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:var(--ac);color:var(--ac-txt);border:none;font-size:22px;cursor:pointer;z-index:500;box-shadow:0 4px 16px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}.chatPanel{position:fixed;bottom:88px;right:24px;width:min(380px,94vw);height:min(560px,80vh);background:var(--bg);border:1.5px solid var(--br);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.2);display:flex;flex-direction:column;z-index:499}.chatPanelHd{padding:12px 16px;border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center;font-weight:700;color:var(--txt);font-size:14px}.chatBody{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}.chatMsg{padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.5;max-width:90%;white-space:pre-wrap}.chatMsg.user{background:var(--ac);color:var(--ac-txt);align-self:flex-end;border-radius:10px 10px 2px 10px}.chatMsg.ai{background:var(--bg2);color:var(--txt);align-self:flex-start;border-radius:10px 10px 10px 2px}.chatInp{padding:10px 12px;border-top:1px solid var(--br);display:flex;gap:8px}.chatInp input{flex:1;padding:8px 10px;border:1.5px solid var(--br);border-radius:8px;background:var(--bg2);color:var(--txt);font-size:13px}.chatInp button{padding:8px 14px;background:var(--ac);color:var(--ac-txt);border:none;border-radius:8px;cursor:pointer;font-weight:700}';
+var _hCSS='.mealTabBtn{padding:6px 14px;border:1.5px solid var(--br);border-radius:20px;background:var(--bg2);color:var(--txt);font-size:12px;cursor:pointer;font-weight:600;transition:.15s}.mealTabBtn.on{background:var(--ac);color:var(--ac-txt);border-color:var(--ac)}.nutrCard{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;padding:12px;text-align:center}.nutrCard .val{font-size:20px;font-weight:800;color:var(--ac)}.nutrCard .lbl{font-size:11px;color:var(--txt2);margin-top:2px}.mealGroup{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;margin-bottom:10px;overflow:hidden}.mealGroupHd{padding:10px 14px;font-size:13px;font-weight:700;color:var(--txt);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}.mealItem{display:flex;align-items:center;padding:8px 14px;border-bottom:1px solid var(--br);gap:10px}.mealItem:last-child{border-bottom:none}.mealItemName{flex:1;font-size:13px;color:var(--txt);font-weight:600}.mealItemNutr{font-size:11px;color:var(--txt2);flex-wrap:wrap}.wrkCard{background:var(--bg2);border:1.5px solid var(--br);border-radius:10px;margin-bottom:10px;overflow:hidden}.wrkCardHd{padding:10px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--br)}.wrkItem{display:flex;align-items:center;padding:8px 14px;border-bottom:1px solid var(--br);gap:10px}.wrkItem:last-child{border-bottom:none}.wrkItemName{flex:1;font-size:13px;font-weight:600;color:var(--txt)}.wrkBadge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}.wrkStreakDay{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid var(--br)}.delBtn{background:none;border:none;color:var(--txt2);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:4px}';
 
 
 
@@ -4113,270 +4113,6 @@ function renderWorkout(){
 
 
 function setupRecurringRoutine(){if(!curUser){alert('login required');return;}var hasEx=todos.some(function(t){return t.type==='recurring'&&t.uid===curUser.uid;});var msg=hasEx?'주간 반복 루틴을 초기화하고 다시 설정하겠습니까? (출승근 항목 삭제 포함)':'밖시 Amazon 직장인 주간 루틴을 반복 일정으로 설정하겠습니까? (출승근 항목 자동 삭제)';if(!confirm(msg))return;var toDel=todos.filter(function(t){return t.uid===curUser.uid&&(t.type==='recurring'||(t.text&&(t.text.indexOf('출근')>=0||t.text.indexOf('퇴근')>=0)));});var ROUTINE=[{text:'기상 · 물 500ml',time:'05:30',priority:'high',category:'health',recurringDays:[1,2,3,4,5]},{text:'아침 식사 — 오버나이트오트 + 달걀 2개 (밀프렙)',time:'05:45',priority:'medium',category:'meal',recurringDays:[1,2,3,4,5],note:'550kcal · 단백질 35g / 냉장고에서 바로'},{text:'점심 도시락 챙기기 (밀프렙)',time:'12:00',priority:'medium',category:'meal',recurringDays:[1,2,3,4,5],note:'닭가슴살 150g + 현미밥 200g + 구운채소 / 550kcal · 단백질 45g'},{text:'[등 A] 데드리프트·바벨로우·풀업·케이블로우·페이스풀',time:'06:00',priority:'high',category:'workout',recurringDays:[1],note:'데드리프트 4x5 → 바벨로우 4x8 → 풀업 3xmax → 케이블로우 3x12 → 페이스풀 3x15 / 70분'},{text:'[가슴·어깨] 벤치프레스·인클라인·숄더프레스·레터럴레이즈',time:'06:00',priority:'high',category:'workout',recurringDays:[2],note:'벤치프레스 4x8 → 인클라인덤벨 4x10 → 숄더프레스 3x12 → 레터럴레이즈 3x15 / 55분'},{text:'[유산소·코어] 트레드밀 인터벌+플랭크+레그레이즈',time:'06:00',priority:'medium',category:'workout',recurringDays:[3],note:'트레드밀 20분 → 플랭크 3x60초 → 레그레이즈 3x15 / 45분'},{text:'[등 B] 랫풀다운·시티드로우·T바로우·원암로우·리버스플라이',time:'06:00',priority:'high',category:'workout',recurringDays:[4],note:'랫풀다운 4x12 → 시티드케이블로우 4x12 → T바로우 3x12 → 원암덜벨로우 3x15 / 65분'},{text:'[하체] 스쿼트·레그프레스·RDL·레그컬·카프레이즈',time:'06:00',priority:'high',category:'workout',recurringDays:[5],note:'스쿼트 4x8 → 레그프레스 4x12 → RDL 3x10 → 레그컬 3x12 → 카프레이즈 4x20 / 65분'},{text:'[밀프렙] 월·화·수 3일치 시작',time:'19:00',priority:'high',category:'meal_prep',recurringDays:[0],note:'닭가슴살 900g 오븐(200도 25분) · 현미밥 6컵 · 구운채소 · 달걀 9개 · 오트병 3개 / 약 2시간'},{text:'[밀프렙] 목·금 2일치',time:'19:00',priority:'high',category:'meal_prep',recurringDays:[3],note:'연어 400g 팬구이(10분) · 현미밥 4컵 · 고구마 전자레인지 · 오트병 2개 / 약 40분'},];var batch=db.batch();toDel.forEach(function(t){batch.delete(db.collection('todos').doc(t.id));});var now=firebase.firestore.FieldValue.serverTimestamp();ROUTINE.forEach(function(r){var ref=db.collection('todos').doc();batch.set(ref,Object.assign({},r,{uid:curUser.uid,type:'recurring',recurring:'weekly',done:false,createdAt:now}));});batch.commit().then(function(){renderCal();alert('루틴이 설정되었습니다! 캘린더에서 매주 반복 일정을 확인하세요.');}).catch(function(e){alert('Error: '+e.message);});}
-
-
-
-function toggleChat(){
-
-
-
-  var p=document.getElementById('chatPanel');
-
-
-
-  if(!p)return;
-
-
-
-  var visible=p.style.display!=='none'&&p.style.display!=='';
-
-
-
-  p.style.display=visible?'none':'flex';
-
-
-
-  p.style.flexDirection='column';
-
-
-
-  if(!visible){
-
-
-
-    var inp=document.getElementById('chatInput');if(inp)inp.focus();
-
-
-
-    if(!_chatHistory.length)addChatMsg('ai','안녕하세요! AI 라이프 코치입니다. 식단, 운동, 일정 관련 무엇이든 물어보세요. 특히 등 근육 성장에 특화된 조언을 드릴 수 있습니다!');
-
-
-
-  }
-
-
-
-}
-
-
-
-function addChatMsg(role,text){
-
-
-
-  _chatHistory.push({role:role,text:text});
-
-
-
-  var body=document.getElementById('chatBody');if(!body)return;
-
-
-
-  var div=document.createElement('div');
-
-
-
-  div.className='chatMsg '+role;
-
-
-
-  div.textContent=text;
-
-
-
-  body.appendChild(div);
-
-
-
-  body.scrollTop=body.scrollHeight;
-
-
-
-}
-
-
-
-function parseChatIntent(text){
-
-
-
-  var addPatterns=[/내일|오늘|(\d+)월\s*(\d+)일/,/추가|등록|넣어|써줘/];
-
-
-
-  var hasDate=addPatterns[0].test(text);
-
-
-
-  var hasAdd=addPatterns[1].test(text);
-
-
-
-  if(hasDate&&hasAdd){
-
-
-
-    var ds=todayStr();
-
-
-
-    if(/내일/.test(text)){var t=new Date();t.setDate(t.getDate()+1);ds=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate());}
-
-
-
-    var timeMatch=text.match(/(\d{1,2})시/);
-
-
-
-    var tm=timeMatch?pad(parseInt(timeMatch[1]))+':00':'';
-
-
-
-    var todoText=text.replace(/추가|등록|넣어|써줘|내일|오늘|캘린더에|일정에/g,'').replace(/(\d{1,2})시/g,'').trim();
-
-
-
-    if(todoText.length>2&&curUser){
-
-
-
-      db.collection('todos').add({uid:curUser.uid,date:ds,text:todoText,time:tm,priority:'medium',type:'todo',done:false,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-
-
-
-      return '캘린더에 추가했습니다: "'+todoText+'" ('+ds+(tm?' '+tm:'')+')';}
-
-
-
-  }
-
-
-
-  return null;
-
-
-
-}
-
-
-
-async function sendChat(){
-
-
-
-  var inp=document.getElementById('chatInput');
-
-
-
-  var text=(inp.value||'').trim();if(!text)return;
-
-
-
-  inp.value='';
-
-
-
-  addChatMsg('user',text);
-
-
-
-  var intentResult=parseChatIntent(text);
-
-
-
-  if(intentResult){addChatMsg('ai',intentResult);return;}
-
-
-
-  var todayTodos=todos.filter(function(t){return t.date===todayStr()&&!t.done;}).slice(0,5).map(function(t){return t.text;}).join(', ');
-
-
-
-  var todayMeals=meals.filter(function(m){return m.date===todayStr();}).map(function(m){return m.name+'('+Math.round(m.kcal||0)+'kcal)';}).join(', ');
-
-
-
-  var sysCtx='당신은 AI 라이프 코치입니다. 사용자 정보: 이름='+_prof.name+', 목표='+_prof.goal+', 근무='+_prof.schedule+', 식단선호='+_prof.diet+'. 오늘 할일: '+todayTodos+'. 오늘 식사: '+todayMeals+'. 등 근육 성장이 주요 피트니스 목표. 간결하고 실용적으로 답변하세요.';
-
-
-
-  var hist=_chatHistory.slice(-6).filter(function(m){return m.role!=='ai'||m.text!=='AI 분석 중...';}).map(function(m){return {role:m.role==='user'?'user':'model',parts:[{text:m.text}]};});
-
-
-
-  hist.unshift({role:'user',parts:[{text:sysCtx}]});
-
-
-
-  hist.push({role:'user',parts:[{text:text}]});
-
-
-
-  addChatMsg('ai','AI 분석 중...');
-
-
-
-  try{
-
-
-
-    var model=localStorage.getItem('hb-gem-model')||'gemini-2.5-flash-lite';
-
-
-
-    var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+gemKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:hist,generationConfig:{temperature:0.8,maxOutputTokens:600}})});
-
-
-
-    var d=await r.json();if(d.error)throw new Error(d.error.message);
-
-
-
-    var reply=(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text)||'응답 없음';
-
-
-
-    var body=document.getElementById('chatBody');
-
-
-
-    if(body&&body.lastChild&&body.lastChild.classList&&body.lastChild.classList.contains('ai'))body.removeChild(body.lastChild);
-
-
-
-    _chatHistory.pop();
-
-
-
-    addChatMsg('ai',reply);
-
-
-
-  }catch(e){
-
-
-
-    var body2=document.getElementById('chatBody');
-
-
-
-    if(body2&&body2.lastChild)body2.removeChild(body2.lastChild);
-
-
-
-    _chatHistory.pop();
-
-
-
-    addChatMsg('ai','오류: '+e.message+(gemKey?'':' (Gemini API 키를 설정하세요)'));
-
-
-
-  }
-
-
-
-}
 
 
 
@@ -5053,74 +4789,6 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 
 </div>
-
-
-
-<!-- CHAT PANEL -->
-
-
-
-<div id="chatPanel" style="display:none;position:fixed;bottom:88px;right:24px;width:min(380px,94vw);height:min(520px,78vh);background:var(--bg);border:1.5px solid var(--br);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.2);flex-direction:column;z-index:499">
-
-
-
-  <div class="chatPanelHd">
-
-
-
-    <span>AI 라이프 코치</span>
-
-
-
-    <div style="display:flex;gap:6px;align-items:center">
-
-
-
-      <span style="font-size:11px;color:var(--txt2)">Gemini</span>
-
-
-
-      <button type="button" onclick="toggleChat()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--txt2)">x</button>
-
-
-
-    </div>
-
-
-
-  </div>
-
-
-
-  <div id="chatBody" class="chatBody"></div>
-
-
-
-  <div class="chatInp">
-
-
-
-    <input id="chatInput" type="text" placeholder="질문하거나 '내일 7시 운동 추가해줘'..." onkeydown="if(event.key==='Enter')sendChat()">
-
-
-
-    <button type="button" onclick="sendChat()">전송</button>
-
-
-
-  </div>
-
-
-
-</div>
-
-
-
-<!-- CHAT BUBBLE -->
-
-
-
-<button type="button" class="chatBubble" onclick="toggleChat()" title="AI 코치와 대화">AI</button>
 
 
 
@@ -7313,253 +6981,46 @@ function showAiSuggestCard(arr){
 
 
 function confirmAiSuggest(){
-
-
-
-  if(!_aiSuggestData||!_aiSuggestData.length){
-
-
-
-    if(typeof _cspToast==='function')_cspToast('❌ AI 데이터 없음. 다시 생성해주세요',3000);
-
-
-
-    return;
-
-
-
-  }
-
-
-
-  if(!curUser){
-
-
-
-    if(typeof _cspToast==='function')_cspToast('❌ 로그인 필요',3000);
-
-
-
-    return;
-
-
-
-  }
-
-
-
+  if(!_aiSuggestData||!_aiSuggestData.length){if(typeof _cspToast==='function')_cspToast('❌ AI 데이터 없음. 다시 생성해주세요',3000);return;}
+  if(!curUser){if(typeof _cspToast==='function')_cspToast('❌ 로그인 필요',3000);return;}
   var arr=_aiSuggestData;
-
-
-
   var uid=curUser.uid;
-
-
-
-  var promises=[];
-
-
-
-  var count=0;
-
-
-
-  arr.forEach(function(d){
-
-
-
-    var resolvedType=d.type;
-
-
-
-    if(resolvedType!=='meal'&&resolvedType!=='workout'){
-
-
-
-      if(d.exercises&&Array.isArray(d.exercises)&&d.exercises.length)resolvedType='workout';
-
-
-
-      else if(d.kcal!=null||d.name||d.mealType)resolvedType='meal';
-
-
-
-      else return;
-
-
-
-    }
-
-
-
-    if(resolvedType==='meal'){
-
-
-
-      var validMT=['breakfast','lunch','dinner','snack'];
-
-
-
-      var mt=validMT.indexOf(d.mealType)>-1?d.mealType:'lunch';
-
-
-
-      var dt=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
-
-
-
-      promises.push(db.collection('hb_meals').add({
-
-
-
-        uid:uid,date:dt,mealType:mt,
-
-
-
-        name:String(d.name||''),amount:parseFloat(d.amount)||0,
-
-
-
-        kcal:parseFloat(d.kcal)||0,protein:parseFloat(d.protein)||0,
-
-
-
-        carbs:parseFloat(d.carbs)||0,fat:parseFloat(d.fat)||0,
-
-
-
-        createdAt:firebase.firestore.FieldValue.serverTimestamp()
-
-
-
-      }));
-
-
-
-      count++;
-
-
-
-    }else if(resolvedType==='workout'){
-
-
-
-      var rawExs=d.exercises||[];
-
-
-
-      if(!rawExs.length)return;
-
-
-
-      var wdt=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
-
-
-
-      var exs=rawExs.map(function(e){
-
-
-
-        return{name:String(e.name||''),sets:parseInt(e.sets)||3,reps:parseInt(e.reps)||10,weight:parseFloat(e.weight)||0};
-
-
-
-      });
-
-
-
-      promises.push(db.collection('hb_workouts').add({
-
-
-
-        uid:uid,date:wdt,exercises:exs,
-
-
-
-        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-
-
-
-        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-
-
-
-      }));
-
-
-
-      count++;
-
-
-
-    }
-
-
-
-  });
-
-
-
-  if(!count){
-
-
-
-    if(typeof _cspToast==='function')_cspToast('추가할 식단/운동 항목이 없습니다',2000);
-
-
-
-    return;
-
-
-
-  }
-
-
-
-  var savedCount=count;
-
-
-
-  Promise.all(promises).then(function(){
-
-
-
-    cancelAiSuggest();
-
-
-
-    var inp=document.getElementById('aiPromptInput');if(inp)inp.value='';
-
-
-
-    if(typeof _cspToast==='function')_cspToast('✅ '+savedCount+'개 항목 캘린더에 추가 완료!',3000);
-
-
-
-    if(typeof renderAll==='function')renderAll();
-
-
-
-  }).catch(function(e){
-
-
-
-    console.error('confirmAiSuggest write error:',e);
-
-
-
-    if(typeof _cspToast==='function')_cspToast('❌ 저장 오류: '+e.message,4000);
-
-
-
-  });
-
-
-
+  var dates={};
+  arr.forEach(function(d){var dt=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();dates[dt]=true;});
+  var delPromises=[];
+  meals.forEach(function(m){if(m.aiSource&&m.uid===uid&&dates[m.date])delPromises.push(db.collection('hb_meals').doc(m.id).delete());});
+  workouts.forEach(function(w){if(w.aiSource&&w.uid===uid&&dates[w.date])delPromises.push(db.collection('hb_workouts').doc(w.id).delete());});
+  Promise.all(delPromises).then(function(){
+    var promises=[];var count=0;
+    arr.forEach(function(d){
+      var resolvedType=d.type;
+      if(resolvedType!=='meal'&&resolvedType!=='workout'){
+        if(d.exercises&&Array.isArray(d.exercises)&&d.exercises.length)resolvedType='workout';
+        else if(d.kcal!=null||d.name||d.mealType)resolvedType='meal';
+        else return;
+      }
+      if(resolvedType==='meal'){
+        var validMT=['breakfast','lunch','dinner','snack'];
+        var mt=validMT.indexOf(d.mealType)>-1?d.mealType:'lunch';
+        var dt=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
+        promises.push(db.collection('hb_meals').add({uid:uid,date:dt,mealType:mt,name:String(d.name||''),amount:parseFloat(d.amount)||0,kcal:parseFloat(d.kcal)||0,protein:parseFloat(d.protein)||0,carbs:parseFloat(d.carbs)||0,fat:parseFloat(d.fat)||0,aiSource:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()}));
+        count++;
+      }else if(resolvedType==='workout'){
+        var rawExs=d.exercises||[];if(!rawExs.length)return;
+        var wdt=d.date&&/^\d{4}-\d{2}-\d{2}$/.test(d.date)?d.date:todayStr();
+        var exs=rawExs.map(function(e){return{name:String(e.name||''),sets:parseInt(e.sets)||3,reps:parseInt(e.reps)||10,weight:parseFloat(e.weight)||0};});
+        promises.push(db.collection('hb_workouts').add({uid:uid,date:wdt,exercises:exs,aiSource:true,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()}));
+        count++;
+      }
+    });
+    if(!count){if(typeof _cspToast==='function')_cspToast('입력할 식단/운동 항목이 없습니다',2000);return;}
+    var savedCount=count;
+    return Promise.all(promises).then(function(){
+      if(typeof _cspToast==='function')_cspToast('✅ '+savedCount+'개 항목 반영 완료! (기존 AI 항목 교체)',3000);
+      if(typeof renderAll==='function')renderAll();
+    });
+  }).catch(function(e){console.error('confirmAiSuggest error:',e);if(typeof _cspToast==='function')_cspToast('❌ 저장 오류: '+e.message,4000);});
 }
-
-
-
 window.confirmAiSuggest=confirmAiSuggest;
 
 
