@@ -6978,16 +6978,25 @@ function showAiSuggestCard(arr){
 
 
 
+var _aiApplying=false;
 function confirmAiSuggest(){
+  if(_aiApplying)return;
   if(!_aiSuggestData||!_aiSuggestData.length){if(typeof _cspToast==='function')_cspToast('❌ AI 데이터 없음. 다시 생성해주세요',3000);return;}
   if(!curUser){if(typeof _cspToast==='function')_cspToast('❌ 로그인 필요',3000);return;}
+  _aiApplying=true;
+  var applyBtn=document.querySelector('button[onclick="confirmAndShowCal()"]');
+  if(applyBtn){applyBtn.disabled=true;applyBtn.textContent='반영 중...';}
   var arr=_aiSuggestData;
   var uid=curUser.uid;
-  // Delete ALL aiSource items for user — ensures one plan at a time regardless of dates
-  var delPromises=[];
-  meals.forEach(function(m){if(m.aiSource&&m.uid===uid)delPromises.push(db.collection('hb_meals').doc(m.id).delete());});
-  workouts.forEach(function(w){if(w.aiSource&&w.uid===uid)delPromises.push(db.collection('hb_workouts').doc(w.id).delete());});
-  Promise.all(delPromises).then(function(){
+  Promise.all([
+    db.collection('hb_meals').where('uid','==',uid).get(),
+    db.collection('hb_workouts').where('uid','==',uid).get()
+  ]).then(function(snaps){
+    var batch=db.batch();
+    snaps[0].forEach(function(doc){if(doc.data().aiSource)batch.delete(doc.ref);});
+    snaps[1].forEach(function(doc){if(doc.data().aiSource)batch.delete(doc.ref);});
+    return batch.commit();
+  }).then(function(){
     var promises=[];var count=0;
     arr.forEach(function(d){
       var resolvedType=d.type;
@@ -7010,13 +7019,19 @@ function confirmAiSuggest(){
         count++;
       }
     });
-    if(!count){if(typeof _cspToast==='function')_cspToast('입력할 식단/운동 항목이 없습니다',2000);return;}
+    if(!count){if(typeof _cspToast==='function')_cspToast('입력할 식단/운동 항목이 없습니다',2000);return Promise.resolve();}
     var savedCount=count;
     return Promise.all(promises).then(function(){
       if(typeof _cspToast==='function')_cspToast('✅ '+savedCount+'개 항목 반영 완료! (기존 AI 항목 교체)',3000);
       if(typeof renderAll==='function')renderAll();
     });
-  }).catch(function(e){console.error('confirmAiSuggest error:',e);if(typeof _cspToast==='function')_cspToast('❌ 저장 오류: '+e.message,4000);});
+  }).catch(function(e){
+    console.error('confirmAiSuggest error:',e);
+    if(typeof _cspToast==='function')_cspToast('❌ 저장 오류: '+e.message,4000);
+  }).then(function(){
+    _aiApplying=false;
+    if(applyBtn){applyBtn.disabled=false;applyBtn.textContent='캘린더에 반영하기 →';}
+  });
 }
 window.confirmAiSuggest=confirmAiSuggest;
 
@@ -7440,297 +7455,6 @@ function closeRecipeModal(){document.getElementById('recipeModal').classList.rem
 
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeRecipeModal();});
 
-
-
-var MEAL_AI_SYS='너는 Jayden 전담 영양사 AI야. '
-
-
-
-  +'고정 조건: [지성 피부 - 포화지방(버터·마가린·삼격살) 절대 배제, 엑스트라버진 올리브유만 사용], '
-
-
-
-  +'[탈모 예방 - DHT 자극 포화지방 차단, 두피 혐행 개선 음식 포함], '
-
-
-
-  +'[가성비 복\appa 상향 - 냉동닭다리살·전란·냉동고등어·돼지뒤다리살·오트밀·냉동브로콜리·양배추·현미밥 식재료만 사용]. '
-
-
-
-  +'매 호출마다 같은 재료 다른 레시피 원칙 - 구이·볶음·줌·죽 등 조리법 다변화. '
-
-
-
-  +'직장인 루틴: 아침은 5분 이내, 저녁은 다음 날 점심 도시락까지 2인분 밀프렴. '
-
-
-
-  +'반환 형식: 순수 JSON 배열만. [{"date":"YYYY-MM-DD","mealType":"breakfast|lunch|dinner","name":"음식명","amount":300,"kcal":450,"protein":30,"carbs":45,"fat":12,"recipe":{"ingredients":[{"item":"재료","amount":"양"}],"steps":["단계"],"prep_time":5,"cook_time":15,"tips":"보가 팀"}}]';
-
-
-
-async function generateAiWeeklyPlan(){
-
-
-
-var btn=document.getElementById('aiMealGenBtn');
-
-
-
-if(btn)btn.textContent='🔄 AI 식단 생성 중...';
-
-
-
-var apiKey=localStorage.getItem('hb-gem-key');
-
-
-
-var model=localStorage.getItem('hb-gem-model')||'gemini-2.5-flash-lite';
-
-
-
-if(!apiKey){if(btn)btn.textContent='🥗 AI 식단 생성';alert('🤖 Gemini API 키를 먼저 설정해주세요!');return;}
-
-
-
-var today=new Date();var day=today.getDay();var diff=day===0?-6:1-day;
-
-
-
-var mon=new Date(today);mon.setDate(today.getDate()+diff);
-
-
-
-var dates=[];for(var i=0;i<7;i++){var d=new Date(mon);d.setDate(mon.getDate()+i);dates.push(d.toISOString().split('T')[0]);}
-
-
-
-var wStart=dates[0];
-
-
-
-var prompt=MEAL_AI_SYS+'\n\n이번 주('+wStart+'~'+dates[6]+') 월~일 7일간 breakfast(아침)·lunch(점심)·dinner(저녁) 각 1개씩, 레시피 포함 JSON 배열로 반환. 시드:'+Math.floor(Math.random()*9999);
-
-
-
-var url='https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+apiKey;
-
-
-
-try{
-
-
-
-var resp=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
-
-
-
-var data=await resp.json();
-
-
-
-var raw=((data.candidates||[])[0]||{}).content;
-
-
-
-var txt=raw&&raw.parts&&raw.parts[0]?raw.parts[0].text:'';
-
-
-
-txt=txt.replace(/```json/g,'').replace(/```/g,'').trim();
-
-
-
-var mealArr=JSON.parse(txt);
-
-
-
-var uid=auth.currentUser?auth.currentUser.uid:null;
-
-
-
-if(!uid){alert('로그인이 필요합니다.');return;}
-
-
-
-var b1=db.batch();(typeof meals!=='undefined'?meals:[]).filter(function(m){return m.date>=wStart&&m.date<=dates[6];}).forEach(function(m){b1.delete(db.collection('hb_meals').doc(m.id));});await b1.commit();
-
-
-
-var b2=db.batch();var ts=firebase.firestore.FieldValue.serverTimestamp();
-
-
-
-mealArr.forEach(function(m){var ref=db.collection('hb_meals').doc();b2.set(ref,{uid:uid,date:m.date,mealType:m.mealType,name:m.name,amount:Number(m.amount)||200,kcal:Number(m.kcal)||0,protein:Number(m.protein)||0,carbs:Number(m.carbs)||0,fat:Number(m.fat)||0,recipe:m.recipe||{},done:false,createdAt:ts});});
-
-
-
-await b2.commit();
-
-
-
-if(typeof _cspToast==='function')_cspToast('🥗 이번 주 AI 맞춴형 식단 ('+mealArr.length+'개) 작성 완료!',null);
-
-
-
-if(typeof renderAll==='function')renderAll();
-
-
-
-}catch(e){console.error('AI 식단 오류:',e);alert('AI 식단 생성 오류: '+e.message);}
-
-
-
-finally{if(btn)btn.textContent='🥗 AI 식단 생성';}
-
-
-
-}
-
-
-
-var WORKOUT_AI_SYS='너는 Jayden 전담 PT 코치야. '
-
-
-
-  +'[등며 프레임 빌더 - 광배·승모·후면삼각근 중심 웨이트]. '
-
-
-
-  +'[탈모 예방 - 70~80% 1RM 이하 제한, 두피 혈행 개선 유산소/스트레캔 5~10분 필수]. '
-
-
-
-  +'[월~금 직장인 - 퇰근 후 저녁, 주말은 가벼운 활동 또는 휴식]. '
-
-
-
-  +'매 호출마다 콤파운드 세트·드롭세트·그립 변형 새로운 자극. '
-
-
-
-  +'반환 형식: 순수 JSON 배열만. [{"date":"YYYY-MM-DD","exercises":[{"name":"운동명","category":"strength","sets":4,"reps":10,"weight":60,"notes":"메모"}],"workout_name":"루틴명","notes":"전체 메모"}]';
-
-
-
-async function generateAiWorkoutPlan(){
-
-
-
-var btn=document.getElementById('aiWorkoutGenBtn');
-
-
-
-if(btn)btn.textContent='🔄 AI 운동 생성 중...';
-
-
-
-var apiKey=localStorage.getItem('hb-gem-key');
-
-
-
-var model=localStorage.getItem('hb-gem-model')||'gemini-2.5-flash-lite';
-
-
-
-if(!apiKey){if(btn)btn.textContent='💪 AI 운동 생성';alert('🤖 Gemini API 키를 먼저 설정해주세요!');return;}
-
-
-
-var today=new Date();var day=today.getDay();var diff=day===0?-6:1-day;
-
-
-
-var mon=new Date(today);mon.setDate(today.getDate()+diff);
-
-
-
-var dates=[];for(var i=0;i<7;i++){var d=new Date(mon);d.setDate(mon.getDate()+i);dates.push(d.toISOString().split('T')[0]);}
-
-
-
-var wStart=dates[0];
-
-
-
-var prompt=WORKOUT_AI_SYS+'\n\n이번 주('+wStart+'~'+dates[6]+') 월~일 7일 운동 루틴 JSON 배열. 운동 없는 날은 exercises 빈 배열로. 시드:'+Math.floor(Math.random()*9999);
-
-
-
-var url='https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+apiKey;
-
-
-
-try{
-
-
-
-var resp=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
-
-
-
-var data=await resp.json();
-
-
-
-var raw=((data.candidates||[])[0]||{}).content;
-
-
-
-var txt=raw&&raw.parts&&raw.parts[0]?raw.parts[0].text:'';
-
-
-
-txt=txt.replace(/```json/g,'').replace(/```/g,'').trim();
-
-
-
-var wkArr=JSON.parse(txt);
-
-
-
-var uid=auth.currentUser?auth.currentUser.uid:null;
-
-
-
-if(!uid){alert('로그인이 필요합니다.');return;}
-
-
-
-var b1=db.batch();(typeof workouts!=='undefined'?workouts:[]).filter(function(w){return w.date>=wStart&&w.date<=dates[6];}).forEach(function(w){b1.delete(db.collection('hb_workouts').doc(w.id));});await b1.commit();
-
-
-
-var b2=db.batch();var ts=firebase.firestore.FieldValue.serverTimestamp();
-
-
-
-wkArr.forEach(function(w){if(!w.exercises||!w.exercises.length)return;var ref=db.collection('hb_workouts').doc();b2.set(ref,{uid:uid,date:w.date,exercises:w.exercises,doneExercises:{},notes:w.notes||w.workout_name||'',createdAt:ts,updatedAt:ts});});
-
-
-
-await b2.commit();
-
-
-
-if(typeof _cspToast==='function')_cspToast('💪 이번 주 AI 프레임 빌더 루틴 반영 완료!',null);
-
-
-
-if(typeof renderAll==='function')renderAll();
-
-
-
-}catch(e){console.error('AI 운동 오류:',e);alert('AI 운동 생성 오류: '+e.message);}
-
-
-
-finally{if(btn)btn.textContent='💪 AI 운동 생성';}
-
-
-
-}
 
 
 
