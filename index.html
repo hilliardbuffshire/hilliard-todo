@@ -3065,7 +3065,7 @@ if(dw_c2.length){
   var allEx=[];dw_c2.forEach(function(w){(w.exercises||[]).forEach(function(e){allEx.push({name:e.name,wid:w.id,date:w.date,sets:e.sets,reps:e.reps});});});
   allEx.slice(0,3).forEach(function(e){
     var txt=(e.name||'')+(e.sets&&e.reps?' '+e.sets+'x'+e.reps:'');
-    cell.appendChild(_nItem(txt,'#1565c0','workout',e.wid,e.date,function(){openSidePanel(ds);}));
+    cell.appendChild(_nItem(txt,'#1565c0','workout',e.wid,e.date,(function(d){return function(){openSidePanel(d);};})(ds)));
   });
   if(allEx.length>3){var m=document.createElement('div');m.className='nMoreTag';m.textContent='+'+( allEx.length-3)+'개 더';cell.appendChild(m);}
 }
@@ -3080,7 +3080,7 @@ if(dm_c2.length){
     var kcalStr=m.kcal?'('+Math.round(m.kcal)+'kcal)':'';
     var typeStr=mTypeLabel[m.mealType]||'';
     var txt=(typeStr?typeStr+' ':'')+_esc2(m.name||'')+' '+kcalStr;
-    cell.appendChild(_nItem(txt,'#2e7d32','meal',m.id,m.date,function(){openSidePanel(ds);}));
+    cell.appendChild(_nItem(txt,'#2e7d32','meal',m.id,m.date,(function(d){return function(){openSidePanel(d);};})(ds)));
   });
   if(dm_c2.length>4){var m2=document.createElement('div');m2.className='nMoreTag';m2.textContent='+'+( dm_c2.length-4)+'개 더';cell.appendChild(m2);}
 }
@@ -3097,15 +3097,12 @@ if(dtO.length){
   dtO.slice(0,3).forEach(function(t){
     var txt=(t.done?'✓ ':'')+_esc2((t.time?t.time+' ':'')+t.text);
     var col=t.done?'#aaa':t.priority==='high'?'#c62828':t.priority==='medium'?'var(--ac)':'#388e3c';
-    cell.appendChild(_nItem(txt,col,'todo',t.id,t.date||ds,function(){openSidePanel(ds);}));
+    cell.appendChild(_nItem(txt,col,'todo',t.id,t.date||ds,(function(d){return function(){openSidePanel(d);};})(ds)));
   });
   if(dtO.length>3){var m3=document.createElement('div');m3.className='nMoreTag';m3.textContent='+'+( dtO.length-3)+'개 더';cell.appendChild(m3);}
 }
 // Click to open side panel
-cell.addEventListener('click',function(ev){
-  if(ev.target.classList.contains('nDel'))return;
-  selDate=ds;openSidePanel(ds);renderCal();
-});
+(function(capturedDs){cell.addEventListener('click',function(ev){if(ev.target.classList.contains('nDel'))return;selDate=capturedDs;openSidePanel(capturedDs);renderCal();});})(ds);
 days.appendChild(cell);
 }
 }
